@@ -1,0 +1,14 @@
+/* SIGNATURE IS HEXA 16     SIGNATURE(X'00112233445566778899AABBCCDDEEFF')  4*VERSION DATE        */
+STRPGMEXP PGMLVL(*CURRENT)  SIGNATURE(X'20090322200903222009032220090322')
+/*** RTVBNDSRC : ****************************************************/
+/*   *MODULE      CLOB1_M      LAMONTRE1    03/22/09  16:53:23      */
+/********************************************************************/
+  EXPORT SYMBOL("CLOB1_P1")
+ENDPGMEXP
+
+
+/* MISE A JOUR DE LA LISTE DES PROCEDURES :               */
+/*   DSPMOD MODULE(LAMONTRE1/CLOB1_M) DETAIL(*EXPORT)       */
+
+
+

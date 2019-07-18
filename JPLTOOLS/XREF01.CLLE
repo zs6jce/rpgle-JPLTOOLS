@@ -1,0 +1,73 @@
+pgm
+
+
+/*===========GESTION-DES-MESSAGES-D'ERREUR--------------------------*/
+             COPYRIGHT  TEXT('Author is Jean-Paul Lamontre')
+             MONMSG     MSGID(CPF0000 QWM0000) EXEC(GOTO +
+                          CMDLBL(STDMONMSG))
+             GOTO       CMDLBL(DEBUTPGM)
+STDMONMSG:
+/*-RENVOI-DES-MESSAGES-VERS-L'APPELANT------------------*/
+             call QMHRSNEM ('    ' x'00000000')
+DEBUTPGM:
+/*===========CORPS-DU-PROGRAMME-------------------------------------*/
+
+             DLTF       FILE(*CURLIB/XREFDEP)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/XREFOBJ)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/OBJS)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/MBRLIST)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/FD_ATR)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/CMDI0100)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/MODI0100)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/MODL0100)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/MODL0200)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/MODL0300)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/MODL0400)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/MODL0500)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/PGMI0100)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/VEWL0100)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/SPGI0100)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/PGML0100)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/PGML0200)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/PGML0300)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/PGML0400)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/PGML0500)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/SPGL0600)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/SPGL0700)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/SPGL0800)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/PGMREF)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(*CURLIB/BNDPRC)
+             MONMSG     MSGID(CPF2105)
+
+
+
+
+
+
+
+
+ FIN:        ENDPGM

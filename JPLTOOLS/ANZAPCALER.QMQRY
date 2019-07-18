@@ -1,0 +1,33 @@
+with cascade (caller, title_caller, called, title_called
+             , level, called_key) as (
+    select caller,
+        cast(trim(caller_lib) concat '/'  concat trim(caller)
+            as varchar(1000) ) title_caller
+      , called
+      , cast(trim(called_lib) concat '/'  concat trim(called)
+            as varchar(21) ) title_called
+      , 1 level
+      , called_key
+    from jpltools.root
+/* here choose the caller to analyze */
+-- where whpnam='MYPGM'
+    union all
+    select
+        cascade.caller
+      , cascade.title_caller concat ' > ' concat cascade.title_called
+      , child.called
+      , cast(trim(child.called_lib) concat '/'  concat trim(child.called)
+           as varchar(21) ) title_called
+      ,  level + 1
+      , child.called_key
+    from  cascade, jpltools.root child
+    where cascade.called_key = child.caller_key
+/* here is a loop stopper */
+     and cascade.title_called not like '%' concat trim(child.called) concat '%'
+/* here is another loop stopper */
+        and cascade.level <= 20
+/* here choose the called to follow */
+
+) select cascade.* from cascade  order by title_caller
+
+

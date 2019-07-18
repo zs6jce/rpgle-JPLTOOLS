@@ -1,0 +1,697 @@
+:PNLGRP SUBMSGF='*LIBL/pnlmsg' TXTMODE = SBCS BIDI = NONE.
+.*--panels standard-------------------------------------------------------------
+
+.*==============================================================================
+:HELP NAME=INTRO.
+Retrieve DDL (SQL source language) for SQL objects
+:XH1.Retrieve DDL (SQL source language) for SQL objects
+:PC.This help text comes from the description of the API
+Generate Data Definition Language (QSQGNDDL)
+
+:P. The Generate Data Definition Language (QSQGNDDL) API generates the SQL data definition language
+statements required to recreate a database object. The results are returned in the specified
+database source file member.
+:PC.
+Database physical files or logical files that were created using an interface other than SQL may
+be specified. For example, files created from DDS and the CRTPF or CRTLF commands may be
+specified. Even if the object was created using SQL, the Standards option may restrict what can
+be generated. In either of these cases:
+:UL COMPACT.:LI.
+the operation may succeed with warnings that are generated in the SQL statement source, or
+:LI.the operation may fail for certain non-relational files or objects not supported by the
+specified Standards option.
+:EUL.
+If a database object was created using an SQL interface, the resulting SQL statements may be
+slightly different than the SQL statements that created the object originally. For example:
+:UL COMPACT.:LI.
+When there is more than one way to specify an attribute in SQL, the more standard syntax is
+generally chosen. For example, if a user creates a table with a FLOAT(52) column, DOUBLE
+PRECISION is generated.
+:LI.When a clause is not specified in the original SQL statement and a default is taken instead, a
+clause may be generated to explicitly show the default. For example, if the default value for a
+nullable column is the null value, the clause DEFAULT NULL is generated.
+:LI.
+When a Standards option is used to restrict the generated SQL to the ANS and ISO standard or the DB2
+Universal Database Family, an attribute may be omitted. For example, if the ALLOCATE clause is
+specified on a VARCHAR column, the ALLOCATE clause is not generated unless the Standards option
+allows DB2 UDB for iSeries extensions.
+:EUL.
+:PC.
+For more information, see the Severity level field.
+:PC.
+You can use the QSQGNDDL API with database objects only. DDM files (other than SQL aliases) are not
+supported. File overrides do not affect the specified object names. File overrides do affect the
+specified source file names.
+
+
+
+
+
+
+
+
+
+
+
+
+:EHELP.
+.*==============================================================================
+:HELP NAME= FMTA .
+
+
+:XH3.Field Descriptions
+
+:P.:HP3.Comment option.:EHP3. The comment option specifies whether COMMENT ON
+SQL statements should be generated if a comment exists on the specified
+database object. If comments are not supported by the specified database
+object, the comment option is ignored. The valid values are:
+:PC.:HP2.0:EHP2.COMMENT ON SQL statements should not be
+generated.
+:PC.:HP2.1:EHP2.COMMENT ON SQL statements should be generated. If the
+specified database object type is a table or view, COMMENT ON SQL statements
+will also be generated for columns of the table or view.
+:PC.If the Standards option is '2', comment option '1' is not valid.
+
+:P.:HP3.Database object name.:EHP3. The name of the database object for which
+DDL will be generated. Either the SQL name or the system name may be specified.
+The name is case sensitive. If delimiters are required for the name to be
+valid, they must be specified. For example, a file with a name of "abc" must be
+specified with the surrounding quotes. A file with a name of ABC must be
+specified in upper case.
+:PC.If the object type is a FUNCTION or PROCEDURE, this name must be the specific
+name of the function or procedure.
+:PC.If TABLE or VIEW is specified for the object type, the object name may identify
+an alias. In this case, the object that the alias points to will be generated.
+A CREATE ALIAS statement will be generated only if ALIAS is specified for the
+object type.
+
+:P.:HP3.Database object library name.:EHP3.
+
+The name of the library
+containing the object for which DDL will be generated. The name is case
+sensitive. If delimiters are required for the name to be valid, they must be
+specified. This name is ignored if the specified object type is SCHEMA. You can
+use these special values for the library name:
+:PC.:HP2.*CURLIB:EHP2.The job's current library
+:PC.:HP2.*LIBL:EHP2.The library list
+
+
+:P.:HP3.Database object type.:EHP3.
+The type of the database object or object
+attribute for which DDL is generated. You can use these special values for the
+object type:
+
+:PC.:HP2.ALIAS:EHP2.The object is an SQL alias.:PC.
+If the Standards option is '2', an ALIAS object type is not valid.
+
+:PC.:HP2.CONSTRAINT:EHP2.The object attribute is a constraint.
+:PC.:HP2.FUNCTION:EHP2.The object is an SQL function.
+:PC.:HP2.INDEX:EHP2.The object is an SQL index.:PC.
+If the Standards option is '2', an INDEX object type is not valid.
+
+:PC.:HP2.PROCEDURE:EHP2.The object is an SQL procedure.
+
+:PC.:HP2.SCHEMA:EHP2.The object is an SQL schema (collection) or library.
+
+:PC.:HP2.TABLE:EHP2.The object is an SQL table or physical file.
+
+:PC.:HP2.TRIGGER:EHP2.The object attribute is a trigger.
+
+:PC.:HP2.TYPE:EHP2.The object is an SQL type.
+
+:PC.:HP2.VIEW:EHP2.The object is an SQL view or logical file.
+
+:P.:HP3.Database source file name.:EHP3. The name of the source file that
+contains the SQL statements generated by the API. The name must be a valid
+system name. The name is case sensitive. If delimiters are required for the
+name to be valid, they must be specified. For example, a file with a name of
+"abc" must be specified with the surrounding quotes. A file with a name of ABC
+must be specified in upper case.
+:PC.The record length of the specified source file must be greater than or equal to
+92.
+
+:P.:HP3.Database source file library name.:EHP3. The name of the library
+containing the source file that contains the SQL statements generated by the
+API. The name must be a valid system name. The name is case sensitive. If
+delimiters are required for the name to be valid, they must be specified. You
+can use these special values for the library name:
+:PC.:HP2.*CURLIB:EHP2.The job's current library
+
+:PC.:HP2.*LIBL:EHP2.The library list
+
+
+:P.:HP3.Database source file member name.:EHP3.
+The name of the source file
+member that contains the SQL statements generated by the API. The name must be
+a valid system name. The name is case sensitive. If delimiters are required for
+the name to be valid, they must be specified. You can use these special values
+for the member name.
+:PC.:HP2.*FIRST:EHP2.The first database physical file member
+found. Currently not allowed.
+
+:PC.:HP2.*LAST:EHP2.The last database physical file member found. Currently not allowed.
+
+
+:P.:HP3.Date format.:EHP3. The date format used for date constants in a
+generated SQL CREATE TABLE statement. The date format may not apply to date
+constants that are in ISO, EUR, USA, or JIS format in a CREATE VIEW, CREATE
+TRIGGER, CREATE FUNCTION, or CREATE PROCEDURE statement. The valid values are:
+:PC.:HP2.ISO:EHP2.International Standards Organization
+(yyyy-mm-dd)
+:PC.
+:PC.:HP2.EUR:EHP2.IBM European Standard (dd.mm.yyyy):PC.
+If the Standards option is '2', the EUR date format is not valid.
+
+:PC.:HP2.JIS:EHP2.Japanese Industrial standard Christian Era
+(yyyy-mm-dd):PC.
+If the Standards option is '2', the JIS date format is not valid.
+
+:PC.:HP2.USA:EHP2.IBM USA standard (mm/dd/yyyy):PC.
+If the Standards option is '2', the USA date format is not valid.
+
+:PC.:HP2.MDY:EHP2.Month/day/year (mm/dd/yy):PC.
+If the Standards option is '1' or '2', the MDY date format is not valid.
+
+:PC.:HP2.DMY:EHP2.Day/month/year (dd/mm/yy):PC.
+If the Standards option is '1' or '2', the DMY date format is not valid.
+
+:PC.:HP2.YMD:EHP2.
+Year/month/day (yy/mm/dd):PC.
+If the Standards option is '1' or '2', the YMD date format is not valid.
+
+:PC.:HP2.JUL:EHP2.Julian (yy/ddd):PC.
+If the Standards option is '1' or '2', the JUL date format is not valid.
+
+
+:P.:HP3.Date separator.:EHP3.
+The date separator used for date constants in a
+generated SQL CREATE TABLE statement. The date separator may not apply to date
+constants that are in ISO, EUR, USA, or JIS format in a CREATE VIEW, CREATE
+TRIGGER, CREATE FUNCTION, or CREATE PROCEDURE statement. The date separator is
+only applicable if the date format is MDY, DMY, YMD, or JUL. The valid values
+are:
+:PC.:HP2./:EHP2.Slash separator
+:PC.:HP2..:EHP2.Period separator
+:PC.:HP2.,:EHP2.Comma separator
+:PC.:HP2.-:EHP2.Dash separator
+:PC.:HP2.blank:EHP2.Blank separator
+
+
+:P.:HP3.Decimal point.:EHP3.
+The decimal point used for numeric constants.
+The valid values are:
+:PC.:HP2..:EHP2.Period separator
+:PC.:HP2.,:EHP2.
+Comma separator:PC.
+If the Standards option is '1' or '2', the comma separator is not valid.
+
+
+:P.:HP3.Drop option.:EHP3.
+The drop option specifies whether DROP (or ALTER)
+SQL statements should be generated prior to the CREATE statement to drop the
+specified object. The valid values are:
+:PC.:HP2.0:EHP2.DROP statements should not be generated.
+
+:PC.:HP2.1:EHP2.DROP statements should be generated.:PC.
+:PC.Note that with the exception of DROP SCHEMA, the DROP statements generated will
+not include a CASCADE or RESTRICT option even if the standards option is '2'.
+
+
+
+:P.:HP3.Header option.:EHP3.
+The header option specifies whether a header
+should be generated prior to the CREATE statement. The header consists of
+comments that describe the version, date and time, the relational database, and
+some of the options used to generate the SQL statements. The valid values are:
+:PC.:HP2.0:EHP2.A header should not be generated.
+
+:PC.:HP2.1:EHP2.A header should be generated.
+
+
+:P.:HP3.Label option.:EHP3.
+The label option specifies whether LABEL ON SQL
+statements should be generated if a label exists on the specified database
+object. If labels are not supported by the specified database object, the label
+option is ignored. The valid values are:
+:PC.:HP2.0:EHP2.LABEL ON SQL statements should not be
+generated.
+:PC.:HP2.1:EHP2.LABEL ON SQL statements should be generated. If the
+specified database object type is a table or view, LABEL ON SQL statements will
+also be generated for columns of the table or view.
+
+
+:PC.If the Standards option is '1' or '2', label option '1' is not valid.
+
+:P.:HP3.Message level.:EHP3.
+The severity level at which the messages are
+generated. If errors occur that have a severity level greater than this value,
+a message is generated in the output. The valid values are in the range 0
+through 39 inclusive.
+:PC.The message level must be less than or equal to the severity level.
+
+:P.:HP3.Naming option.:EHP3.
+The naming convention used for qualified names
+in the generated SQL statements. The valid values are:
+:PC.:HP2.SQL:EHP2.:HP1.collection.table:EHP1. syntax
+
+:PC.:HP2.SYS:EHP2.:HP1.library/file:EHP1. syntax:PC.
+:PC.If the Standards option is '1' or '2', the SYS naming option is not valid.
+:PC.If the object type is a FUNCTION, PROCEDURE, TRIGGER, or VIEW, and a column name
+is qualified by a qualified table name in the SQL body of the function,
+procedure, trigger, or view (that is, schema-name.table-name.column-name), the
+generated statement will not be valid because this type of column name
+qualification is not allowed in SYS naming.
+
+
+
+:P.:HP3.Replace option.:EHP3.
+The replace option for the database source file
+member. The valid values are:
+:PC.:HP2.0:EHP2.The resulting SQL statements are appended
+to the end of the database source file member.
+
+:PC.:HP2.1:EHP2.The database source file member is cleared prior to
+adding the resulting SQL statements. If this option is chosen, the file may be
+cleared even if an error is returned from the API.
+
+
+:P.:HP3.Severity level.:EHP3.
+The severity level at which the operation
+fails. If errors occur that have a severity level greater than this value, the
+operation ends. The valid values are in the range 0 through 39 inclusive. Any
+severity 40 error will cause the API to fail.
+:PC.:HP2.0:EHP2.No errors or warnings.
+
+:PC.:HP2.10:EHP2.The following attributes will result in messages with this
+severity level::PC.
+:ol compact.
+:LI.
+Schema ASP and WITH DATA DICTIONARY
+:PC.If the Standards option is 1 or 2, these clauses will be ignored.
+:LI.
+Test libraries
+:PC.A CREATE SCHEMA statement will be generated to create the schema. Schemas are
+production libraries.
+:LI.
+Libraries with a CRTAUT parameter value
+:PC.Under SQL naming, schemas are always created with CRTAUT(*EXCLUDE). Under SYS
+naming, schemas are always created with CRTAUT(*SYSVAL).
+:LI.
+NODEGROUPs
+:PC.If the Standards option is 1 or 2, the NODEGROUP clause will be ignored.
+:LI.
+LABEL ON TEXT
+:PC.If the Standards option is 1, the text will be ignored.
+:LI.
+COMMENT ON parameters
+:PC.If the Standards option is 1, the comment will be ignored.
+:LI.
+System file names
+:PC.If the Standards option is 1 or 2, only the SQL names are generated. Otherwise,
+a RENAME statement is generated after the CREATE statement to assign the system
+name.
+:LI.
+System column names
+:PC.If the Standards option is 1 or 2, only the SQL names are generated. Otherwise,
+a FOR COLUMN clause will be generated to assign each system column name.
+:LI.
+BIGINT data types
+:PC.If the Standards option is 1 or 2, a DECIMAL(19,0) will be generated.
+:LI.
+DBCS-open data types
+:PC.If the Standards option is 1 or 2, a character field will be generated.
+
+:ol compact.
+:LI.
+Binary with non-zero scale
+:PC.A decimal data type will be generated.
+:LI.
+Files whose format name is different from the file name
+:PC.The format name will be the same as the file name.
+:LI.
+Files with a REUSEDLT(*NO) attribute
+:PC.REUSEDLT(*YES) will be used.
+:LI.
+Physical or logical files that use any of the following keywords: CHECK,
+CHKMSGID, CMP, DATFMT, EDTCDE, EDTWRD, TIMFMT, RANGE, REFSHIFT, VALUES
+:PC.These keywords will be ignored.
+:LI.
+Logical files that use any of the following keywords: CCSID or TRNTBL
+:PC.These keywords will be ignored.
+:LI.
+Join logical files with JDFTVAL or JDUPSEQ
+:PC.A LEFT OUTER JOIN clause will be generated, but the join default value will be
+the null value and the JDUPSEQ keyword will be ignored.
+:LI.
+Logical files with SST function
+:PC.If the Standards option is 2, SUBSTRING is generated instead of SUBSTR.
+:LI.
+COBOLLE and C++ languages in external functions and procedures
+:PC.If the Standards option is 1 or 2, COBOL or C is generated.
+:LI.
+RPGLE language in external functions and procedures
+:PC.If the Standards option is 1, RPG is generated.
+
+:EOL.
+
+:EOL.
+
+
+:PC.:HP2.20:EHP2.The following attributes will result in messages with
+this severity level:
+:ol compact.
+:LI.
+Multiple member files, files with no members, or files with MAXMBRS greater
+than one
+:PC.The resulting file will contain one member.
+:LI.
+Single format logical files with a member built over multiple physical file
+members
+:PC.The resulting file will be based on the first physical file member.
+:LI.
+Logical files that contain input/output fields that map an underlying physical
+file field to a different data type, length, precision or scale.
+:PC.A CAST scalar function will be generated to map the data to the correct
+attributes, but the resulting column is input-only.
+:LI.
+Keyed logical files that do not share the based on physical file's format, have
+more than one based on file, or have select/omit specifications
+:PC.If INDEX is specified, the format and select/omit will be ignored.
+:LI.
+Triggers with MODE DB2ROW
+:PC.If the Standards option is 1 or 2, MODE DB2SQL will be used.
+
+:EOL.
+
+
+
+:PC.:HP2.30:EHP2.The following attributes will result in messages with this
+severity level:
+:ol compact.
+:LI.
+CHAR or VARCHAR CCSID 65535
+:PC.If the Standards option is 2, a character field is generated.
+:LI.
+GRAPHIC, VARGRAPHIC, or DBCLOB
+:PC.If the Standards option is 2, a character field is generated.
+:LI.
+DataLinks or Row IDs
+:PC.If the Standards option is 1 or 2, a character field is generated.
+:LI.
+Identity columns
+:PC.If the Standards option is 2, the
+IDENTITY attribute is ignored.
+:LI.
+Open, Only, or Either fields
+:PC.If the Standards option is 0, the CCSID clause will result in an open field.
+Only and Either fields will result in a warning. If the Standards option is 1,
+FOR MIXED DATA is generated. If the Standards option is 2, character fields
+will be generated.
+:LI.
+Keyed logical files
+:PC.If VIEW is specified, the key specifications will be ignored, because all views
+are non-keyed.
+:LI.
+Keyed physical files whose key is not a primary key
+:PC.A CREATE TABLE will be generated without a primary key. The key specifications
+will be ignored, however, because only tables with a primary key are keyed.
+:LI.
+Files that use any of the following keywords: ALTSEQ, DIGIT, FCFO, FIFO, LIFO,
+UNSIGNED, ZONE
+:PC.These keywords will be ignored.
+:LI.
+SRTSEQ
+:PC.The sort sequence will be ignored.
+:LI.
+Non-SQL triggers if TABLE object is specified.
+:PC.The triggers will be ignored.
+:LI.
+NO EXTERNAL ACTION, SCRATCHPAD, FINAL CALL, ALLOW PARALLEL, or DBINFO, keywords
+in functions and procedures
+:PC.If the standards option is 2, these attributes will be ignored.
+:LI.
+COMMIT ON RETURN YES, NOT
+FENCED, or NEW SAVEPOINT LEVEL clauses in functions and procedures
+:PC.If the standards option is 1 or
+2, these attributes will be ignored.
+:LI.
+Functions and procedures with parameter style GENERAL WITH NULLS, DB2SQL, or
+DB2GENERAL
+:PC.If the Standards option is 2, PARAMETER STYLE SQL is used.
+:LI.
+JAVA, REXX, RPG, and RPGLE language in functions and procedures
+:PC.If the Standards option is 2, the C language is used instead.
+:LI.
+CL language in functions and procedures
+:PC.If the Standards option is 1 or 2, the C language is used instead.
+
+:EOL.
+
+
+:PC.:HP2.40:EHP2.The following attributes will result in messages with this
+severity level:
+:ol compact.
+:LI.
+Physical file if either VIEW or INDEX object type is specified.
+:LI.
+Logical file if TABLE object type is specified.
+:LI.
+Non-keyed file if INDEX object type is specified.
+:LI.
+Non-alias file if ALIAS object type is specified.
+:LI.
+Function if PROCEDURE object type is specified.
+:LI.
+Procedure if FUNCTION object type is specified.
+:LI.
+Device files
+:LI.
+Program described physical files
+:LI.
+Multiple format logical files
+:LI.
+Indexes if the Standards option is 2.
+:LI.
+Aliases if the Standards option is 2.
+:LI.
+EVI Indexes if the Standards option is 1.
+:LI.
+UNIQUE WHERE NOT NULL if the Standards option is 1.
+:LI.
+Aliases that contain a member name if the Standards option is 1.
+:LI.
+System-generated UDFs
+:LI.
+Built-in data types
+:LI.
+SQL UDFs, if the Standards option is 1.
+:LI.
+Sourced UDFs, if the Standards option is 2.
+:LI.
+User-defined table functions, if
+the Standards option is 2
+:LI.
+Non-SQL triggers if TRIGGER object is specified.
+
+:EOL.
+
+
+:P.:HP3.Standards option.:EHP3.
+The standards option specifies whether the
+generated SQL statements should contain DB2 UDB for iSeries extensions or
+whether the statements should conform to the DB2 Universal Database Family SQL
+or to the ANS and ISO SQL standards. The valid values are:
+:PC.:HP2.0:EHP2.
+DB2 Universal Database for iSeries extensions may be
+generated in SQL statements.
+
+:PC.:HP2.1:EHP2.The generated SQL statements must conform to SQL statements common
+to the DB2 Universal Database Family.
+
+:PC.:HP2.2:EHP2.The generated SQL statements must conform to the following ANSI
+and ISO SQL standards::PC.
+:UL COMPACT.
+:LI.
+ISO (International Standards Organization) 9075-1: 1999, Database Language SQL
+:LI.
+ANSI (American National Standards Institute) X3.135-1-1999, Database Language
+SQL
+
+:EUL.
+
+
+
+:PC.If option 1 or 2 is chosen, the SQL statements generated may not completely
+represent the object in DB2 UDB for iSeries; however, the statements will be
+compatible with the specified DB2 Family or ANSI and ISO standards option.
+:PC.If the object is an SQL function, SQL procedure, SQL trigger, or SQL view, the
+SQL statements in the body of the object are included in the generated SQL
+statement. Hence, if the option 1 or 2 is chosen, the generated SQL statement
+may not conform to the specified standards option since the statements within
+the body of the SQL object may not conform to the specified standard. For
+example, if a CREATE INDEX statement exists in the body of an SQL procedure,
+the generated CREATE PROCEDURE statement will contain the CREATE INDEX
+statement even if option 1 or 2 is chosen.
+:PC.There is no attempt to take product specific limits into account. For example, a
+table name in DB2 UDB for iSeries can be 128 bytes, but other products may not
+support table names that are that long. Thus, even if the generated SQL
+statement is standard, it still may not work on other products if they have
+smaller limits that those on DB2 Universal Database for iSeries.
+:PC.If option 1 is specified,
+:UL COMPACT.
+:LI.
+The naming option must be SQL.
+:LI.
+The date format must be ISO, USA, EUR, or JIS.
+:LI.
+The time format must be ISO, USA, EUR, or JIS.
+:LI.
+The decimal point must be the period.
+
+:EUL.
+:PC.If option 2 is specified,
+:UL COMPACT.
+:LI.
+The naming option must be SQL.
+:LI.
+The date format must be ISO.
+:LI.
+The time format must be ISO.
+:LI.
+The decimal point must be the period.
+:LI.
+An ALIAS object type must not be specified.
+
+:EUL.
+
+:P.:HP3.Statement formatting option.:EHP3.
+The formatting option used in the
+generated SQL statements. The valid values are:
+:PC.:HP2.0:EHP2.
+No additional formatting characters are added to the
+generated SQL statements.
+
+:PC.:HP2.1:EHP2.Additional end-of-line characters and tab characters are added to
+the generated SQL statements.
+
+
+:P.:HP3.Time format.:EHP3.
+The format used for time constants in a generated
+SQL CREATE TABLE statement. The time format may not apply to date constants
+that are in ISO, EUR, USA, or JIS format in a CREATE VIEW, CREATE TRIGGER,
+CREATE FUNCTION, or CREATE PROCEDURE statement. in the generated SQL
+statements. The valid values are:
+:PC.:HP2.ISO:EHP2.International Standards Organization (hh.mm.ss)
+
+:PC.:HP2.EUR:EHP2.IBM European Standard (hh.mm.ss)
+
+If the Standards option is '2', the EUR time format is not valid.
+
+:PC.:HP2.JIS:EHP2.Japanese Industrial standard Christian Era (hh:mm:ss)
+If the Standards option is '2', the JIS time format is not valid.
+
+:PC.:HP2.USA:EHP2.IBM USA standard (hh:mm AM, hh:mm PM)
+If the Standards option is '2', the USA time format is not valid.
+
+:PC.:HP2.HMS:EHP2.Hour/minute/second (hh:mm:ss)
+If the Standards option is '1' or '2', the HMS time format is not
+valid.
+
+
+:P.:HP3.Time separator.:EHP3.
+The time separator used for time constants in a
+generated SQL CREATE TABLE statement. The time separator may not apply to date
+constants that are in ISO, EUR, USA, or JIS format in a CREATE VIEW, CREATE
+TRIGGER, CREATE FUNCTION, or CREATE PROCEDURE statement. The time separator is
+only applicable if the time format is HMS. in the generated SQL statements. The
+valid values are:
+:PC.:HP2.::EHP2.Colon separator
+
+:PC.:HP2..:EHP2.Period separator
+
+:PC.:HP2.,:EHP2.Comma separator
+
+:PC.:HP2.blank:EHP2.Blank separator
+
+
+:PC.
+:XH3.Usage Notes
+:PC.If the value of the statement formatting option is 0, the generated SQL
+statements will be minimally formatted by adding blanks. For example:
+:XMP.CREATE TABLE mjatst.table_one (
+column_one INTEGER,
+column_two INTEGER,
+column_three CHAR(4000));
+:EXMP.
+:PC.If the value of the statement formatting option is 1, the generated SQL
+statements will be formatted by inserting end-of-line characters, tab
+characters, and spaces. For example:
+:XMP.CREATE TABLE mjatst.table_one (
+column_one INTEGER,
+column_two INTEGER,
+column_three CHAR(4000));
+:EXMP.
+:PC.
+:XH3.Error Messages
+:PC.MessageID Error Message Text
+:PC.CPF24B4 E Severe error while addressing parameter list.
+:PC.CPF3C21 E Format name &1 is not valid.
+:PC.CPF3C39 E Value for reserved field not valid.
+:PC.CPF3C3A E Value for parameter &2 for API &1 not valid.
+:PC.CPF3C90 E Literal value cannot be changed.
+:PC.CPF3CF1 E Error code parameter not valid.
+:PC.CPF8100 E All CPF81xx messages could be returned. xx is from 01 to FF.
+:PC.CPF9800 E All CPF98xx messages could be signaled. xx is from 01 to FF.
+:EHELP.
+.*==============================================================================
+:HELP NAME= fmtka .
+Touches de fonction - Aide
+:XH1.Touches de fonction
+:PC.
+:imhelp name='F01'.
+:imhelp name='F03'.
+
+:imhelp name='F05'.
+:imhelp name='F12'.
+:EHELP.
+.*==============================================================================
+:HELP NAME= zone .
+:XH4.
+Une zone
+:EHELP.
+.*==============================================================================
+:HELP NAME='F01'.
+F1=Help
+:XH3.F1=Help.
+:PC.
+Provides additional information about using the display or a
+specific field on the display.
+:EHELP.
+:HELP NAME='F03'.
+F3=Exit
+:XH3.F3=Exit.
+:PC.
+Ends the current task and returns to the display from which the
+task was started.
+:EHELP.
+:HELP NAME='F04'.
+F4=Prompt
+:XH3.F4=Prompt
+:PC.
+Provides assistance in entering or selecting a command.
+
+:EHELP.
+:HELP NAME='F05'.
+F5=Refresh
+:XH3.F5=Refresh
+:PC.
+Shows the display you are viewing with updated information.
+:EHELP.
+:HELP NAME='F12'.
+F12=Cancel
+:XH3.F12=Cancel
+:PC.
+Returns to the previous menu or display.
+
+:EHELP.
+:EPNLGRP.

@@ -1,0 +1,91 @@
+
+ /* -
+Having RPG Free progs correctly indented                                              -
+                                                                                      -
+purpose:                                                                              -
+                                                                                      -
+when writing rpg free programm, you can indent your code to                           -
+obtain code very easy to read. This utility improve a common                          -
+tool to add indentation of the free code, even mixed with C                           -
+cards (i.e., it works also with SQLRPGLE)                                             -
+                                                                                      -
+rules :                                                                               -
+                                                                                      -
+* column 1 to 3 is reserved for "if" numbering quite like rpg compiler in listing :   -
+  set at 1                                                                            -
+    'B' for  begin of loop   (if, do, select, ...)                                    -
+    'X' for invert loop        (else, when, ...)                                      -
+    'E' for end of loop                                                               -
+  set at 2-3 the loop deepness                                                        -
+* in fix format,                                                                      -
+- take care of table load at compil time         (** at 1-2)                          -
+- set    x'22' (=white) at 5 if 7=*                                                   -
+* in free format                                                                      -
+  - start code at 7                                                                   -
+  - add 3 spaces for each level of deepness                                           -
+                                                                                      -
+PDM option :  (STRPDM then 3 then F16)                                                -
+IN    CALL PGM(INDENTC) PARM(&F &L &N &T)                                             -
+                                                                                      -
+                                                                                      -
+*/
+
+             PGM        PARM(&mylib &myfile &myMBR &myTYP &erase5 &caseconv)
+
+             DCL        VAR(&myfile) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&mylib) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&myMBR) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&myTYP) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&ERASE5) TYPE(*LGL)
+             DCL        VAR(&CASECONV) TYPE(*CHAR) LEN(35)
+/*===========GESTION-DES-MESSAGES-D'ERREUR--------------------------*/
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(512)
+             DCL        VAR(&MSGF) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+             /*-RENVOI-DES-MESSAGES-VERS-L'APPELANT------------------*/
+             MONMSG     MSGID(CPF0000 QWM0000) EXEC(GOTO +
+                          CMDLBL(STDMONMSG))
+             GOTO       CMDLBL(DEBUTPGM)
+STDMONMSG:
+             /*-----------CAPTURE-DU-MESSAGE----------------------*/
+             RCVMSG     MSGTYPE(*LAST) RMV(*NO) MSGDTA(&MSGDTA) +
+                          MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+             /*-----------PROMOTION-DU-MESSAGE--------------------*/
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+             RETURN
+DEBUTPGM:
+/*===========CORPS-DU-PROGRAMME-------------------------------------*/
+/* check source type */
+             IF         COND(&MYTYP *ne 'RPGLE' *AND &MYTYP *ne +
+                          'SQLRPGLE') THEN(GOTO CMDLBL(END))
+/* check & create temp file : assume record size is 112 ... and save the source file */
+             CHKOBJ     OBJ(INDENTW) OBJTYPE(*FILE)
+             MONMSG     MSGID(CPF9800) EXEC(DO)
+             CRTSRCPF   FILE(*CURLIB/INDENTW) RCDLEN(112) +
+                          TEXT('IndentLE temp src file')
+             ENDDO
+/* cleanup */
+             RMVM       FILE(INDENTW) MBR(&MYMBR)
+             MONMSG     MSGID(CPF0000)
+
+             ADDPFM     FILE(INDENTW) MBR(&MYMBR)
+/* load temp file */
+             CPYF       FROMFILE(&MYLIB/&MYFILE) TOFILE(INDENTW) +
+                          FROMMBR(&MYMBR) TOMBR(&MYMBR) +
+                          MBROPT(*REPLACE) FMTOPT(*MAP *DROP)
+/* run identation */
+             OVRDBF     FILE(INDENTW) TOFILE(INDENTW) MBR(&MYMBR)
+             CALL       PGM(INDENTLE) PARM(&ERASE5 &CASECONV)
+             DLTOVR     FILE(INDENTW)
+/* update original source member */
+             CPYF       FROMFILE(INDENTW) TOFILE(&MYLIB/&MYFILE) +
+                          FROMMBR(&MYMBR) TOMBR(&MYMBR) +
+                          MBROPT(*REPLACE) FMTOPT(*MAP *DROP)
+/* cleanup */
+             RMVM       FILE(INDENTW) MBR(&MYMBR)
+             MONMSG     MSGID(CPF0000)
+/* done */
+end:         ENDPGM

@@ -1,0 +1,410 @@
+
+
+             PGM        PARM(&QUALOBJNAM &TYPE +
+             &SCDDATE &SCDTIME &SUBMIT +
+                                               &RMVTYPE &RMVTYPEA +
+                          &RMVTYPEB &RMVTYPEI &RMVTYPEM &RMVTYPER +
+                          &RMVTYPES &RMVTYPEW &RMVTYPEX &RMVSUB +
+                          &RMVSUB_ &RMVSUBD &RMVSUBE &RMVSUBF +
+                          &RMVSUBJ &RMVSUBP &RMVSUBT &RMVSUBU)
+             DCL        VAR(&RMVTYPE) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RMVTYPEA) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RMVTYPEB) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RMVTYPEI) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RMVTYPEM) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RMVTYPER) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RMVTYPES) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RMVTYPEW) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RMVTYPEX) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RMVSUB) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RMVSUB_) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RMVSUBD) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RMVSUBE) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RMVSUBF) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RMVSUBJ) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RMVSUBP) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RMVSUBT) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RMVSUBU) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&TYPE) TYPE(*CHAR) LEN(10)
+             DCL &scdDATE *CHAR 7
+             DCL &scdTIME *CHAR 6
+             DCL        VAR(&JOBDATE) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&JOBTIME) TYPE(*CHAR) LEN(10)
+             DCL &OBJLIB *CHAR 10
+             DCL &OBJNAM *CHAR 10
+             DCL        VAR(&SUBMIT) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&QUALOBJNAM) TYPE(*CHAR) LEN(20)
+
+             DCL        VAR(&NBLOCK) TYPE(*CHAR) LEN(8)
+/* USER SPACE NAME FOR APIS */
+             DCL        VAR(&USRSPC) TYPE(*CHAR) LEN(20)
+/* USER SPACE LIBRARY NAME FOR COMMANDS */
+             DCL        VAR(&LUSRSPC) TYPE(*CHAR) LEN(10)
+/* USER SPACE NAME FOR COMMANDS */
+             DCL        VAR(&NUSRSPC) TYPE(*CHAR) LEN(10)
+/* NUMBER OF JOBS FOR LIST JOB AND USER SPACE OFFSET IN BINARY 4 FORM */
+             DCL        VAR(&BIN4) TYPE(*CHAR) LEN(4)
+/* NUMBER OF JOBS FROM LIST JOB */
+             DCL        VAR(&LOOP) TYPE(*DEC) LEN(8 0)
+             DCL        VAR(&LOOPX) TYPE(*CHAR) LEN(8)
+/* USER SPACE OFFSET IN DECIMAL 8,0 FORM */
+             DCL        VAR(&DEC8) TYPE(*DEC) LEN(8 0)
+/* LIST JOB ENTRY LENGTH IN DECIMAL 8,0 FORM */
+             DCL        VAR(&ELEN) TYPE(*DEC) LEN(8 0)
+/* LIST JOB ENTRY LENGTH IN BINARY 4 FORM */
+             DCL        VAR(&ELENB) TYPE(*CHAR) LEN(4)
+/* RETRIEVE AREA FOR THE FORMAT*/
+             DCL        VAR(&OBJL0100) TYPE(*CHAR) LEN(65)
+/*/  01  CHAR(10)   JOB NAME           /*/
+/*/  11  CHAR(10)   JOB USER NAME      /*/
+/*/  21  CHAR(6)    JOB NUMBER         /*/
+/*/  27  CHAR(10)   LOCK STATE         /*/
+/*/  37  BINARY(4)  LOCK STATUS        /*/
+/*/  41  BINARY(4)  LOCK TYPE          /*/
+/*/  45  CHAR(10)   MEMBER NAME        /*/
+/*/  55  CHAR(1)    SHARE              /*/
+/*/  56  CHAR(1)    LOCK SCOPE         /*/
+/*/  57  CHAR(8)    THREAD IDENTIFIER  /*/
+
+             DCL        VAR(&ERRCOD) TYPE(*CHAR) LEN(256)
+             DCL        VAR(&CODRET) TYPE(*CHAR) LEN(7)
+
+             DCL        VAR(&JOBI0100) TYPE(*CHAR) LEN(086)
+
+/*/  01  BINARY(4)  NUMBER OF BYTES RETURNED                         /*/
+/*/  05  BINARY(4)  NUMBER OF BYTES AVAILABLE                        /*/
+/*/  09  CHAR(10)  JOB NAME                                          /*/
+/*/  19  CHAR(10)  USER NAME                                         /*/
+/*/  29  CHAR(6)  JOB NUMBER                                         /*/
+/*/  35  CHAR(16)  INTERNAL JOB IDENTIFIER                           /*/
+/*/  51  CHAR(10)  JOB STATUS                                        /*/
+/*/  61  CHAR(1)  JOB TYPE                                           /*/
+/*/  62  CHAR(1)  JOB SUBTYPE                                        /*/
+/*/  63  CHAR(2)  RESERVED                                           /*/
+/*/  65  BINARY(4)  RUN PRIORITY                                     /*/
+/*/  69  BINARY(4)  TIME SLICE                                       /*/
+/*/  73  BINARY(4)  DEFAULT WAIT                                     /*/
+/*/  77  CHAR(10)  PURGE                                             /*/
+/* -
+   JOB STATUS. THE STATUS OF THE JOBS. THE SPECIAL VALUES ARE:                                 -
+                                                                                               -
+   *ACTIVE ACTIVE JOBS. THIS INCLUDES GROUP JOBS, SYSTEM REQUEST JOBS, AND DISCONNECTED JOBS.  -
+   *JOBQ   JOBS THAT ARE CURRENTLY ON JOB QUEUES.                                              -
+   *OUTQ   JOBS THAT HAVE COMPLETED RUNNING BUT STILL HAVE OUTPUT ON AN OUTPUT QUEUE.          -
+                                                                                               -
+   JOB SUBTYPE. ADDITIONAL INFORMATION ABOUT THE JOB TYPE (IF ANY EXISTS).                     -
+   THE POSSIBLE VALUES ARE:                                                                    -
+                                                                                               -
+   BLANK THE JOB HAS NO SPECIAL SUBTYPE OR IS NOT A VALID JOB.                                 -
+   D     THE JOB IS AN IMMEDIATE JOB.                                                          -
+   E     THE JOB STARTED WITH A PROCEDURE START REQUEST.                                       -
+   F     THE JOB IS AN AS/400 ADVANCED 36 MACHINE SERVER JOB.                                  -
+   J     THE JOB IS A PRESTART JOB.                                                            -
+   P     THE JOB IS A PRINT DRIVER JOB.                                                        -
+   T     THE JOB IS A SYSTEM/36 MULTIPLE REQUESTER TERMINAL (MRT) JOB.                         -
+   U     ALTERNATE SPOOL USER.                                                                 -
+                                                                                               -
+   JOB TYPE. THE TYPE OF JOB. THE POSSIBLE VALUES FOR THIS FIELD ARE:                          -
+   BLANK  THE JOB IS NOT A VALID JOB.                                                          -
+   A      THE JOB IS AN AUTOSTART JOB.                                                         -
+   B      THE JOB IS A BATCH JOB.                                                              -
+   I      THE JOB IS AN INTERACTIVE JOB.                                                       -
+   M      THE JOB IS A SUBSYSTEM MONITOR JOB.                                                  -
+   R      THE JOB IS A SPOOLED READER JOB.                                                     -
+   S      THE JOB IS A SYSTEM JOB.                                                             -
+   W      THE JOB IS A SPOOLED WRITER JOB.                                                     -
+   X      THE JOB IS THE SCPF SYSTEM JOB.                                                      -
+*/
+
+
+             DCL        VAR(&QUALJOB) TYPE(*CHAR) LEN(26)
+             DCL        VAR(&RMVTYPEOK) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&RMVSUBOK) TYPE(*CHAR) LEN(4)
+/*============================================================================*/
+/* PROCEDURE DE REMONTEE DES MESSAGES D'ERREUR VERS L'APPELANT */
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(100)
+             DCL        VAR(&MSGF) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&KEYVAR) TYPE(*CHAR) LEN(4)
+             MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(ERREUR))
+             GOTO       CMDLBL(DEBUTPGM)
+ ERREUR:     RCVMSG     MSGTYPE(*LAST) KEYVAR(&KEYVAR) +
+                          MSGDTA(&MSGDTA) MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+DEBUTPGM:    /* FIN DE PROCEDURE DE GESTION DES ERREURS */
+/*============================================================================*/
+
+             IF         COND(&SCDDATE = '0000000') THEN(DO)
+             CHGVAR     VAR(&JOBDATE) VALUE('*CURRENT')
+             ENDDO
+             ELSE       CMD(DO)
+             CVTDAT     DATE(&SCDDATE) TOVAR(&JOBDATE) +
+                          FROMFMT(*CYMD) TOSEP(*JOB)
+             ENDDO
+             IF         COND(&SCDTIME = '000000') THEN(DO)
+             CHGVAR     VAR(&JOBTIME) VALUE('*CURRENT')
+             ENDDO
+             ELSE       CMD(DO)
+             CHGVAR     VAR(&JOBTIME) VALUE(&SCDTIME)
+             ENDDO
+
+             IF         COND(&SUBMIT = '*YES') THEN(DO)
+
+             CHGVAR     VAR(&OBJLIB) VALUE(%SST(&QUALOBJNAM 11 10))
+             CHGVAR     VAR(&OBJNAM) VALUE(%SST(&QUALOBJNAM 1 10))
+
+
+             SBMJOB     CMD(OBJUNLCK OBJ(&OBJLIB/&OBJNAM) +
+                          OBJTYPE(&TYPE) SUBMIT(*NO) +
+                          RMVTYPE(&RMVTYPE) RMVTYPEA(&RMVTYPEA) +
+                          RMVTYPEB(&RMVTYPEB) RMVTYPEI(&RMVTYPEI) +
+                          RMVTYPEM(&RMVTYPEM) RMVTYPER(&RMVTYPER) +
+                          RMVTYPES(&RMVTYPES) RMVTYPEW(&RMVTYPEW) +
+                          RMVTYPEX(&RMVTYPEX) RMVSUB(&RMVSUB) +
+                          RMVSUB_(&RMVSUB_) RMVSUBD(&RMVSUBD) +
+                          RMVSUBE(&RMVSUBE) RMVSUBF(&RMVSUBF) +
+                          RMVSUBJ(&RMVSUBJ) RMVSUBP(&RMVSUBP) +
+                          RMVSUBT(&RMVSUBT) RMVSUBU(&RMVSUBU)) +
+                          JOB(%SST(&QUALOBJNAM 1 10)) +
+                          SCDDATE(&JOBDATE) SCDTIME(&JOBTIME)
+             GOTO       CMDLBL(FINPGM)
+             ENDDO
+
+
+
+
+
+             CHGVAR     VAR(&NUSRSPC) VALUE(OBJUNLCK)
+             CHGVAR     VAR(&LUSRSPC) VALUE(QTEMP)
+             CHGVAR     VAR(&USRSPC) VALUE(&NUSRSPC *CAT &LUSRSPC)
+
+   /* DELETE USER SPACE IF IT ALREADY EXISTS                            */
+
+               DLTUSRSPC  USRSPC(&LUSRSPC/&NUSRSPC)
+               MONMSG CPF0000
+
+   /* CREATE USER SPACE                                                 */
+
+               CALL QUSCRTUS (+
+                    &USRSPC                       /* LE NOM */ +
+                    'OBJLCK00  '                  /* ATTRIBUT */ +
+                    X'00100000'                   /* TAILLE */ +
+                    ' '                           /* INITIALISATION */ +
+                    '*ALL      '                  /* AUTORISATIONS */ +
+                    'QWCLOBJL=WRKOBJLCK '         /* TITRE */)
+   /* LIST                                 */
+             CHGVAR     VAR(&ERRCOD) VALUE(' ')
+             CHGVAR     VAR(%BIN(&ERRCOD 1 4)) VALUE(255)
+
+
+
+             CALL       PGM(QWCLOBJL) PARM(+
+                    &USRSPC                       /* USER SPACE */     +
+                    'OBJL0100'                    /* FORMAT NAME */    +
+                    &QUALOBJNAM                   /* OBJ NAME */       +
+                    &TYPE                         /* OBJ TYPE   */     +
+                    '*NONE     '                  /* MBR NAME   */     +
+                    &ERRCOD                       /* ERROR CODE */     )
+
+
+             CHGVAR     VAR(&CODRET) VALUE(%SST(&ERRCOD 9 7))
+             IF         COND(&CODRET *NE '       ') THEN(DO)
+             SNDPGMMSG  MSGID(&CODRET) MSGF(*LIBL/QCPFMSG) +
+                          MSGTYPE(*ESCAPE)
+             ENDDO
+
+   /* RETRIEVE NUMBER OF ENTRIES RETURNED. CONVERT TO DECIMAL AND       */
+   /* IF ZERO GO TO NOLOCK LABEL TO SEND OUT 'NO LOCK' MESSAGE.         */
+
+               CALL QUSRTVUS (&USRSPC X'00000085' X'00000004' +
+                              &BIN4)
+               CHGVAR     &LOOP      %BINARY(&BIN4)
+             CHGVAR     VAR(&NBLOCK) VALUE(&LOOP)
+             IF         COND(&LOOP = 0) THEN(GOTO CMDLBL(NOLOCK))
+
+
+
+
+   /* RETRIEVE LIST ENTRY LENGTH, CONVERT TO DECIMAL.                   */
+   /* RETRIEVE LIST ENTRY OFFSET, CONVERT TO DECIMAL, AND ADD ONE       */
+   /* TO SET THE POSITION.                                              */
+               CALL QUSRTVUS (&USRSPC X'00000089' X'00000004' +
+                              &ELENB)
+               CHGVAR     &ELEN      %BINARY(&ELENB)
+               CALL QUSRTVUS (&USRSPC X'0000007D' X'00000004' +
+                              &BIN4)
+               CHGVAR     &DEC8      %BINARY(&BIN4)
+               CHGVAR     VAR(&DEC8) VALUE(&DEC8 + 1)
+
+
+   STARTLOOP:  IF (&LOOP = 0) THEN(GOTO FINPGM )
+
+   /* CONVERT DECIMAL POSITION TO BINARY 4 AND RETRIEVE LIST JOB ENTRY  */
+
+               CHGVAR     %BINARY(&BIN4)   &DEC8
+               CALL QUSRTVUS (&USRSPC &BIN4 &ELENB +
+                              &OBJL0100)
+
+
+
+/* TROUVER LE TYPE DU TRAVAIL */
+
+             CHGVAR     VAR(&QUALJOB) VALUE(%SST(&OBJL0100 1 10) +
+                          *CAT           %SST(&OBJL0100 11 10) +
+                          *CAT           %SST(&OBJL0100 21 6))
+
+
+             CHGVAR     VAR(&ERRCOD) VALUE(' ')
+             CHGVAR     VAR(%BIN(&ERRCOD 1 4)) VALUE(016)
+             CALL       PGM(QUSRJOBI) PARM(&JOBI0100 X'00000057' +
+                          'JOBI0100' &QUALJOB '                ' +
+                          &ERRCOD)
+
+             CHGVAR     VAR(&CODRET) VALUE(%SST(&ERRCOD 9 7))
+             IF         COND(&CODRET *NE '       ') THEN(DO)
+             CHGVAR     VAR(&JOBI0100) VALUE(' ')
+             ENDDO
+/* CIBLAGE SELON LE TYPE DE TRAVAIL */
+
+             CHGVAR     VAR(&RMVTYPEOK) VALUE('*NO')
+
+             IF         COND(%SST(&JOBI0100 61 1) = 'A' *AND +
+                          &RMVTYPEA = '*YES') THEN(DO)
+             CHGVAR     VAR(&RMVTYPEOK) VALUE('*YES')
+             ENDDO
+
+             IF         COND(%SST(&JOBI0100 61 1) = 'B' *AND +
+                          &RMVTYPEB = '*YES') THEN(DO)
+             CHGVAR     VAR(&RMVTYPEOK) VALUE('*YES')
+             ENDDO
+
+             IF         COND(%SST(&JOBI0100 61 1) = 'I' *AND +
+                          &RMVTYPEI = '*YES') THEN(DO)
+             CHGVAR     VAR(&RMVTYPEOK) VALUE('*YES')
+             ENDDO
+
+             IF         COND(%SST(&JOBI0100 61 1) = 'M' *AND +
+                          &RMVTYPEM = '*YES') THEN(DO)
+             CHGVAR     VAR(&RMVTYPEOK) VALUE('*YES')
+             ENDDO
+
+             IF         COND(%SST(&JOBI0100 61 1) = 'R' *AND +
+                          &RMVTYPER = '*YES') THEN(DO)
+             CHGVAR     VAR(&RMVTYPEOK) VALUE('*YES')
+             ENDDO
+
+             IF         COND(%SST(&JOBI0100 61 1) = 'S' *AND +
+                          &RMVTYPES = '*YES') THEN(DO)
+             CHGVAR     VAR(&RMVTYPEOK) VALUE('*YES')
+             ENDDO
+
+             IF         COND(%SST(&JOBI0100 61 1) = 'W' *AND +
+                          &RMVTYPEW = '*YES') THEN(DO)
+             CHGVAR     VAR(&RMVTYPEOK) VALUE('*YES')
+             ENDDO
+
+             IF         COND(%SST(&JOBI0100 61 1) = 'X' *AND +
+                          &RMVTYPEX = '*YES') THEN(DO)
+             CHGVAR     VAR(&RMVTYPEOK) VALUE('*YES')
+             ENDDO
+
+/* TENIR COMPTE DU TYPE ? */
+
+             IF         COND(&RMVTYPE = '*NO') THEN(DO)
+             CHGVAR     VAR(&RMVTYPEOK) VALUE('*YES')
+             ENDDO
+
+/* CIBLAGE SELON LE SOUS-TYPE DE TRAVAIL */
+
+             CHGVAR     VAR(&RMVSUBOK) VALUE('*NO')
+
+             IF         COND(%SST(&JOBI0100 62 1) = ' ' *AND +
+                          &RMVSUB_ = '*YES') THEN(DO)
+             CHGVAR     VAR(&RMVSUBOK) VALUE('*YES')
+             ENDDO
+
+             IF         COND(%SST(&JOBI0100 62 1) = 'D' *AND +
+                          &RMVSUBD = '*YES') THEN(DO)
+             CHGVAR     VAR(&RMVSUBOK) VALUE('*YES')
+             ENDDO
+
+             IF         COND(%SST(&JOBI0100 62 1) = 'E' *AND +
+                          &RMVSUBE = '*YES') THEN(DO)
+             CHGVAR     VAR(&RMVSUBOK) VALUE('*YES')
+             ENDDO
+
+             IF         COND(%SST(&JOBI0100 62 1) = 'F' *AND +
+                          &RMVSUBF = '*YES') THEN(DO)
+             CHGVAR     VAR(&RMVSUBOK) VALUE('*YES')
+             ENDDO
+
+             IF         COND(%SST(&JOBI0100 62 1) = 'J' *AND +
+                          &RMVSUBJ = '*YES') THEN(DO)
+             CHGVAR     VAR(&RMVSUBOK) VALUE('*YES')
+             ENDDO
+
+             IF         COND(%SST(&JOBI0100 62 1) = 'P' *AND +
+                          &RMVSUBP = '*YES') THEN(DO)
+             CHGVAR     VAR(&RMVSUBOK) VALUE('*YES')
+             ENDDO
+
+             IF         COND(%SST(&JOBI0100 62 1) = 'T' *AND +
+                          &RMVSUBT = '*YES') THEN(DO)
+             CHGVAR     VAR(&RMVSUBOK) VALUE('*YES')
+             ENDDO
+
+             IF         COND(%SST(&JOBI0100 62 1) = 'U' *AND +
+                          &RMVSUBU = '*YES') THEN(DO)
+             CHGVAR     VAR(&RMVSUBOK) VALUE('*YES')
+             ENDDO
+
+/* TENIR COMPTE DU SOUS-TYPE ? */
+
+             IF         COND(&RMVSUB = '*NO') THEN(DO)
+             CHGVAR     VAR(&RMVSUBOK) VALUE('*YES')
+             ENDDO
+
+/* TUER LE TRAVAIL ? */
+
+             IF         COND(&RMVTYPEOK = '*YES' *AND &RMVSUBOK = +
+                          '*YES') THEN(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA(%SST(&OBJL0100 21 6) *TCAT '/' +
+                          *TCAT %SST(&OBJL0100 11 10) *TCAT '/' +
+                          *TCAT %SST(&OBJL0100 1 10) *TCAT '->' +
+                          *TCAT %SST(&OBJL0100 27 10) *TCAT ':' +
+                          *TCAT %SST(&JOBI0100 61 2) *TCAT ' TRAVAIL ARRETE')
+
+             ENDJOB     JOB(%SST(&OBJL0100 21 6)/%SST(&OBJL0100 11 +
+                          10)/%SST(&OBJL0100 1 10)) OPTION(*IMMED)
+             ENDDO
+             ELSE       CMD(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA(%SST(&OBJL0100 21 6) *TCAT '/' +
+                          *TCAT %SST(&OBJL0100 11 10) *TCAT '/' +
+                          *TCAT %SST(&OBJL0100 1 10) *TCAT '->' +
+                          *TCAT %SST(&OBJL0100 27 10) *TCAT ':' +
+                          *TCAT %SST(&JOBI0100 61 2) *TCAT ' TRAVAIL PRESERVE')
+             ENDDO
+
+   /* AT END OF LOOP SET NEW DECIMAL POSITION TO NEXT ENTRY AND         */
+   /* DECREMENT LOOP COUNTER BY ONE.                                    */
+
+   ENDLOOP:    CHGVAR     VAR(&DEC8) VALUE(&DEC8 + &ELEN)
+               CHGVAR     VAR(&LOOP) VALUE(&LOOP - 1)
+               GOTO       CMDLBL(STARTLOOP)
+
+
+   NOLOCK:
+             SNDPGMMSG  MSGID(CPF9897) MSGF(QCPFMSG) MSGDTA('0 +
+                          verrouillage')
+
+   /* ALL DONE. NOW DELETE TEMPORARY USER SPACE THAT WE CREATED.        */
+
+FINPGM:
+             DLTUSRSPC  USRSPC(&LUSRSPC/&NUSRSPC)
+             MONMSG     MSGID(CPF0000)
+             ENDPGM

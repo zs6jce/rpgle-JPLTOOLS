@@ -1,0 +1,124 @@
+:PNLGRP SUBMSGF='*LIBL/pnlmsg' TXTMODE = SBCS BIDI = NONE.
+.*--panels standard-------------------------------------------------------------
+:IMPORT PNLGRP=main01hp name='*'.
+.*==============================================================================
+:HELP NAME= INTRO .
+Work with jobs - help
+:XH1.Work with jobs
+:P.
+This screen is usefull to retrieve a job depending on many filters.
+
+
+
+
+:EHELP.
+.*==============================================================================
+:HELP NAME= CTLB .
+Filter the jobs
+:XH4.Filter the jobs
+:P.Filters JobName, UserName, JobNbr are used to get the list of jobs.
+This list can contain numerous jobs. So, if the number of jobs retrieved
+overtake the keyed limit (initialized at 8888), the tool ask for authorization
+to continue.
+:PC.These three filters accepts only wilcards. If * at end is missing, it is
+automatically added.
+:P. Next filters (Cur User, IP address, sbs, Status)
+restrict the list from job list. They run as "string start by" more than
+wilcards : if there is a * at end, it is automatically removed.
+:P. Status values are
+ BSCA, BSCW, CMNA,
+CMNW, CMTW, CNDW, CPCW,
+DEQA, DEQW, DKTA, DKTW,
+DLYW, DSC , DSPA, DSPW,
+END , EOFA, EOFW, EOJ ,
+EVTW, GRP , HLD , HLDT,
+ICFA, ICFW, INEL, JVAA,
+JVAW, LCKW, LSPA, LSPW,
+MLTA, MLTW, MSGW, MTXW,
+MXDW, OPTA, OPTW, OSIW,
+PRTA, PRTW, PSRW, RUN ,
+SELW, SEMW, SIGS, SIGW,
+SRQ , SVFA, SVFW, TAPA,
+TAPW, THDW, TIMA, TIMW,
+:P.There is a special behaviour for status MGWW :
+:PC.There is a distinction between jobs that are just MSG waiter, that is
+a normal situation and jobs that are locked by a true message waiting an
+answer. These jobs are showed reverse video.
+
+:imhelp name='SELE'.
+
+:EHELP.
+.*==============================================================================
+:HELP NAME= fmtkb .
+Touches de fonction - Aide
+:XH1.Touches de fonction
+:P.
+:imhelp name='F01'.
+:imhelp name='F03'.
+:imhelp name='F04'.
+:imhelp name='F05'.
+:imhelp name='F10'.
+:imhelp name='F12'.
+:imhelp name='F16'.
+:imhelp name='F21'.
+:EHELP.
+.*==============================================================================
+.* HELP NAME= SFLB . pas d'aide au niveau sfl -> ctl
+.* EHELP.
+.*==============================================================================
+.*==============================================================================
+:HELP NAME= SELE .
+:XH4.
+Select options :
+:PC.value   Action
+:PC.01      wrkjob option(*STSA)
+:PC.02      wrkjob option(*DFNA)
+:PC.03      wrkjob option(*RUNA)
+:PC.04      wrkjob option(*SPLA)
+:PC.05      wrkjob option(*SELECT)
+:PC.07      wrkactjob
+:PC.10      wrkjob option(*JOBLOG)
+:PC.11      wrkjob option(*PGMSTK)
+:PC.12      wrkjob option(*JOBLCK)
+:PC.13      wrkjob option(*LIBL)
+:PC.14      wrkjob option(*OPNF)
+:PC.15      wrkjob option(*FILOVR)
+:PC.16      wrkjob option(*CMTCTL)
+:PC.17      wrkjob option(*CMNSTS)
+:PC.18      wrkjob option(*ACTGRP)
+:PC.19      wrkjob option(*MUTEX)
+:PC.20      wrkjob option(*THREAD)
+:PC.21      wrkjob option(*MLBA)
+:PC.50      list of dormant programs
+:PC.51      strsrvjob + wrkjob option(*SELECT)
+:PC.52      endsrvjob
+:PC.
+:PC.other   wrkjob option(*SELECT)
+:EHELP.
+.*==============================================================================
+.*==============================================================================
+:HELP NAME= zone .
+:XH4.
+Une zone
+:EHELP.
+:HELP NAME='F10'.
+F10=Command screen - help.
+:XH3.F10=Command screen.
+:P.
+calls QCMD
+:EHELP.
+:HELP NAME='F21'.
+F21=Command line - help.
+:XH3.F21=Command line.
+:P.
+calls QUSCMDLN
+:EHELP.
+:HELP NAME='F16'.
+F21=Sort column - help.
+:XH3.F16=Sort
+:P.
+let the cursor on the colum you want to be sorted, then press F16.
+Job list is refreshed before sorted.
+:EHELP.
+.*==============================================================================
+:EPNLGRP.

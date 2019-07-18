@@ -1,0 +1,313 @@
+     A*%%TS  SD  20060705  174100  EB10168     REL-V5R2M0  5722-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      CHGINPDFT(UL)
+     A                                      HLPTITLE('JPL020R')
+     A                                      HLPPNLGRP(INTRO JPL020HP)
+     A                                      HLPFULL
+     A                                      HELP
+     A                                      ALTHELP(CA01)
+     A                                      PRINT
+     A                                      INDARA
+     A                                      WDWBORDER((*COLOR BLU))
+     A                                      CF05(05)
+     A                                      CA03(03)
+     A                                      CA12(12)
+     A*=========================================================================
+      * A FORMAT : FIELD PREFIX IS FA
+     A*=========================================================================
+     A          R FMTA
+
+     A                                      OVERLAY
+     A          H                           HLPPNLGRP(FMTA JPL020HP)
+     A                                      HLPARA(*NONE)
+     A            SPNAME        10A  O  1  2COLOR(BLU)
+     A                                  1 15DATE
+     A                                      COLOR(BLU)
+     A                                      EDTWRD('  /  /  ')
+     A                                  1 24TIME
+     A                                      COLOR(BLU)
+     A                                  1 33SYSNAME
+     A                                      COLOR(BLU)
+     A                                  1 42USER
+     A                                      COLOR(BLU)
+     A            WENV           2A  O  1 53COLOR(BLU)
+     A            WLIBEN        10A  O  1 56COLOR(BLU)
+     A                                  2 22'TITRE'
+     A                                      DSPATR(HI)
+     A                                      COLOR(WHT)
+     A                                  9  8'Type source....'
+     A            FAME      R        B  9 25REFFLD(ME JPL028P)
+     A  61                                  DSPATR(RI)
+     A  61                                  DSPATR(PC)
+     A N61                                  COLOR(WHT)
+     A*=========================================================================
+     A* A FORMAT FOOTER
+     A*=========================================================================
+     A          R FMTKA
+     A*%%TS  SD  20060705  174100  EB10168     REL-V5R2M0  5722-WDS
+     A                                      TEXT('Command keys')
+     A          H                           HLPPNLGRP(FMTKA JPL020HP)
+     A                                      HLPARA(*NONE)
+     A                                 22  1'                                  -
+     A                                                                         -
+     A                                                 '
+     A                                      DSPATR(UL)
+     A                                 23  2'F3=Exit   '
+     A                                      COLOR(BLU)
+     A                                 23 13'F12=Cancel    '
+     A                                      COLOR(BLU)
+     A                                 23 28'F5=Refresh   '
+     A                                      COLOR(BLU)
+     A*=========================================================================
+     A* B SUBFILE: FIELD PREFIX IS SB
+     A*=========================================================================
+     A          R SFLB                      SFL
+     A*%%TS  SD  20060616  174926  EB10168     REL-V5R2M0  5722-WDS
+     A  60                                  SFLNXTCHG
+     A            ZBSELE         1A  B  7  2
+     A  61                                  DSPATR(RI)
+     A  61                                  DSPATR(PC)
+     A N61                                  COLOR(WHT)
+     A                                      VALUES(' ' '1' '2' '3' '4' '5')
+     A            SBME      R        O  7  4REFFLD(ME JPL028P)
+     A            SBTODAY   R        O  7 23REFFLD(TODAY JPL028P)
+     A                                      DATFMT(*ISO)
+     A                                      TEXT('Current date')
+     A            SBNOW     R        O  7 34REFFLD(NOW JPL028P)
+     A                                      TIMFMT(*ISO)
+     A                                      TEXT('Current Time')
+     A            SBTIMSTM  R        O  7 43REFFLD(TIMSTM JPL028P)
+     A*=========================================================================
+     A* B SUBFILE CONTROLER: FIELD PREFIX IS CB
+     A*=========================================================================
+     A          R CTLB                      SFLCTL(SFLB)
+     A*%%TS  SD  20060705  174100  EB10168     REL-V5R2M0  5722-WDS
+     A                                      SFLSIZ(0016)
+     A                                      SFLPAG(0015)
+     A                                      ROLLUP(11)
+     A                                      KEEP
+     A                                      OVERLAY
+     A  52                                  SFLDSP
+     A N51                                  SFLDSPCTL
+     A  51                                  SFLCLR
+     A  53                                  SFLEND
+     A  98                                  SFLMSG('Scroll limit reached')
+     A          H                           HLPPNLGRP(CTLB JPL020HP)
+     A                                      HLPARA(*NONE)
+     A            CBCSR          4S 0H      SFLRCDNBR(CURSOR)
+     A            SPNAME        10A  O  1  2COLOR(BLU)
+     A                                  1 15DATE
+     A                                      COLOR(BLU)
+     A                                      EDTWRD('  /  /  ')
+     A                                  1 24TIME
+     A                                      COLOR(BLU)
+     A                                  1 33SYSNAME
+     A                                      COLOR(BLU)
+     A                                  1 42USER
+     A                                      COLOR(BLU)
+     A            WENV           2A  O  1 53COLOR(BLU)
+     A            WLIBEN        10A  O  1 56COLOR(BLU)
+     A            CBCOUNT        6Y 0O  1 69EDTCDE(3)
+     A                                  1 76'Lines'
+     A                                  2  2'Filter with'
+     A                                  2 28'List of values'
+     A                                      DSPATR(HI)
+     A                                      COLOR(WHT)
+     A            CBME      R        B  3  4REFFLD(ME JPL028P)
+     A* CURSOR IN THE CONTROLLER ? ATR PC ON CBME
+     A*                                     DSPATR(PC)
+     A            CBTODAYF  R        B  3 23REFFLD(TODAY JPL028P)
+     A                                      ALIAS(CB_TODAY_FROM)
+     A                                      DATFMT(*ISO)
+     A                                      TEXT('Current date')
+     A            CBNOWF    R        B  3 34REFFLD(NOW JPL028P)
+     A                                      ALIAS(CB_TIME_FROM)
+     A                                      TIMFMT(*ISO)
+     A                                      TEXT('Current Time')
+     A            CBTODAYT  R        B  4 23REFFLD(TODAY JPL028P)
+     A                                      ALIAS(CB_TODAY_TO)
+     A                                      DATFMT(*ISO)
+     A                                      TEXT('Current date')
+     A            CBNOWT    R        B  4 34REFFLD(NOW JPL028P)
+     A                                      ALIAS(CB_NOW_TO)
+     A                                      TIMFMT(*ISO)
+     A                                      TEXT('Current Time')
+     A                                  2 71'Limit to'
+     A                                  5  1' 1=Add 2=Change 3=Copy 4=Delete 5=-
+     A                                      Show                               -
+     A                                                 '
+     A                                      DSPATR(UL)
+     A            SQLMAX         4Y 0B  3 71EDTCDE(3)
+     A                                  3 76'Lines'
+     A                                      DSPATR(UL)
+     A                                  1 13'B'
+     A                                  6  2'S'
+     A                                      DSPATR(UL)
+     A                                      DSPATR(HI)
+     A                                  6  4'The user name     '
+     A                                      DSPATR(UL)
+     A                                      DSPATR(HI)
+     A                                  6 23'date      '
+     A                                      DSPATR(UL)
+     A                                      DSPATR(HI)
+     A                                  6 34'time    '
+     A                                      DSPATR(UL)
+     A                                      DSPATR(HI)
+     A                                  6 43'Time stamp                '
+     A                                      DSPATR(UL)
+     A                                      DSPATR(HI)
+     A*=========================================================================
+     A* B FORMAT FOOTER
+     A*=========================================================================
+     A          R FMTKB
+     A*%%TS  SD  20060705  174100  EB10168     REL-V5R2M0  5722-WDS
+     A                                      TEXT('Command keys')
+     A          H                           HLPPNLGRP(FMTKB JPL020HP)
+     A                                      HLPARA(*NONE)
+     A                                 22  2'                                  -
+     A                                                                         -
+     A                                                '
+     A                                      DSPATR(UL)
+     A                                 23  2'F3=Exit   '
+     A                                      COLOR(BLU)
+     A                                 23 13'F12=Cancel    '
+     A                                      COLOR(BLU)
+     A                                 23 28'F5=Refresh   '
+     A                                      COLOR(BLU)
+     A*=========================================================================
+     A* C FORMAT : FIELD PREFIX IS FC
+     A*=========================================================================
+     A          R FMTC
+     A*%%TS  SD  20060705  164818  EB10168     REL-V5R2M0  5722-WDS
+     A                                      RTNCSRLOC(&RTNCSRFMT &RTNCSRFLD)
+     A                                      CF04(04)
+     A                                      OVERLAY
+     A                                      PROTECT
+     A          H                           HLPPNLGRP(FMTC JPL020HP)
+     A                                      HLPARA(*NONE)
+     A            RTNCSRFMT     10A  H
+     A            RTNCSRFLD     10A  H
+     A            SPNAME        10A  O  1  2COLOR(BLU)
+     A                                  1 15DATE
+     A                                      COLOR(BLU)
+     A                                      EDTWRD('  /  /  ')
+     A                                  1 24TIME
+     A                                      COLOR(BLU)
+     A                                  1 33SYSNAME
+     A                                      COLOR(BLU)
+     A                                  1 42USER
+     A                                      COLOR(BLU)
+     A            WENV           2A  O  1 53COLOR(BLU)
+     A            WLIBEN        10A  O  1 56COLOR(BLU)
+     A                                  2 13'Update one element '
+     A                                      DSPATR(HI)
+     A                                      COLOR(WHT)
+     A  40                              2 61'ASK FOR DELETE'
+     A                                      DSPATR(RI)
+     A                                  6 38'check:'
+     A                                  7  4'My User Name:'
+     A            FCME      R        B  7 19REFFLD(ME *LIBL/JPL028P)
+     A  61                                  DSPATR(RI)
+     A  61                                  DSPATR(PC)
+     A N61                                  COLOR(WHT)
+     A                                  7 38'<> wrong'
+     A                                  8  4'Current date:'
+     A            FCTODAY   R        B  8 19REFFLD(TODAY *LIBL/JPL028P)
+     A                                      DATFMT(*ISO)
+     A  62                                  DSPATR(RI)
+     A  62                                  DSPATR(PC)
+     A N62                                  COLOR(WHT)
+     A                                      TEXT('Current date')
+     A                                  8 38'>=2000-01-01'
+     A                                  9  4'Current Time:'
+     A            FCNOW     R        B  9 19REFFLD(NOW *LIBL/JPL028P)
+     A                                      TIMFMT(*ISO)
+     A  63                                  DSPATR(RI)
+     A  63                                  DSPATR(PC)
+     A N63                                  COLOR(WHT)
+     A                                      TEXT('Current Time')
+     A                                 10  4'A time stamp:'
+     A            FCTIMZON  R        B 10 19REFFLD(TIMSTM *LIBL/JPL028P)
+     A  64                                  DSPATR(RI)
+     A  64                                  DSPATR(PC)
+     A N64                                  COLOR(WHT)
+     A                                 11  2'A Decimal data:'
+     A            FCDEC7    R        B 11 19REFFLD(DEC7 *LIBL/JPL028P)
+     A  65                                  DSPATR(RI)
+     A  65                                  DSPATR(PC)
+     A N65                                  COLOR(WHT)
+     A                                 12  4'A Zoned data:'
+     A            FCZONED7  R        B 12 19REFFLD(ZONED7 *LIBL/JPL028P)
+     A  66                                  DSPATR(RI)
+     A  66                                  DSPATR(PC)
+     A N66                                  COLOR(WHT)
+     A                                 13  2'A 8-float data:'
+     A            FCFLOAT8  R        B 13 19REFFLD(FLOAT8 *LIBL/JPL028P)
+     A                                      FLTPCN(*DOUBLE)
+     A  67                                  DSPATR(RI)
+     A  67                                  DSPATR(PC)
+     A N67                                  COLOR(WHT)
+     A                                 14  4'a 8-int data:'
+     A            FCINT8    R        B 14 19REFFLD(INT8 *LIBL/JPL028P)
+     A  67                                  DSPATR(RI)
+     A  67                                  DSPATR(PC)
+     A N67                                  COLOR(WHT)
+     A                                  1 13'C'
+     A                                 15  4'Unicode Data:'
+     A            FCFIXUCS2 R        B 15 19REFFLD(FIXUCS2 JPL028P)
+     A  68                                  DSPATR(RI)
+     A  68                                  DSPATR(PC)
+     A N68                                  COLOR(WHT)
+     A*=========================================================================
+     A* D FORMAT : FIELD PREFIX IS FD
+     A*=========================================================================
+     A          R FMTD
+
+     A                                      WINDOW(&FMTDY &FMTDX 7 60)
+     A                                      WDWBORDER((*COLOR BLU) (*DSPATR RI)-
+     A                                       (*CHAR '...:::.:'))
+     A            FMTDX          3S 0P
+     A            FMTDY          3S 0P
+     A            FDSELECT      59A  O  1  2
+     A            FDFROM        59A  O  2  2
+     A            FDWHERE       59A  O  3  2
+     A                                  5  2'This filter returns.....'
+     A            FDCOUNT        4Y 0O  5 27EDTCDE(4)
+     A                                  5 32'lines. '
+     A            FDYES          3A  B  6 27VALUES('YES' 'NO')
+     A                                  6  2'Continue................'
+     A                                  6 32'(YES/NO)'
+     A*=========================================================================
+     A* PROTECTION FORMAT OR C & D FOOTER
+     A*=========================================================================
+     A          R FMTP
+
+     A                                      OVERLAY
+     A                                      PROTECT
+     A          H                           HLPPNLGRP(FMTP JPL020HP)
+     A                                      HLPARA(*NONE)
+     A                                 22  2'                                  -
+     A                                                                         -
+     A                                               '
+     A                                      DSPATR(UL)
+     A                                 23  2'F3=Exit   '
+     A                                      COLOR(BLU)
+     A                                 23 13'F12=Cancel    '
+     A                                      COLOR(BLU)
+      *=========================================================================
+      * MESSAGE SUBFILE
+      *=========================================================================
+                R PMQSFL                    TEXT('Program messages')
+                                            SFL SFLMSGRCD(24)
+                  MSGKEY                    SFLMSGKEY
+                  PMQPGM                    SFLPGMQ
+      *=========================================================================
+                R PMQCTL                    TEXT('Program messages')
+                                            SFLCTL(PMQSFL)
+                                            SFLPAG(01) SFLSIZ(03)
+                                            OVERLAY PUTOVR
+                                            SFLINZ SFLDSP SFLDSPCTL
+        01
+      ON01                                  SFLEND
+                  PMQPGM                    SFLPGMQ

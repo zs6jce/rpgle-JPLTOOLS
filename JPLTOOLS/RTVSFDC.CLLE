@@ -1,0 +1,27 @@
+             PGM        PARM(&FILE &MBROPT &FLDDSC)
+             DCL        VAR(&FILE) TYPE(*CHAR) LEN(20)
+             DCL        VAR(&MBROPT) TYPE(*CHAR) LEN(20)
+             DCL        VAR(&FLDDSC) TYPE(*CHAR) LEN(20)
+             DCL        VAR(&CURLIB) TYPE(*CHAR) LEN(10)
+/*============================================================================*/
+/* PROCEDURE DE REMONTEE DES MESSAGES D'ERREUR VERS L'APPELANT */
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(100)
+             DCL        VAR(&MSGF) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&KEYVAR) TYPE(*CHAR) LEN(4)
+             MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(ERREUR))
+             GOTO       CMDLBL(DEBUTPGM)
+ ERREUR:     RCVMSG     MSGTYPE(*LAST) KEYVAR(&KEYVAR) +
+                          MSGDTA(&MSGDTA) MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+DEBUTPGM:    /* FIN DE PROCEDURE DE GESTION DES ERREURS */
+/*============================================================================*/
+             RTVJOBA    CURLIB(&CURLIB)
+             IF         COND(%SST(&FLDDSC 11 10) = '*CURLIB') +
+                          THEN(CHGVAR VAR(%SST(&FLDDSC 11 10)) +
+                          VALUE(&CURLIB))
+             CALL       PGM(RTVSFDR) PARM(&FILE &MBROPT &FLDDSC)
+             ENDPGM

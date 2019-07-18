@@ -1,0 +1,195 @@
+/* maxi 40 params, - 6 reserved for trailer */
+/* each answer need 2 parameters : we can accept 17 values */
+pgm parm(+
+ &JOB        +
+ &USER       +
+ &NBR        +
+ &INQMSGRPY  +
+ &USRLIBL    +
+ &CURLIB     +
+ &SYSLIBL    +
+ &CURUSER    +
+ &LANGID     +
+ &CNTRYID    +
+ &CCSID      +
+ &DFTCCSID   +
+ &DECFMT     +
+ &iJOB       +
+ &iUSER      +
+ &iNBR       +
+&iINQMSGRPY +
+  &iUSRLIBL   +
+  &iCURLIB    +
+  &iSYSLIBL   +
+  &iCURUSER   +
+  &iLANGID    +
+  &iCNTRYID   +
+  &iCCSID     +
+  &iDFTCCSID  +
+  &iDECFMT    +
+   &sqlstate   +
+   &function   +
+   &specific   +
+   &sqlmsg     +
+   &scratchpad +
+   &calltype   )
+
+
+
+ dcl &JOB       *char   (10)
+dcl &USER      *char   (10)
+dcl &NBR       *char    (6)
+dcl &INQMSGRPY *char   (10)
+dcl &USRLIBL   *char (2750)
+dcl &CURLIB    *char   (10)
+dcl &SYSLIBL   *char  (165)
+dcl &CURUSER   *char   (10)
+dcl &LANGID    *char    (3)
+dcl &CNTRYID   *char    (2)
+dcl &CCSID     *dec (5  0)
+dcl &DFTCCSID  *dec (5  0)
+dcl &DECFMT    *char    (1)
+
+
+dcl &iJOB       *char   (2)
+dcl &iUSER      *char   (2)
+dcl &iNBR       *char   (2)
+dcl &iINQMSGRPY *char   (2)
+dcl &iUSRLIBL   *char   (2)
+dcl &iCURLIB    *char   (2)
+dcl &iSYSLIBL   *char   (2)
+dcl &iCURUSER   *char   (2)
+dcl &iLANGID    *char   (2)
+dcl &iCNTRYID   *char   (2)
+dcl &iCCSID     *char   (2)
+dcl &iDFTCCSID  *char   (2)
+dcl &iDECFMT    *char   (2)
+
+
+             DCL        VAR(&SQLSTATE) TYPE(*CHAR) LEN(5)
+             DCL        VAR(&FUNCTION) TYPE(*CHAR) LEN(517)
+             DCL        VAR(&SPECIFIC) TYPE(*CHAR) LEN(128)
+             DCL        VAR(&SQLMSG) TYPE(*CHAR) LEN(70)
+             DCL        VAR(&SCRATCHPAD) TYPE(*CHAR) LEN(104)
+             DCL        VAR(&CALLTYPE) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&CALLTYPEB) TYPE(*DEC) LEN(5 0)
+
+
+             DCL        VAR(&DECIN) TYPE(*DEC) LEN(1)
+             DCL        VAR(&N2) TYPE(*DEC) LEN(2 0)
+DCL        VAR(&MSGLEN) TYPE(*DEC) LEN(5 0) VALUE(70)
+             DCL        VAR(&X70) TYPE(*CHAR) LEN(2) VALUE(X'0046')
+             DCL        VAR(&MSGTXT) TYPE(*CHAR) LEN(70)
+/*===========GESTION-DES-MESSAGES-D'ERREUR--------------------------*/
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(512)
+             DCL        VAR(&MSGF) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+/*-RENVOI-DES-MESSAGES-VERS-L'APPELANT------------------*/
+             COPYRIGHT  TEXT('Author is Jean-Paul Lamontre')
+             MONMSG     MSGID(CPF0000 QWM0000) EXEC(GOTO +
+                          CMDLBL(STDMONMSG))
+             GOTO       CMDLBL(DEBUTPGM)
+STDMONMSG:
+/*-----------CAPTURE-DU-MESSAGE----------------------*/
+             RCVMSG     MSGTYPE(*LAST) RMV(*NO) MSGDTA(&MSGDTA) +
+                          MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+/*-----------PROMOTION-DU-MESSAGE--------------------*/
+RTVMSG     MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+MSGDTA(&MSGDTA) MSG(&MSGDTA) MSGLEN(&MSGLEN)
+CHGVAR     VAR(&SQLSTATE) VALUE('JP001')
+CHGVAR     VAR(&MSGTXT) VALUE(&X70 *CAT &MSGID *CAT +
+             &MSGDTA)
+             RETURN
+DEBUTPGM:
+/*===========CORPS-DU-PROGRAMME-------------------------------------*/
+/* default values : sqlstate = ok, values = null */
+             CHGVAR     VAR(&SQLSTATE) VALUE('00000')
+             CHGVAR     VAR(&IJOB) VALUE(X'FFFF')
+             CHGVAR     VAR(&IUSER) VALUE(X'FFFF')
+             CHGVAR     VAR(&INBR) VALUE(X'FFFF')
+             CHGVAR     VAR(&IINQMSGRPY) VALUE(X'FFFF')
+             CHGVAR     VAR(&IUSRLIBL) VALUE(X'FFFF')
+             CHGVAR     VAR(&ICURLIB) VALUE(X'FFFF')
+             CHGVAR     VAR(&ISYSLIBL) VALUE(X'FFFF')
+             CHGVAR     VAR(&ICURUSER) VALUE(X'FFFF')
+             CHGVAR     VAR(&ILANGID) VALUE(X'FFFF')
+             CHGVAR     VAR(&ICNTRYID) VALUE(X'FFFF')
+             CHGVAR     VAR(&ICCSID) VALUE(X'FFFF')
+CHGVAR     VAR(&IDFTCCSID) VALUE(X'FFFF')
+             CHGVAR     VAR(&IDECFMT) VALUE(X'FFFF')
+
+
+/*&decin : 0=not null ; -1=null */
+/*           CHGVAR     VAR(&DECIN) VALUE(%BIN(&INP1           )  */
+             CHGVAR     VAR(&CALLTYPEB) VALUE(%BIN(&CALLTYPE 1 4))
+
+             IF         COND(&CALLTYPEB = -2) THEN(GOTO +
+                          CMDLBL(FIRSTCALL))
+             IF         COND(&CALLTYPEB = -1) THEN(GOTO +
+                          CMDLBL(OPENCALL))
+             IF         COND(&CALLTYPEB = 0) THEN(GOTO +
+                          CMDLBL(FETCHCALL))
+             IF         COND(&CALLTYPEB = 1) THEN(GOTO +
+                          CMDLBL(CLOSECALL))
+             IF         COND(&CALLTYPEB = 2) THEN(GOTO +
+                          CMDLBL(FINALCALL))
+             CHGVAR     VAR(&SQLSTATE) VALUE('JP021')
+             CHGVAR     VAR(&MSGTXT) VALUE(&X70 *CAT 'JP021 +
+unattended call type received')
+             RETURN
+
+
+firstcall:
+             CHGVAR     VAR(%SST(&SCRATCHPAD 5 5)) VALUE('FIRST')
+             RETURN
+
+opencall:
+             CHGVAR     VAR(%SST(&SCRATCHPAD 5 5)) VALUE('OPEN')
+             RETURN
+fetchcall:
+             IF         COND(%SST(&SCRATCHPAD 5 5) = 'OPEN') THEN(DO)
+             RTVJOBA    JOB(&JOB) USER(&USER) NBR(&NBR) +
+                          INQMSGRPY(&INQMSGRPY) USRLIBL(&USRLIBL) +
+                          CURLIB(&CURLIB) SYSLIBL(&SYSLIBL) +
+                          CURUSER(&CURUSER) LANGID(&LANGID) +
+                          CNTRYID(&CNTRYID) CCSID(&CCSID) +
+                          DFTCCSID(&DFTCCSID) DECFMT(&DECFMT)
+
+CHGVAR     VAR(&IJOB) VALUE(X'0000')
+             CHGVAR     VAR(&IUSER) VALUE(X'0000')
+             CHGVAR     VAR(&INBR) VALUE(X'0000')
+             CHGVAR     VAR(&IINQMSGRPY) VALUE(X'0000')
+             CHGVAR     VAR(&IUSRLIBL) VALUE(X'0000')
+             CHGVAR     VAR(&ICURLIB) VALUE(X'0000')
+             CHGVAR     VAR(&ISYSLIBL) VALUE(X'0000')
+             CHGVAR     VAR(&ICURUSER) VALUE(X'0000')
+             CHGVAR     VAR(&ILANGID) VALUE(X'0000')
+             CHGVAR     VAR(&ICNTRYID) VALUE(X'0000')
+             CHGVAR     VAR(&ICCSID) VALUE(X'0000')
+             CHGVAR     VAR(&IDFTCCSID) VALUE(X'0000')
+             CHGVAR     VAR(&IDECFMT) VALUE(X'0000')
+
+             ENDDO
+             ELSE       CMD(DO)
+
+             CHGVAR     VAR(&SQLSTATE) VALUE('02000')
+             ENDDO
+             CHGVAR     VAR(%SST(&SCRATCHPAD 5 5)) VALUE('FETCH')
+RETURN
+
+
+closecall:
+             CHGVAR     VAR(%SST(&SCRATCHPAD 5 5)) VALUE('CLOSE')
+             RETURN
+
+finalcall:
+             CHGVAR     VAR(%SST(&SCRATCHPAD 5 5)) VALUE('FINAL')
+             RETURN
+
+
+
+
+
+ FIN:        ENDPGM

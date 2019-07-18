@@ -1,0 +1,7 @@
+?     ****************************************************************
+?     * File Text: globalization sample
+?     * File Name: EBCDICP
+?     * Rebuild with XCRTVDDS
+?     ****************************************************************
+                R EBCDICF
+                  EBCDIC        16A         COLHDG('EBCDIC')

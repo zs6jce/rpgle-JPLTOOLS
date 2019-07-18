@@ -1,0 +1,41 @@
+
+             PGM
+             DCL        VAR(&RESULT) TYPE(*CHAR) LEN(64)
+             DCL        VAR(&RSTLEN) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&FORMAT) TYPE(*CHAR) LEN(8) +
+                          VALUE('PRDR0100')
+             DCL        VAR(&OSINFO) TYPE(*CHAR) LEN(27) +
+                          VALUE('*OPSYS *CUR  0000*CODE     ')
+             DCL        VAR(&ERRCDE) TYPE(*CHAR) LEN(4)
+
+             DCL        VAR(&RCVR) TYPE(*CHAR) LEN(64)
+             DCL        VAR(&RCVRLEN) TYPE(*CHAR) LEN(4) +
+                          VALUE(X'00000040')
+             DCL        VAR(&RCVRFMT) TYPE(*CHAR) LEN(8) +
+                          VALUE(LICR0200)
+             DCL        VAR(&PRDID) TYPE(*CHAR) LEN(17) +
+                          VALUE('             5050')
+             DCL        VAR(&PRDFMT) TYPE(*CHAR) LEN(8) VALUE(LICP0100)
+             DCL        VAR(&EC) TYPE(*CHAR) LEN(4) VALUE(X'00000000')
+             DCL        VAR(&PRCGRP) TYPE(*CHAR) LEN(3)
+             DCL        VAR(&OSRELEASE) TYPE(*CHAR) LEN(6)
+             DCL        VAR(&OSID) TYPE(*CHAR) LEN(7)
+
+
+             CHGVAR     VAR(%BIN(&RSTLEN 1 4)) VALUE(64)
+             CHGVAR     VAR(%BIN(&ERRCDE 1 4)) VALUE(0)
+
+             CALL       PGM(QSYS/QSZRTVPR) PARM(&RESULT &RSTLEN +
+                          &FORMAT &OSINFO &ERRCDE)
+
+             CHGVAR     VAR(%SST(&PRDID 1 13)) VALUE(%SST(&RESULT 13 +
+                          13))
+             CHGVAR     VAR(&OSID) VALUE(%SST(&PRDID 1 7))
+             CALL       PGM(QLZARTV) PARM(&RCVR &RCVRLEN &RCVRFMT +
+                          &PRDID &PRDFMT &EC)
+             CHGVAR     VAR(&PRCGRP) VALUE(%SST(&RCVR 48 3))
+             CHGVAR     VAR(&OSRELEASE) VALUE(%SST(&RCVR 21 6))
+             SNDPGMMSG  MSG('OS400 id=' *CAT &OSID *BCAT 'Version=' +
+                          *CAT &OSRELEASE *BCAT 'Groupe=' *CAT &PRCGRP)
+             DMPCLPGM
+             ENDPGM

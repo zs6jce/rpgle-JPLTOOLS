@@ -1,0 +1,9 @@
+
+                R INDDICF
+                  PGMNAM        10          VARLEN
+                  PROC          40          VARLEN
+                  ZONE         120          VARLEN
+                  DEF           10          VARLEN
+                K PGMNAM
+                K PROC
+                K ZONE

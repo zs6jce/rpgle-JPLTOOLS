@@ -1,0 +1,70 @@
+
+             PGM        PARM(&CMDS)
+/* LA COMMANDE A EXECUTER (SBMJOB OU DIRECT)                        */
+/*/ PILE DE 18 COMMANDES DE 550 CARACTERES /*/
+/* 0001-0025 : ENTETE = NB DE COMMANDES, ...                   -
+   0026-9925 : 18 * 550 = 18 COMMANDES                                         -
+     : 001-025 : CONTEXTE (MONMSG, LONGUEUR COMMANDE, ...)                    -
+       026-550 : LA COMMANDE                                                  -
+   9999-9999 : '*' MARQUEUR DE FIN -
+*/
+             DCL        VAR(&CMDS) TYPE(*CHAR) LEN(9999)
+             DCL        VAR(&NBCDE) TYPE(*DEC) LEN(3 0)
+             DCL        VAR(&CURCDE) TYPE(*DEC) LEN(3 0) VALUE(0)
+             DCL        VAR(&CURCDEX) TYPE(*CHAR) LEN(3)
+             DCL        VAR(&START) TYPE(*DEC) LEN(4 0)
+             /*/ UNE COMMANDE /*/
+             DCL        VAR(&CMD) TYPE(*CHAR) LEN(0500)
+             DCL        VAR(&CMDLEN) TYPE(*DEC) LEN(15 5) VALUE(480)
+             DCL        VAR(&MONMSG) TYPE(*CHAR) LEN(10)
+/*===========GESTION-DES-MESSAGES-D'ERREUR--------------------------*/
+             DCL        VAR(&WHFILE) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&WHLIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(512)
+             DCL        VAR(&MSGF) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+             /*-RENVOI-DES-MESSAGES-VERS-L'APPELANT------------------*/
+             MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(STDMONMSG))
+             GOTO       CMDLBL(DEBUTPGM)
+STDMONMSG:
+             /*-----------CAPTURE-DU-MESSAGE----------------------*/
+             RCVMSG     MSGTYPE(*LAST) RMV(*NO) MSGDTA(&MSGDTA) +
+                          MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+             /*-----------PROMOTION-DU-MESSAGE--------------------*/
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+             RETURN
+DEBUTPGM:
+/*===========CORPS-DU-PROGRAMME-------------------------------------*/
+             CHGVAR     VAR(&NBCDE) VALUE(%SST(&CMDS 1 3))
+
+BOUCLE:
+
+             IF         COND(&CURCDE < &NBCDE) THEN(DO)
+             CHGVAR     VAR(&START) VALUE((&CURCDE * 550) + 26)
+             CHGVAR     VAR(&CMDLEN) VALUE(%SST(&CMDS &START 05))
+             CHGVAR     VAR(&START) VALUE(&START + 5)
+             CHGVAR     VAR(&MONMSG) VALUE(%SST(&CMDS &START 10))
+             CHGVAR     VAR(&START) VALUE(&START + 20)
+             CHGVAR     VAR(&CMD) VALUE(%SST(&CMDS &START &CMDLEN))
+
+             SNDPGMMSG  MSG(&CMD) MSGTYPE(*DIAG)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA(&CMD) +
+                          TOPGMQ(*EXT) MSGTYPE(*STATUS)
+
+             IF         COND(&MONMSG = 'IGNORE') THEN(DO)
+             CALL       PGM(QCMDEXC) PARM(&CMD &CMDLEN)
+             MONMSG     MSGID(CPF0000)
+             ENDDO
+             ELSE       CMD(DO)
+             CALL       PGM(QCMDEXC) PARM(&CMD &CMDLEN)
+             ENDDO
+
+             CHGVAR     VAR(&CURCDE) VALUE(&CURCDE + 1)
+        /*/  CHGVAR     VAR(&CURCDEX) VALUE(&CURCDE)    /*/
+        /*/  SNDPGMMSG  MSG(&CURCDEX) MSGTYPE(*DIAG)    /*/
+             GOTO       CMDLBL(BOUCLE)
+             ENDDO
+FIN:         ENDPGM

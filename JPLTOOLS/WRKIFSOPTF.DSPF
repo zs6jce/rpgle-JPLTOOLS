@@ -1,0 +1,163 @@
+     A*%%TS  SD  20130728  193204  LAMONTRE    REL-V7R1M0  5770-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      CHGINPDFT(UL)
+     A                                      PRINT
+     A                                      INDARA
+     A                                      WDWBORDER((*COLOR BLU))
+     A                                      HLPTITLE('WORK WITH IFS STREAM FILE-
+     A                                      S')
+                                            HELP
+
+     A                                      HLPPNLGRP(INTRO WRKIFSOPTH)
+     A                                      HLPFULL
+     A                                      ALTHELP(CA01)
+     A                                      CF05(05)
+     A                                      CA03(03)
+     A                                      CA12(12)
+     A*=========================================================================
+     A* B SUBFILE: FIELD PREFIX IS SB
+     A*=========================================================================
+     A          R SFLB                      SFL
+     A*%%TS  SD  20130728  175113  LAMONTRE    REL-V7R1M0  5770-WDS
+     A  60                                  SFLNXTCHG
+     A            ZBSELE         1A  B  7  2
+     A  61                                  DSPATR(RI)
+     A N61                                  COLOR(WHT)
+     A                                      VALUES(' ' '1' '2' '3' '4' '5')
+     A            SBKEYWORD R        O  7  4REFFLD(KEYWORD WRKIFSP)
+     A            SBCMD         60A  O  7 16
+     A*=========================================================================
+     A* B SUBFILE CONTROLER: FIELD PREFIX IS CB
+     A*=========================================================================
+     A          R CTLB                      SFLCTL(SFLB)
+     A*%%TS  SD  20130728  175552  LAMONTRE    REL-V7R1M0  5770-WDS
+     A                                      SFLSIZ(0016)
+     A                                      SFLPAG(0015)
+     A                                      ROLLUP(25)
+     A                                      KEEP
+     A                                      OVERLAY
+     A  52                                  SFLDSP
+     A N51                                  SFLDSPCTL
+     A  51                                  SFLCLR
+     A  53                                  SFLEND
+     A  98                                  SFLMSG('Limite de défilement attein-
+     A                                      te')
+     A          H                           HLPPNLGRP(CTLB WRKIFSOPTH)
+     A                                      HLPARA(*NONE)
+     A            RAN01B         4S 0H      SFLRCDNBR(CURSOR)
+     A            SPNAME        10A  O  1  2COLOR(BLU)
+     A                                  1 15DATE
+     A                                      COLOR(BLU)
+     A                                      EDTWRD('  /  /  ')
+     A                                  1 24TIME
+     A                                      COLOR(BLU)
+     A                                  1 33SYSNAME
+     A                                      COLOR(BLU)
+     A                                  1 42USER
+     A                                      COLOR(BLU)
+     A            WLIBEN        10A  O  1 56COLOR(BLU)
+     A                                  2 15'User-Defined Options'
+     A                                      DSPATR(HI)
+     A                                      COLOR(WHT)
+     A                                  5  2'S Short-Cut   Command             -
+     A                                                                         -
+     A                                               '
+     A                                      DSPATR(HI)
+     A                                      DSPATR(UL)
+     A            CBKEYWORD R        B  6  4REFFLD(KEYWORD WRKIFSP)
+     A            CBCMD         60A  B  6 16
+     A                                  4  2'1=Add 2=Change 3=Copy 4=Delete 5=S-
+     A                                      how                               '
+     A                                  6  2'~'
+     A*=========================================================================
+     A* B FORMAT FOOTER
+     A*=========================================================================
+     A          R FMTKB
+     A*%%TS  SD  20130728  175113  LAMONTRE    REL-V7R1M0  5770-WDS
+     A                                      TEXT('Command keys')
+     A          H                           HLPPNLGRP(FMTKB WRKIFSOPTH )
+     A                                      HLPARA(*NONE)
+     A                                 22  2'                                  -
+     A                                                                         -
+     A                                               '
+     A                                      DSPATR(UL)
+     A                                 23  2'F3=Exit   '
+     A                                      COLOR(BLU)
+     A                                 23 13'F12=Cancel    '
+     A                                      COLOR(BLU)
+     A                                 23 28'F5=Refresh   '
+     A                                      COLOR(BLU)
+     A*===========================================================²=============
+     A* C FORMAT : FIELD PREFIX IS FC
+     A*===========================================================²=============
+     A          R FMTC
+     A*%%TS  SD  20130728  193204  LAMONTRE    REL-V7R1M0  5770-WDS
+     A                                      RTNCSRLOC(&RTNCSRFMT &RTNCSRFLD)
+     A                                      CF04(04)
+     A                                      OVERLAY
+     A                                      PROTECT
+     A          H                           HLPPNLGRP(FMTC WRKIFSOPTH)
+     A                                      HLPARA(*NONE)
+     A            RTNCSRFMT     10A  H
+     A            RTNCSRFLD     10A  H
+     A            SPNAME        10A  O  1  2COLOR(BLU)
+     A                                  1 15DATE
+     A                                      COLOR(BLU)
+     A                                      EDTWRD('  /  /  ')
+     A                                  1 24TIME
+     A                                      COLOR(BLU)
+     A                                  1 33SYSNAME
+     A                                      COLOR(BLU)
+     A                                  1 42USER
+     A                                      COLOR(BLU)
+     A            WLIBEN        10A  O  1 56COLOR(BLU)
+     A                                  2 15'Update one user default value'
+     A                                      DSPATR(HI)
+     A                                      COLOR(WHT)
+     A  40                              2 61'ASK FOR DELETE'
+     A                                      DSPATR(RI)
+     A                                  5  1'Keyword...........'
+     A            FCKEYWORD R        B  5 20REFFLD(KEYWORD WRKIFSP)
+     A  62                                  DSPATR(RI)
+     A  62                                  DSPATR(PC)
+     A N62                                  COLOR(WHT)
+     A                                  6  1'Command'
+     A            FCCMD     R        B  7  1REFFLD(CMD WRKIFSP)
+     A                                      CHECK(LC)
+     A  63                                  DSPATR(RI)
+     A  63                                  DSPATR(PC)
+     A N63                                  COLOR(WHT)
+     A*=========================================================================
+     A* PROTECTION FORMAT OR C & D FOOTER
+     A*=========================================================================
+     A          R FMTP
+     A*%%TS  SD  20060602  164630  EB10168     REL-V5R2M0  5722-WDS
+     A                                      OVERLAY
+     A                                      PROTECT
+
+
+     A                                 22  2'                                  -
+     A                                                                         -
+     A                                               '
+     A                                      DSPATR(UL)
+     A                                 23  2'F3=Exit   '
+     A                                      COLOR(BLU)
+     A                                 23 13'F12=Cancel    '
+     A                                      COLOR(BLU)
+      *=========================================================================
+      * MESSAGE SUBFILE
+      *=========================================================================
+                R PMQSFL                    TEXT('Program messages')
+                                            SFL SFLMSGRCD(24)
+                  MSGKEY                    SFLMSGKEY
+                  PMQPGM                    SFLPGMQ
+      *=========================================================================
+                R PMQCTL                    TEXT('Program messages')
+                                            SFLCTL(PMQSFL)
+                                            SFLPAG(01) SFLSIZ(03)
+                                            OVERLAY PUTOVR
+                                            SFLINZ SFLDSP SFLDSPCTL
+        01
+      ON01                                  SFLEND
+                  PMQPGM                    SFLPGMQ

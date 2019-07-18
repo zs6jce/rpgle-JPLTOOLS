@@ -1,0 +1,74 @@
+             PGM        PARM(&LIB)
+             DCL        VAR(&LIB) TYPE(*CHAR) LEN(10)
+
+/*===========GESTION-DES-MESSAGES-D'ERREUR--------------------------*/
+             COPYRIGHT  TEXT('Author is Jean-Paul Lamontre')
+             MONMSG     MSGID(CPF0000 QWM0000) EXEC(GOTO +
+                          CMDLBL(STDMONMSG))
+             GOTO       CMDLBL(DEBUTPGM)
+STDMONMSG:
+/*-RENVOI-DES-MESSAGES-VERS-L'APPELANT------------------*/
+             call QMHRSNEM ('    ' x'00000000')
+DEBUTPGM:
+/*===========CORPS-DU-PROGRAMME-------------------------------------*/
+
+             DSPOBJD    OBJ(&LIB/*ALL) OBJTYPE(*ALL) +
+                          DETAIL(*SERVICE) OUTPUT(*OUTFILE) +
+                          OUTFILE(*CURLIB/OBJS) OUTMBR(*FIRST *ADD)
+
+             DSPFD      FILE(&LIB/*ALL) TYPE(*MBRLIST) +
+                          OUTPUT(*OUTFILE) FILEATR(*PF) +
+                          OUTFILE(*CURLIB/MBRLIST) OUTMBR(*FIRST *ADD)
+
+             DSPFD      FILE(&LIB/*ALL) TYPE(*ATR) OUTPUT(*OUTFILE) +
+                          FILEATR(*PF) OUTFILE(*CURLIB/FD_ATR) +
+                          OUTMBR(*FIRST *ADD)
+
+             DSPFFD     FILE(&LIB/*ALL) OUTPUT(*OUTFILE) +
+                          OUTFILE(*CURLIB/FFD_ATR) OUTMBR(*FIRST *ADD)
+
+             DSPPGMREF  PGM(&LIB/*ALL) OUTPUT(*OUTFILE) +
+                          OBJTYPE(*ALL) OUTFILE(*CURLIB/PGMREF) +
+                          OUTMBR(*FIRST *ADD)
+             MONMSG     MSGID(CPF3033)
+
+             RTVCMD     PGM(&LIB/*ALL) MBROPT(*ADD) +
+                          CMDI0100(*CURLIB/CMDI0100)
+
+             RTVPGM     PGM(&LIB/*ALL) MBROPT(*ADD) +
+                          MODI0100(*CURLIB/MODI0100) +
+                          MODL0100(*CURLIB/MODL0100) +
+                          MODL0200(*CURLIB/MODL0200) +
+                          MODL0300(*CURLIB/MODL0300) +
+                          MODL0400(*CURLIB/MODL0400) +
+                          MODL0500(*CURLIB/MODL0500) +
+                          PGMI0100(*CURLIB/PGMI0100) +
+                          VEWL0100(*CURLIB/VEWL0100) +
+                          SPGI0100(*CURLIB/SPGI0100) +
+                          PGML0100(*CURLIB/PGML0100) +
+                          PGML0200(*CURLIB/PGML0200) +
+                          PGML0300(*CURLIB/PGML0300) +
+                          PGML0400(*CURLIB/PGML0400) +
+                          PGML0500(*CURLIB/PGML0500) +
+                          SPGL0600(*CURLIB/SPGL0600) +
+                          SPGL0700(*CURLIB/SPGL0700) +
+                          SPGL0800(*CURLIB/SPGL0800)
+
+
+             RTVSFD     FILE(&LIB/*ALL) MBROPT(*ADD) +
+                          FLDDSC(*CURLIB/FLDDSC)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ FIN:        ENDPGM

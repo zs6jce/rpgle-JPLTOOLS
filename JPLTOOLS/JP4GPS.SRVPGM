@@ -1,0 +1,11 @@
+/* SIGNATURE IS HEXA 16     SIGNATURE(X'00112233445566778899AABBCCDDEEFF')  4*VERSION DATE        */
+STRPGMEXP PGMLVL(*CURRENT)  SIGNATURE(X'20090103200901032009010320090103')
+/* RTVBNDSRC : ******************************************************/
+/*   *MODULE      JP4GPS_R                                          */
+/********************************************************************/
+/* 2009-01-03 */
+  EXPORT SYMBOL('JP4GPS.ChkObj')
+  EXPORT SYMBOL('JP4GPS.ChkMbr')
+  EXPORT SYMBOL('JP4GPS.ChgObjAtr')
+
+ENDPGMEXP

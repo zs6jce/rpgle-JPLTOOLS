@@ -1,0 +1,54 @@
+             PGM        PARM(&OBJ)
+             DCL        VAR(&OBJ) TYPE(*CHAR) LEN(20)
+
+             DCL        VAR(&LIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&BNDDIR) TYPE(*CHAR) LEN(10)
+
+
+
+/*===========GESTION-DES-MESSAGES-D'ERREUR--------------------------*/
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(512)
+             DCL        VAR(&MSGF) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+             /*-RENVOI-DES-MESSAGES-VERS-L'APPELANT------------------*/
+             MONMSG     MSGID(CPF0000 QWM0000) EXEC(GOTO +
+                          CMDLBL(STDMONMSG))
+             GOTO       CMDLBL(DEBUTPGM)
+STDMONMSG:
+             /*-----------CAPTURE-DU-MESSAGE----------------------*/
+             RCVMSG     MSGTYPE(*LAST) RMV(*NO) MSGDTA(&MSGDTA) +
+                          MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+             /*-----------PROMOTION-DU-MESSAGE--------------------*/
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+             RETURN
+DEBUTPGM:
+/*===========CORPS-DU-PROGRAMME-------------------------------------*/
+
+             CHGVAR     VAR(&BNDDIR) VALUE(%SST(&OBJ 1 10))
+             CHGVAR     VAR(&LIB) VALUE(%SST(&OBJ 11 10))
+/* list of binded objects */
+             DSPBNDDIR  BNDDIR(&LIB/&BNDDIR) OUTPUT(*OUTFILE) +
+                          OUTFILE(QTEMP/WRKBNDPRCb)
+
+/* format de sortie = QABNDBND */
+             clrpfm     FILE(jpltools/WRKBNDPRCp)
+
+             CALL       PGM(WRKBNDPRC2)
+
+             DLTF       FILE(QTEMP/WRKBNDPRCb)
+         /*  RUNQRY     QRYFILE((      WRKBNDPRCP *FIRST))    */
+             CALL       PGM(WRKBNDPRC3)
+         /*  DLTF       FILE(QTEMP/WRKBNDPRCp)  */
+
+
+
+
+
+
+
+
+
+ FIN:        ENDPGM

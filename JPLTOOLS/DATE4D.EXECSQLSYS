@@ -1,0 +1,8 @@
+  DROP
+       FUNCTION &JPLTOOLS.X2DATE(
+       VARCHAR (10)
+  )
+monmsg ST01660
+EXECUTESQL
+
+

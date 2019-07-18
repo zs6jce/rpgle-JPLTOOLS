@@ -1,0 +1,32 @@
+.*==============================================================================
+:PNLGRP .
+:HELP NAME='CCSID'.
+:P.This command is used to show the portable character set
+:EHELP.
+:HELP NAME='CCSID/TEXT'.
+:P.TEXT contains a plain text string equal to the portable character set
+:IMHELP NAME=PORTABLECSET.
+:EHELP.
+:HELP NAME='CCSID/BIN'.
+:P.BIN contains a hexa value equal to the portable character set
+:IMHELP NAME=PORTABLECSET.
+:EHELP.
+:HELP NAME='PORTABLECSET'.
+:P.The portable character set:
+:PC.                 char ccsid   ccsid   ccsid
+:PC.Name                   500     037     297
+:PC.Dollar            $   x'5B'   x'5B'   x'5B'
+:PC.AccentAcute       ´   x'BE'   x'BE'   x'BE'
+:PC.Caret             ^   x'5F'   x'B0'   x'5F'
+:PC.Tilde             ~   x'A1'   x'A1'   x'BD'
+:PC.NumberSign        #   x'7B'   x'7B'   x'B1'
+:PC.AtSign            @   x'7C'   x'7C'   x'44'
+:PC.LeftBracket       [   x'4A'   x'BA'   x'90'
+:PC.BackSlash         \   x'E0'   x'E0'   x'48'
+:PC.RightBracket      ]   x'5A'   x'BB'   x'B5'
+:PC.LeftBrace         {   x'C0'   x'C0'   x'51'
+:PC.LogicalOr         |   x'BB'   x'4F'   x'BB'
+:PC.RightBrace        }   x'D0'   x'D0'   x'54'
+:PC.ExclamationPoint  !   x'4F'   x'5A'   x'4F'
+:EHELP.
+:EPNLGRP.

@@ -1,0 +1,183 @@
+     A*%%TS  SD  20100221  182005  LAMONTRE    REL-V6R1M0  5761-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      CHGINPDFT(UL)
+     A                                      HLPTITLE('MAKE3R')
+     A                                      HLPPNLGRP(INTRO MAKE3RHP)
+     A                                      HLPFULL
+     A                                      HELP
+     A                                      ALTHELP(CA01)
+     A                                      PRINT
+     A                                      INDARA
+     A                                      WDWBORDER((*COLOR BLU))
+     A                                      CF05
+     A                                      CA03
+     A                                      CA12
+     A          R SFLB                      SFL
+     A*%%TS  SD  20070412  120828  LAMONTRE    REL-V5R4M0  5722-WDS
+     A  60                                  SFLNXTCHG
+     A            ZBSELE         1A  B  7  2
+     A  61                                  DSPATR(RI)
+     A  61                                  DSPATR(PC)
+     A N61                                  COLOR(WHT)
+     A                                      VALUES(' ' '1' '2' '3' '4' '5')
+     A            SBORDR    R        O  7  4REFFLD(MAORDR MAKEP)
+     A            SBTYPE    R        O    +1REFFLD(MATYPE MAKEP)
+
+     A            SBMBRE    R        O  7 19REFFLD(MAMBRE MAKEP)
+     A            SBLIB     R        O  7 30REFFLD(MALIB MAKEP)
+     A            SBACTN    R        O  7 41REFFLD(MAACTN MAKEP)
+     A            SBCMDE        29A  O  7 52
+     A          R CTLB                      SFLCTL(SFLB)
+     A*%%TS  SD  20100221  182005  LAMONTRE    REL-V6R1M0  5761-WDS
+     A                                      SFLSIZ(0016)
+     A                                      SFLPAG(0015)
+     A                                      CF02
+     A                                      CF14
+     A                                      ROLLUP(11)
+     A                                      KEEP
+     A                                      OVERLAY
+     A N51                                  SFLDSPCTL
+     A  51                                  SFLCLR
+     A  52                                  SFLDSP
+     A  53                                  SFLEND
+     A  98                                  SFLMSG('Limite de défilement attein-
+     A                                      te')
+     A            RAN01B         4S 0H      SFLRCDNBR(CURSOR)
+     A            SPNAME        10A  O  1  2COLOR(BLU)
+     A                                  1 14'Mise à jour des paramètres de comp-
+     A                                      ilation'
+     A                                      DSPATR(HI)
+     A                                      COLOR(WHT)
+     A                                  1 62DATE
+     A                                      COLOR(BLU)
+     A                                      EDTWRD('  /  /  ')
+     A                                  1 71SYSNAME
+     A                                      COLOR(BLU)
+     A                                  2  2'MAKE3RB'
+     A            WENV           2A  O  2 10COLOR(BLU)
+     A                                  2 62TIME
+     A                                      COLOR(BLU)
+     A                                  2 71USER
+     A                                      COLOR(BLU)
+     A                                  3  2'Filtrer avec :'
+     A            CBORDR    R        B  4  4REFFLD(MAORDR MAKEP)
+     A                                      EDTCDE(Z)
+     A            CBTYPE    R        B  4  8REFFLD(MATYPE MAKEP)
+
+     A            CBMBRE    R        B    +1REFFLD(MAMBRE MAKEP)
+     A            CBLIB     R        B    +1REFFLD(MALIB MAKEP)
+     A                                  5  2'1=Ajouter 2=Modifier 3=Copier 4=Su-
+     A                                      pprimer 5=Visualiser'
+     A                                  6  2'S Seq Compiler   Membre     Librar-
+     A                                      y    Action     Commande           -
+     A                                            ...'
+     A                                      DSPATR(HI)
+     A                                      DSPATR(UL)
+     A*=========================================================================
+     A          R FMTKB
+     A*%%TS  SD  20040921  133527  EB10168     REL-V5R2M0  5722-WDS
+     A                                      TEXT('Command keys')
+     A                                 22  2'                                  -
+     A                                                                         -
+     A                                               '
+     A                                      DSPATR(UL)
+     A                                 23  2'F3=Quitter'
+     A                                      COLOR(BLU)
+     A                                 23 13'F12=Abandonner'
+     A                                      COLOR(BLU)
+     A                                 23 28'F5=Rafraichir'
+     A                                      COLOR(BLU)
+     A                                 23 42'F14=Commandes paramétrées'
+     A                                      COLOR(BLU)
+     A*===========================================================²=============
+     A          R FMTC
+     A*%%TS  SD  20070429  164431  JPLTOOLS    REL-V5R2M0  5722-WDS
+     A                                      RTNCSRLOC(&RTNCSRFMT &RTNCSRFLD)
+     A                                      CF04
+     A                                      OVERLAY
+     A                                      PROTECT
+     A          H                           HLPPNLGRP(FMTC MAKE3RHP)
+     A                                      HLPARA(*NONE)
+     A            RTNCSRFMT     10A  H
+     A            RTNCSRFLD     10A  H
+     A            SPNAME        10A  O  1  2COLOR(BLU)
+     A                                  1 14'Mise à jour des paramètres de comp-
+     A                                      ilation'
+     A                                      DSPATR(HI)
+     A                                      COLOR(WHT)
+     A                                  1 62DATE
+     A                                      COLOR(BLU)
+     A                                      EDTWRD('  /  /  ')
+     A                                  1 71SYSNAME
+     A                                      COLOR(BLU)
+     A                                  2  2'MAKE3RC'
+     A            WENV           2A  O  2 10COLOR(BLU)
+     A  40                              2 41'SUPPRESSION DEMANDEE'
+     A                                      DSPATR(RI)
+     A                                  2 62TIME
+     A                                      COLOR(BLU)
+     A                                  2 71USER
+     A                                      COLOR(BLU)
+     A            FCTYPE    R        B  5 26REFFLD(MATYPE MAKEP)
+     A                                      COLOR(WHT)
+
+
+     A            FCORDR    R        B  6 26REFFLD(MAORDR MAKEP)
+     A                                      COLOR(WHT)
+     A                                      EDTCDE(Z)
+     A            FCMBRE    R        B  7 26REFFLD(MAMBRE MAKEP)
+     A                                      COLOR(WHT)
+     A            FCLIB     R        B  8 26REFFLD(MALIB MAKEP)
+     A                                      COLOR(WHT)
+     A            FCACTN    R        B 10 26REFFLD(MAACTN MAKEP)
+     A                                      COLOR(WHT)
+     A                                      CHECK(LC)
+     A            FCCMDE    R        B 12  1REFFLD(MACMDE MAKEP)
+     A                                      COLOR(WHT)
+     A                                      CHECK(LC)
+     A            FCMONM    R        B 18 26REFFLD(MAMONM MAKEP)
+     A  62                                  DSPATR(RI)
+     A  62                                  DSPATR(PC)
+     A N62                                  COLOR(WHT)
+     A                                  5  2'Compilateur'
+     A                                  6  2'Sequence'
+     A                                  7  2'Membre'
+     A                                  7  9'source'
+     A                                  8  2'Bibliothèque'
+     A                                  8 15'source'
+     A                                 10  2'Action'
+     A                                 11  2'Commande'
+     A                                 11 11'AS400'
+     A                                  7 38'(= nom d''objet)'
+     A                                 10 38'(commentaire)'
+     A                                 18  2'Monmsg'
+     A                                 18 38'(ESCAPE ou IGNORE)'
+      *=========================================================================
+                R FMTP
+                                            OVERLAY
+                                            PROTECT
+     A          H                           HLPPNLGRP(FMTP  MAKE3RHP)
+     A                                      HLPARA(*NONE)
+                                       22  2'                                  -
+                                                                               -
+                                                     '
+                                            DSPATR(UL)
+                                       23  2'F3=Quitter'
+                                            COLOR(BLU)
+                                       23 13'F12=Abandonner'
+                                            COLOR(BLU)
+      *=========================================================================
+                R PMQSFL                    TEXT('Program messages')
+                                            SFL SFLMSGRCD(24)
+                  MSGKEY                    SFLMSGKEY
+                  PMQPGM                    SFLPGMQ
+      *=========================================================================
+                R PMQCTL                    TEXT('Program messages')
+                                            SFLCTL(PMQSFL)
+                                            SFLPAG(01) SFLSIZ(03)
+                                            OVERLAY PUTOVR
+                                            SFLINZ SFLDSP SFLDSPCTL
+        01
+      ON01                                  SFLEND
+                  PMQPGM                    SFLPGMQ

@@ -1,0 +1,114 @@
+
+
+
+
+
+
+             PGM        PARM(&SQL &NULLVALUE &IFSROOT &IFSDIR +
+                          &IFSFILE &DTAAUT &OBJAUT)
+             DCL        VAR(&SQL) TYPE(*CHAR) LEN(5000)
+             DCL        VAR(&IFSROOT) TYPE(*CHAR) LEN(132)
+             DCL        VAR(&IFSDIR) TYPE(*CHAR) LEN(132)
+             DCL        VAR(&IFSFILE) TYPE(*CHAR) LEN(132)
+             DCL        VAR(&IFS) TYPE(*CHAR) LEN(500)
+             DCL        VAR(&DTAAUT) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&OBJAUT) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&NULLVALUE) TYPE(*CHAR) LEN(30)
+
+             DCL        VAR(&JOBDATFMT) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&JOBDATSEP) TYPE(*CHAR) LEN(1)
+             DCL        VAR(&DEBUG) TYPE(*CHAR) LEN(1) VALUE('1')
+             DCL        VAR(&DIAG) TYPE(*CHAR) LEN(1) VALUE('0')
+             DCL        VAR(&NBRCURRCD) TYPE(*DEC) LEN(10 0)
+             DCL        VAR(&WITHERROR) TYPE(*CHAR) LEN(7)
+/*===========GESTION-DES-MESSAGES-D'ERREUR--------------------------*/
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(512)
+             DCL        VAR(&MSGF) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+             /*-RENVOI-DES-MESSAGES-VERS-L'APPELANT------------------*/
+             MONMSG     MSGID(CPF0000 QWM0000) EXEC(GOTO +
+                          CMDLBL(STDMONMSG))
+             GOTO       CMDLBL(DEBUTPGM)
+STDMONMSG:
+             /*-----------CAPTURE-DU-MESSAGE----------------------*/
+             RCVMSG     MSGTYPE(*LAST) RMV(*NO) MSGDTA(&MSGDTA) +
+                          MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+             /*-----------PROMOTION-DU-MESSAGE--------------------*/
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+             RETURN
+DEBUTPGM:
+/*===========CORPS-DU-PROGRAMME-------------------------------------*/
+/* VERIFIER L'EXISTENCE DE IFSROOT */
+             RTVIFSNAM  IFSFILE(&IFSFILE) IFSDIR(&IFSDIR) +
+                          IFSROOT(&IFSROOT) IFSNAME(&IFS)
+
+/* VERIFIER LE MODE DEBUG */
+             CHGDBG
+             /* PAS DE DEBUGGING EN COURS */
+             MONMSG     MSGID(CPF0001) EXEC(CHGVAR VAR(&DEBUG) +
+                          VALUE('0'))
+             /* STRDBG EN COURS MAIS PAS POUR CE PROGRAMME */
+             MONMSG     MSGID(CPF9541) EXEC(CHGVAR VAR(&DEBUG) +
+                          VALUE('2'))
+
+/* REGIONALISATION DE LA DATE */
+             RTVJOBA    DATFMT(&JOBDATFMT) DATSEP(&JOBDATSEP)
+
+/* SUPPRIMER LE FICHIER EN SORTIE ... DONC IL N'ETAIT PAS VERROUILLE */
+             RMVLNK     OBJLNK(&IFS)
+             MONMSG     MSGID(CPF0000)
+
+             DLTF       FILE(QTEMP/xmldb2p)
+             MONMSG     MSGID(CPF0000)
+             CRTDUPOBJ  OBJ(xmldb2p) FROMLIB(*LIBL) OBJTYPE(*FILE) +
+                          TOLIB(QTEMP) DATA(*NO)
+             OVRDBF     FILE(xmldb2p) TOFILE(QTEMP/xmldb2p)
+             CHGVAR     VAR(&WITHERROR) VALUE(' ')
+             CALL       PGM(SQL2XLSR ) PARM(&IFS +
+                                            &SQL &JOBDATFMT &JOBDATSEP &DEBUG &NULLVALUE)
+             MONMSG     MSGID(CPF9897) EXEC(DO)
+             RCVMSG     MSGTYPE(*LAST) RMV(*NO) MSGDTA(&MSGDTA) +
+                          MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+             CHGVAR     VAR(&WITHERROR) VALUE(&msgid)
+             enddo
+
+             RTVMBRD    FILE(QTEMP/XMLDB2P) NBRCURRCD(&NBRCURRCD)
+             IF (&NBRCURRCD = 0) THEN(DO)
+             GOTO ENDCOPY
+             ENDDO
+
+
+             dltf qtemp/xmldb2w
+             monmsg cpf0000
+             CRTDUPOBJ  OBJ(XMLDB2W) FROMLIB(*LIBL) OBJTYPE(*FILE) +
+                          TOLIB(QTEMP)
+             OVRDBF     FILE(XMLDB2W) TOFILE(QTEMP/XMLDB2W)
+             CALL       PGM(XMLDB2R)
+             DLTOVR     FILE(xmldb2w)
+
+
+             CPYTOSTMF  +
+             FROMMBR('/qsys.lib/qtemp.lib/xmldb2w.file/xmldb2w.mbr') +
+             TOSTMF(&IFS) STMFOPT(*REPLACE) STMFCODPAG(*PCASCII)
+             IF         COND(&DTAAUT *NE '*DONTAPPLY' *AND &OBJAUT *NE +
+                          '*DONTAPPLY') THEN(DO)
+             CHGAUT     OBJ(&IFS) USER(*PUBLIC) DTAAUT(&DTAAUT) +
+                          OBJAUT(&OBJAUT)
+                          ENDDO
+
+
+ENDCOPY:
+             DLTOVR     FILE(xmldb2p)
+             IF         COND(&WITHERROR *NE ' ') THEN(DO)
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+             ENDDO
+
+
+
+
+ FIN:        ENDPGM

@@ -1,0 +1,331 @@
+
+:PNLGRP SUBMSGF='*LIBL/pnlmsg' TXTMODE = SBCS BIDI = NONE.
+.*--panels standard-------------------------------------------------------------
+:IMPORT PNLGRP=main01HP name='*'.
+.*==============================================================================
+:HELP NAME= INTRO .
+Paramètres de compilation - aide
+:XH1.Saisie des paramètres de compilation
+:P.
+Sur cet écran saisir la commande (ou partie de commande) qui correspond
+à l'action envisagée.
+:EHELP.
+.*==============================================================================
+:HELP NAME= Demo  .
+Démonstration de l'aide
+:XH1.exemples des différentes balises de *PNLGRP
+:P.
+Description de la fonction
+:h3.&colon.P. &colon.PC.
+:p.&colon.P.paragraphe avec interligne avant
+:pc.&colon.PC.paragraphe sans interligne avant
+:h3.&colon.XH1. &colon.XH2. &colon.XH3. &colon.XH4.
+:xh1.&colon.XH1.titre centré gras souligné
+:xh2.&colon.XH2.titre gauche gras souligné marge 2
+:xh3.&colon.XH3.titre gauche gras          marge 2
+:xh4.&colon.XH4.titre gauche      souligné marge 2
+
+:h3.&colon.SL. &colon.LI. &colon.ESL
+:sl.
+:li.&colon.SL.&colon.LI.
+start list + item list marge 10
+:li.&colon.LI.
+item list 2 marge 10
+:li.&colon.LI.
+item list 3
+:esl.&colon.ESL
+
+:h3.imbrication &colon.SL compact. &colon.LI. &colon.ESL
+:sl compact.
+:li.&colon.SL compact. &colon.LI.
+start list sans interligne marge 10
+:li.&colon.LI.
+item list 2 marge 10
+:sl compact.
+:li.&colon.SL compact. &colon.LI.
+start list sans interligne marge 14
+:li.&colon.LI.
+item list 2 marge 14
+:li.&colon.LI.
+item list 3 marge 14
+:esl.&colon.ESL.
+:li.&colon.LI.
+item list 3 marge 10
+:esl.&colon.ESL.
+
+:h3.&colon.DL. &colon.DTHD. &colon.DDHD. &colon.DT. &colon.DD. &colon.EDL
+:DL.
+:DTHD.&colon.DL. &colon.DTHD.
+Terme
+:DDHD.&colon.DDHD.
+Description
+:DT.&colon.DT.
+FIRST TERM
+:DD.&colon.DD.
+This is a sample
+definition list term
+and description.
+:DT.SECOND TERM
+:DD.Here is another.&colon.EDL.
+:EDL.
+
+:h3.&colon.DL compact. &colon.DT. &colon.DD. &colon.EDL
+:DL compact.
+:DT.COMPACT
+:DD.This causes the list
+to be compacted, so the
+blank lines are removed.
+:DT.quatrieme
+:DD.Here is another.
+:EDL.
+
+:h3.&colon.FIG. &colon.FIGCAP. &colon.EFIG.
+:FIG frame=rule.
+some
+   sample
+      text
+:FIGCAP.A Sample Figure
+:EFIG.
+
+:h3.&colon.HP1. &colon.EHP1. à .&colon.HP9. &colon.EHP9.
+:P.
+Highlighting tags may be nested. For example,
+:HP1.HP1 text:HP2.HP2 text:EHP2.continuing HP1 text:EHP1. is valid.
+:HP1.HP1.souligné:EHP1.
+:HP2.HP2.blanc:ehp2.
+:HP3.HP3.blanc souligné:EHP3.
+:HP4.HP4.normal :EHP4.
+:HP5.HP5.inverse:EHP5.
+:HP6.HP6.inverse souligné:EHP6.
+:HP7.HP7.inverse blanc:EHP7.
+:HP8.HP8.inverse blanc:EHP8.
+:HP9.HP9.inverse:EHP9.
+:P.
+:h3.&colon.H1. à &colon.H4.
+:H1.H1 A One Heading
+:p.Here's a paragraph.
+:H2.H2 A Two Heading
+:p.Another paragraph.
+:H3.H3 A Three Heading
+:p.Still another paragraph.
+:H4.H4 A Four Heading
+:p.Still another paragraph.
+
+:h3.&colon.PARML. &colon.PT. &colon.PD. &colon.EPARML.
+:h3.dans PARML, &colon.PK. &colon.EPK. &colon.PV. &colon.EPV.
+:PARML.
+:PT.&colon.PARML. &colon.PT.
+F1=Help
+:PD.&colon.PD.
+This key...
+:PT.Parameter Term to be explained
+:PD.Parameter description need to explain a so complicated usage
+:PT.TERM
+:PD.This is a description of
+the term. :PK.&colon.PK.Term:EPK.&colon.EPK. is
+a programming keyword.
+:PT.:PK def.DEFAULT:EPK.
+:PD.This is a sample default
+parameter.
+:PT.:PV.&colon.PV.variable:EPV.&colon.EPV.
+:PD.This is a parameter variable.
+:EPARML.&colon.EPARML.
+
+:h3.&colon.LINES. &colon.ELINES.
+:LINES.
+First line
+       Second line
+:ELINES.
+
+:h3.&colon.OL. &colon.LI. &colon.LP. &colon.EOL.
+:ol.
+:li.&colon.OL. &colon.LI.
+First item
+:lp.&colon.LP.
+This is a list part.
+This is a list part.
+This is a list part.
+This is ...
+
+:li.&colon.LI.
+Second item
+:ol compact.
+:li.&colon.OL COMPACT. &colon.LI.
+First item in compact ordered list
+:lp.This is a list part.
+This is a list part.
+This is a list part.
+This is ...
+
+:li.Second item
+:ol compact.
+:li.First item in compact ordered list
+:lp.This is a list part.
+This is a list part.
+This is a list part.
+This is ...
+
+:li.Second item
+:ol compact.
+:li.First item in compact ordered list
+:lp.This is a list part.
+This is a list part.
+This is a list part.
+This is ...
+
+:li.Second item
+:li.third  item
+:li.fourth item
+:eol.&colon.EOL.
+:li.third  item
+:li.fourth item
+:eol.&colon.EOL.
+:li.third  item
+:li.fourth item
+:eol.&colon.EOL.
+:li.third  item
+:li.fourth item
+:eol.&colon.EOL.
+
+:h3.&colon.SL. &colon.ESL. &colon.UL. &colon.EUL.
+:sl compact.
+:li.First item in compact ordered list
+:lp.This is a list part.
+This is a list part.
+This is a list part.
+This is ...
+
+:li.Second item
+:li.third  item
+Some normal text...
+:ul.
+:li.First item (bullet)
+:ul compact.
+:li.First item (hyphen)
+:li.Second item (hyphen)
+:eul.
+:li.Second item (bullet)
+:eul.
+:li.fourth item
+:esl.
+:h3.&colon.NT. &colon.ENT.
+:P.Here's a paragraph.
+:NT.
+Here's the first paragraph
+of the note.
+:P.
+Here's the second paragraph
+of the note.
+:ENT.
+:h3.&colon.XMP. &colon.EXMP.
+:P.Here's a paragraph.
+Some normal text...
+:xmp.
+This is an example
+right here
+:exmp.
+continuation text ...
+:ehelp.
+.*==============================================================================
+:HELP NAME='hyper/help'.Hypertext in OS/400
+:P.
+Hypertext lets users explore
+the online help information in a way that is most
+natural for them.
+Hypertext links can be used within :LINK
+PERFORM='DSPHELP item/specific/help'
+        .item specific help:ELINK.,
+:LINK PERFORM='dsphelp extended/help'
+        .extended help:ELINK., and
+:LINK PERFORM='dsphelp index/search'
+        .index search help:ELINK..
+:EHELP.
+.*==============================================================================
+:HELP NAME='item/specific/help'
+        .Definition of Item Specific Help
+:P.
+Item specific help is . . .
+:EHELP.
+.*==============================================================================
+:HELP NAME='extended/help'
+         .Definition of Extended Help
+:P.
+Extended help is . . .
+:EHELP.
+.*==============================================================================
+:HELP NAME='index/search'
+         .Definition of Index Search
+:P.
+Index search allows you to tell the
+system to search for specific information.
+Index search information is made more
+useful by the addition of
+:LINK PERFORM='dsphelp hyper/help'
+         .hypertext:ELINK. because
+it allows you to link to additional help
+topics.
+:EHELP.
+.*==============================================================================
+:HELP NAME= fmtc .
+Description des champs - Aide
+:XH2.Description des champs
+:IMHELP NAME='ordr'.
+:IMHELP NAME=cmde  .
+:imhelp name=demo.
+:IMHELP NAME='hyper/help'.
+:EHELP.
+.*==============================================================================
+:HELP NAME= fmtp  .
+Touches de fonction - Aide
+:XH1.Touches de fonction
+:P.
+:imhelp name='F01'.
+:imhelp name='F03'.
+:imhelp name='F04'.
+:imhelp name='F05'.
+:imhelp name='F12'.
+:EHELP.
+.*==============================================================================
+:HELP NAME= ordr .
+:XH4.
+Séquence
+:P. les valeurs recommandées pour la séquence sont
+:PC. séquence    action
+:PC. 100         chgenv
+:PC. 200         dltf (pour PF, LF)
+:PC. 300         crtdupobj
+:PC. 400         chgobjown vers volvowner
+:PC. 500         crtxxx
+:PC. 600         crtpgm
+:PC. 650         chgpgm user(*owner)
+:PC. 700         chgobjown amapics
+:PC. 800         chgobjatr k9(vcebey)
+:PC. 900         grtobjaut amapics *all
+:PC. 910         grtobjaut *public *use
+
+
+
+:EHELP.
+.*==============================================================================
+:HELP NAME= cmde .
+:XH4.
+Commande de compilation
+:PC. Les paramètres transmis par la commande MAKE sont :
+:PC. £L   bibliothèque source
+:PC. £F   fichier source
+:PC. £O   bibliothèque de l'objet
+:PC. £N   membre source
+:PC. £R   *YES ou *NO : paramètre REPLACE
+:PC. l'utilisation du £ à la place du & permet de saisir les paramètres variables
+dans les paramètres de la commande .. à condition que ce soit des paramètres
+texte. Dans les paramètres à liste de valeur, comme REPLACE(), saisir une valeur
+correcte puis une fois sorti de l'aide AS400, remettre la variable &R,
+:EHELP.
+.*==============================================================================
+.*==============================================================================
+:HELP NAME= zone .
+:XH4.
+Une zone
+:EHELP.
+.*==============================================================================
+:EPNLGRP.

@@ -1,0 +1,164 @@
+/* CHANGER D'ENVIRONNEMENT : SELON UNE DESCRIPTION DE TRAVAIL*/
+             PGM        PARM(&JOBD)
+             DCL        VAR(&JOBD) TYPE(*CHAR) LEN(20)
+
+             DCL        VAR(&JOBD0100) TYPE(*CHAR) LEN(1024)
+             DCL &BATCH *CHAR 1
+/*/JOBD0100 FORMAT                                                           /*/
+/*/+-----+-----+------------+-----------------------------------------------¦/*/
+/*/¦   OFFSET  ¦            ¦                                               ¦/*/
+/*/¦ DEC ¦ HEX ¦ TYPE       ¦ FIELD                                         ¦/*/
+/*/+-----+-----+------------+-----------------------------------------------¦/*/
+/*/¦  0  ¦  0  ¦ BINARY(4)  ¦ BYTES RETURNED                                ¦/*/
+/*/¦  4  ¦  4  ¦ BINARY(4)  ¦ BYTES AVAILABLE                               ¦/*/
+/*/¦  8  ¦  8  ¦ CHAR(10)   ¦ JOB DESCRIPTION NAME                          ¦/*/
+/*/¦  18 ¦  12 ¦ CHAR(10)   ¦ JOB DESCRIPTION LIBRARY NAME                  ¦/*/
+/*/¦  28 ¦  1C ¦ CHAR(10)   ¦ USER NAME                                     ¦/*/
+/*/¦  38 ¦  26 ¦ CHAR(8)    ¦ JOB DATE                                      ¦/*/
+/*/¦  46 ¦  2E ¦ CHAR(8)    ¦ JOB SWITCHES                                  ¦/*/
+/*/¦  54 ¦  36 ¦ CHAR(10)   ¦ JOB QUEUE NAME                                ¦/*/
+/*/¦  64 ¦  40 ¦ CHAR(10)   ¦ JOB QUEUE LIBRARY NAME                        ¦/*/
+/*/¦  74 ¦  4A ¦ CHAR(2)    ¦ JOB QUEUE PRIORITY                            ¦/*/
+/*/¦  76 ¦  4C ¦ CHAR(10)   ¦ HOLD ON JOB QUEUE                             ¦/*/
+/*/¦  86 ¦  56 ¦ CHAR(10)   ¦ OUTPUT QUEUE NAME                             ¦/*/
+/*/¦  96 ¦  60 ¦ CHAR(10)   ¦ OUTPUT QUEUE LIBRARY NAME                     ¦/*/
+/*/¦ 106 ¦  6A ¦ CHAR(2)    ¦ OUTPUT QUEUE PRIORITY                         ¦/*/
+/*/¦ 108 ¦  6C ¦ CHAR(10)   ¦ PRINTER DEVICE NAME                           ¦/*/
+/*/¦ 118 ¦  76 ¦ CHAR(30)   ¦ PRINT TEXT                                    ¦/*/
+/*/¦ 148 ¦  94 ¦ BINARY(4)  ¦ SYNTAX CHECK SEVERITY                         ¦/*/
+/*/¦ 152 ¦  98 ¦ BINARY(4)  ¦ END SEVERITY                                  ¦/*/
+/*/¦ 156 ¦  9C ¦ BINARY(4)  ¦ MESSAGE LOGGING SEVERITY                      ¦/*/
+/*/¦ 160 ¦  A0 ¦ CHAR(1)    ¦ MESSAGE LOGGING LEVEL                         ¦/*/
+/*/¦ 161 ¦  A1 ¦ CHAR(10)   ¦ MESSAGE LOGGING TEXT                          ¦/*/
+/*/¦ 171 ¦  AB ¦ CHAR(10)   ¦ LOGGING OF CL PROGRAMS                        ¦/*/
+/*/¦ 181 ¦  B5 ¦ CHAR(10)   ¦ INQUIRY MESSAGE REPLY                         ¦/*/
+/*/¦ 191 ¦  BF ¦ CHAR(13)   ¦ DEVICE RECOVERY ACTION                        ¦/*/
+/*/¦ 204 ¦  CC ¦ CHAR(10)   ¦ TIME-SLICE END POOL                           ¦/*/
+/*/¦ 214 ¦  D6 ¦ CHAR(15)   ¦ ACCOUNTING CODE                               ¦/*/
+/*/¦ 229 ¦  E5 ¦ CHAR(80)   ¦ ROUTING DATA                                  ¦/*/
+/*/¦ 309 ¦ 135 ¦ CHAR(50)   ¦ TEXT DESCRIPTION                              ¦/*/
+/*/¦ 359 ¦ 167 ¦ CHAR(1)    ¦ RESERVED                                      ¦/*/
+/*/¦ 360 ¦ 168 ¦ BINARY(4)  ¦ OFFSET TO INITIAL LIBRARY LIST                ¦/*/
+/*/¦ 364 ¦ 16C ¦ BINARY(4)  ¦ NUMBER OF LIBRARIES IN INITIAL LIBRARY LIST   ¦/*/
+/*/¦ 368 ¦ 170 ¦ BINARY(4)  ¦ OFFSET TO REQUEST DATA                        ¦/*/
+/*/¦ 372 ¦ 174 ¦ BINARY(4)  ¦ LENGTH OF REQUEST DATA                        ¦/*/
+/*/¦ 376 ¦ 178 ¦ BINARY(4)  ¦ JOB MESSAGE QUEUE MAXIMUM SIZE                ¦/*/
+/*/¦ 380 ¦ 17C ¦ CHAR(10)   ¦ JOB MESSAGE QUEUE FULL ACTION                 ¦/*/
+/*/¦ 390 ¦ 186 ¦ CHAR(10)   ¦ CYMD JOB DATE                                 ¦/*/
+/*/¦ 400 ¦ 190 ¦ CHAR(10)   ¦ ALLOW MULTIPLE THREADS                        ¦/*/
+/*/¦ 410 ¦ 19A ¦ CHAR(*)    ¦ RESERVED                                      ¦/*/
+/*/¦  *  ¦  *  ¦ ARRAY (*)  ¦ INITIAL LIBRARY LIST                          ¦/*/
+/*/¦     ¦     ¦ OF         ¦                                               ¦/*/
+/*/¦     ¦     ¦ CHAR(11)   ¦                                               ¦/*/
+/*/¦  *  ¦  *  ¦ CHAR(*)    ¦ REQUEST DATA                                  ¦/*/
+/*/+------------------------------------------------------------------------+/*/
+             DCL        VAR(&ERRCOD) TYPE(*CHAR) LEN(256)
+             DCL        VAR(&CODRET) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&BIN4) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&DEC8) TYPE(*DEC) LEN(8 0)
+             DCL        VAR(&POS) TYPE(*DEC) LEN(8 0)
+             DCL        VAR(&LEN) TYPE(*DEC) LEN(8 0)
+             DCL        VAR(&LIBL) TYPE(*CHAR) LEN(275)
+
+             DCL        VAR(&JOBPTY) TYPE(*CHAR) LEN(2)
+             DCL        VAR(&OUTQPTY) TYPE(*CHAR) LEN(2)
+             DCL        VAR(&PRTDEV) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&OUTQNAM) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&OUTQLIB) TYPE(*CHAR) LEN(10)
+
+
+             DCL        VAR(&PRTTXT) TYPE(*CHAR) LEN(30)
+             DCL        VAR(&LOGLEV) TYPE(*CHAR) LEN(1)
+             DCL        VAR(&LOGSEV) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&LOGTXT) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&LOGCLPGM) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&INQMSGRPY) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&DEVRCYACN) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&JOBMSGQFL) TYPE(*CHAR) LEN(10)
+
+             DCL &CMD *CHAR 1000
+/*============================================================================*/
+/* PROCEDURE DE REMONTEE DES MESSAGES D'ERREUR VERS L'APPELANT */
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(100)
+             DCL        VAR(&MSGF) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&KEYVAR) TYPE(*CHAR) LEN(4)
+             MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(ERREUR))
+             GOTO       CMDLBL(DEBUTPGM)
+ ERREUR:     RCVMSG     MSGTYPE(*LAST) KEYVAR(&KEYVAR) +
+                          MSGDTA(&MSGDTA) MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+DEBUTPGM:    /* FIN DE PROCEDURE DE GESTION DES ERREURS */
+/*============================================================================*/
+             RTVJOBA    TYPE(&BATCH)
+   /* LIST JOBS                            */
+             CHGVAR     VAR(&ERRCOD) VALUE(' ')
+             CHGVAR     VAR(%BIN(&ERRCOD 1 4)) VALUE(255)
+             CALL       PGM(QWDRJOBD) PARM(+
+                    &JOBD0100   /*/1 ¦ RECEIVER VARIABLE             /*/+
+                    X'00000400' /*/2 ¦ LENGTH OF RECEIVER VARIABLE   /*/+
+                    'JOBD0100'  /*/3 ¦ FORMAT NAME                   /*/+
+                    &JOBD       /*/4 ¦ QUALIFIED JOB DESCRIPTION NAME/*/+
+                    &ERRCOD     /*/5 ¦ ERROR CODE                    /*/)
+             CHGVAR     VAR(&CODRET) VALUE(%SST(&ERRCOD 9 7))
+             IF         COND(&CODRET *NE '       ') THEN(DO)
+             SNDPGMMSG  MSGID(&CODRET) MSGF(*LIBL/QCPFMSG) +
+                          MSGTYPE(*ESCAPE)
+             ENDDO
+/* OFFSET LIBL  */
+             CHGVAR     VAR(&BIN4) VALUE(%SST(&JOBD0100 361 4))
+             CHGVAR     VAR(&DEC8) VALUE(%BINARY(&BIN4))
+             CHGVAR     VAR(&POS) VALUE(&DEC8 + 1)
+/* LONGUEUR LIBL */
+             CHGVAR     VAR(&BIN4) VALUE(%SST(&JOBD0100 365 4))
+             CHGVAR     VAR(&DEC8) VALUE(%BINARY(&BIN4))
+             CHGVAR     VAR(&LEN) VALUE(&DEC8 * 11)
+             CHGVAR     VAR(&LIBL) VALUE(%SST(&JOBD0100 &POS &LEN))
+
+             CHGVAR     VAR(&JOBPTY) VALUE(%SST(&JOBD0100 76 1))
+             CHGVAR     VAR(&OUTQPTY) VALUE(%SST(&JOBD0100 108 1))
+             CHGVAR     VAR(&PRTDEV) VALUE(%SST(&JOBD0100 109 10))
+             CHGVAR     VAR(&OUTQNAM) VALUE(%SST(&JOBD0100 87 10))
+             CHGVAR     VAR(&OUTQLIB) VALUE(%SST(&JOBD0100 97 10))
+
+
+             CHGVAR     VAR(&PRTTXT) VALUE(%SST(&JOBD0100 119 30))
+             CHGVAR     VAR(&LOGLEV) VALUE(%SST(&JOBD0100 161 1))
+             CHGVAR     VAR(&BIN4) VALUE(%SST(&JOBD0100 157 4))
+             CHGVAR     VAR(&DEC8) VALUE(%BINARY(&BIN4))
+             CHGVAR     VAR(&LOGSEV) VALUE(&DEC8)
+             CHGVAR     VAR(&LOGTXT) VALUE(%SST(&JOBD0100 162 10))
+             CHGVAR     VAR(&LOGCLPGM) VALUE(%SST(&JOBD0100 172 10))
+             CHGVAR     VAR(&INQMSGRPY) VALUE(%SST(&JOBD0100 182 10))
+             CHGVAR     VAR(&DEVRCYACN) VALUE(%SST(&JOBD0100 192 13))
+             CHGVAR     VAR(&JOBMSGQFL) VALUE(%SST(&JOBD0100 381 10))
+/* INTERACTIF */
+             IF         COND(&BATCH = '1') THEN(DO)
+             CHGJOB     JOBPTY(&JOBPTY) OUTPTY(&OUTQPTY) +
+                          PRTDEV(&PRTDEV) PRTTXT(&PRTTXT) +
+                          LOG(&LOGLEV &LOGSEV &LOGTXT) +
+                          LOGCLPGM(&LOGCLPGM) INQMSGRPY(&INQMSGRPY) +
+                          JOBMSGQFL(&JOBMSGQFL)
+             ENDDO
+/* BATCH */
+             ELSE       CMD(DO)
+             CHGJOB     JOBPTY(&JOBPTY) OUTPTY(&OUTQPTY) +
+                          PRTTXT(&PRTTXT) LOG(&LOGLEV &LOGSEV +
+                          &LOGTXT) LOGCLPGM(&LOGCLPGM) +
+                          INQMSGRPY(&INQMSGRPY) JOBMSGQFL(&JOBMSGQFL)
+             ENDDO
+             IF         COND(&OUTQLIB *EQ ' ') THEN(DO)
+             CHGJOB     OUTQ(&OUTQNAM)
+             ENDDO
+             ELSE       CMD(DO)
+             CHGJOB     OUTQ(&OUTQLIB/&OUTQNAM)
+             ENDDO
+
+             CHGVAR     VAR(&CMD) VALUE('CHGLIBL    LIBL(' *CAT +
+                          &LIBL *CAT ')')
+             CALL       PGM(QCMDEXC) PARM(&CMD 1000)
+FINPGM:
+             ENDPGM

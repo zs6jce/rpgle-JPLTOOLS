@@ -1,0 +1,124 @@
+             PGM        PARM(&FILE &SPLNBR &JOBNAME &JOBUSER &JOBNBR +
+                          &STRPAGE &ENDPAGE &DATATYPE &ENHANCED +
+                          &ENHQFILE &PAGESIZE &IFSROOT &IFSDIR +
+                          &IFSFILE &DTAAUT &OBJAUT &PAGEMODE +
+                          &MARGINS &LOGO &WATERMARK &PERMISSION)
+             DCL        VAR(&FILE) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&JOB) TYPE(*CHAR) LEN(26)
+             DCL        VAR(&SPLNBR) TYPE(*DEC) LEN(5 0)
+             DCL        VAR(&SPLNBRX) TYPE(*CHAR) LEN(5)
+             DCL        VAR(&STRPAGE) TYPE(*DEC) LEN(5 0)
+             DCL        VAR(&ENDPAGE) TYPE(*DEC) LEN(5 0)
+             DCL        VAR(&DATATYPE) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&ENHANCED) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&ENHQFILE ) TYPE(*CHAR) LEN(20)
+             DCL        VAR(&PAGESIZE) TYPE(*CHAR) LEN(20)
+             DCL        VAR(&ENHFILE ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&ENHLIB  ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&IFSROOT) TYPE(*CHAR) LEN(132)
+             DCL        VAR(&IFSDIR) TYPE(*CHAR) LEN(132)
+             DCL        VAR(&IFSFILE) TYPE(*CHAR) LEN(132)
+             DCL        VAR(&DTAAUT) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&OBJAUT) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&PAGEMODE) TYPE(*CHAR) LEN(11)
+             DCL        VAR(&MARGINS) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&LOGO) TYPE(*CHAR) LEN(300)
+             DCL        VAR(&WATERMARK) TYPE(*CHAR) LEN(200)
+             DCL        VAR(&PERMISSION) TYPE(*CHAR) LEN(100)
+
+             DCL        VAR(&IFS) TYPE(*CHAR) LEN(500)
+             DCL        VAR(&JOBNBR) TYPE(*CHAR) LEN(6)
+             DCL        VAR(&JOBUSER) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&JOBNAME) TYPE(*CHAR) LEN(10)
+
+             DCL        VAR(&JOBDATFMT) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&JOBDATSEP) TYPE(*CHAR) LEN(1)
+
+             DCL        VAR(&DIAG) TYPE(*CHAR) LEN(1) VALUE('0')
+             DCL        VAR(&NBRCURRCD) TYPE(*DEC) LEN(10 0)
+/*===========GESTION-DES-MESSAGES-D'ERREUR--------------------------*/
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(512)
+             DCL        VAR(&MSGF) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+             /*-RENVOI-DES-MESSAGES-VERS-L'APPELANT------------------*/
+             MONMSG     MSGID(CPF0000 QWM0000) EXEC(GOTO +
+                          CMDLBL(STDMONMSG))
+             GOTO       CMDLBL(DEBUTPGM)
+STDMONMSG:
+             /*-----------CAPTURE-DU-MESSAGE----------------------*/
+             RCVMSG     MSGTYPE(*LAST) RMV(*NO) MSGDTA(&MSGDTA) +
+                          MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+             /*-----------PROMOTION-DU-MESSAGE--------------------*/
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+             RETURN
+DEBUTPGM:
+/*===========CORPS-DU-PROGRAMME-------------------------------------*/
+
+
+/* VERIFIER L'EXISTENCE DE IFSROOT */
+             RTVIFSNAM  IFSFILE(&IFSFILE) IFSDIR(&IFSDIR) +
+                          IFSROOT(&IFSROOT) IFSNAME(&IFS)
+
+/* REGIONALISATION DE LA DATE */
+             RTVJOBA    DATFMT(&JOBDATFMT) DATSEP(&JOBDATSEP)
+
+/* SUPPRIMER LE FICHIER EN SORTIE ... DONC IL N'ETAIT PAS VERROUILLE */
+             RMVLNK     OBJLNK(&IFS)
+             MONMSG     MSGID(CPF0000)
+/* RETRIEVE SPOOL DATA */
+
+
+/* IF FILE IS ALREADY COPIED TO A *FCFC FILE, USE IT, ELSE DO IT */
+             IF         COND(&ENHANCED *EQ '*YES') THEN(DO)
+             CHGVAR     VAR(&ENHFILE) VALUE(%SST(&ENHQFILE 1 10))
+             CHGVAR     VAR(&ENHLIB) VALUE(%SST(&ENHQFILE 11 10))
+             OVRDBF     FILE(QSPLDTA) TOFILE(&ENHLIB/&ENHFILE) +
+                          MBR(&FILE) LVLCHK(*NO)
+             ENDDO
+             ELSE       CMD(DO)
+
+             CRTDUPOBJ  OBJ(SPOOLDATA) FROMLIB(JPLTOOLDEV) +
+                          OBJTYPE(*FILE) TOLIB(QTEMP)
+             MONMSG     MSGID(CPF7300)
+             chgpf qtemp/spooldata ccsid(65535)
+
+             CHGVAR     VAR(&SPLNBRX) VALUE(&SPLNBR)
+             IF         COND(&SPLNBR *EQ 0) THEN(DO)
+             CHGVAR     VAR(&SPLNBRX) VALUE('*ONLY')
+             ENDDO
+             IF         COND(&SPLNBR *EQ -1) THEN(DO)
+             CHGVAR     VAR(&SPLNBRX) VALUE('*LAST')
+             ENDDO
+             CPYSPLF    FILE(&FILE) TOFILE(QTEMP/spooldata) +
+                          JOB(&JOBNBR/&JOBUSER/&JOBNAME) +
+                          SPLNBR(&SPLNBRX) CTLCHAR(*PRTCTL)
+             CRTDUPOBJ  OBJ(UNIDATA) FROMLIB(JPLTOOLDEV) +
+                          OBJTYPE(*FILE) TOLIB(QTEMP)
+             MONMSG     MSGID(CPF7300)
+             chgpf qtemp/spooldata ccsid(420)
+             /* convert spool data to utf8 */
+             CPYF       FROMFILE(QTEMP/SPOOLDATA) +
+                          TOFILE(QTEMP/UNIDATA) MBROPT(*REPLACE) +
+                          FMTOPT(*MAP)
+       /* PAS DE MONMSG, CA DOIT PASSER */
+             OVRDBF     FILE(unidata) TOFILE(QTEMP/unidata)
+             ENDDO
+             CALL       PGM(SPLF2PDFRu) PARM(&FILE &SPLNBR &JOBNAME +
+                          &JOBUSER &JOBNBR &IFS &STRPAGE &ENDPAGE +
+                          &PAGEMODE &MARGINS &LOGO &PERMISSION +
+                          &ENHANCED &PAGESIZE &WATERMARK)
+             DLTOVR     FILE(QSPLDTA)
+             IF         COND(&DTAAUT *NE '*DONTAPPLY' *AND &OBJAUT +
+                          *NE '*DONTAPPLY') THEN(DO)
+             CHGAUT     OBJ(&IFS) USER(*PUBLIC) DTAAUT(&DTAAUT) +
+                          OBJAUT(&OBJAUT)
+             ENDDO
+
+
+
+
+
+ FIN:        ENDPGM

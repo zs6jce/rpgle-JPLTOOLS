@@ -1,0 +1,138 @@
+             PGM        PARM(&LIBRARY &FILE &MEMBER &RTNLIB)
+
+
+             DCL        VAR(&LIBRARY) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MEMBER) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&FILE) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&RTNLIB) TYPE(*CHAR) LEN(10)
+
+             DCL        VAR(&SYSLIBL) TYPE(*CHAR) LEN(176)
+             DCL        VAR(&USRLIBL) TYPE(*CHAR) LEN(2761)
+
+             DCL        VAR(&STARTAT) TYPE(*DEC) LEN(6 0)
+
+             DCL        VAR(&CURLIB) TYPE(*CHAR) LEN(10)
+
+DCL        VAR(&ERRCOD) TYPE(*CHAR) LEN(256)
+DCL        VAR(&CODRET) TYPE(*CHAR) LEN(7)
+
+dcl       &REceiver  *char 220
+dcl       &reclen    *char 4
+
+dcl       &FileName  *char 20
+dcl       &Member    *char 10
+
+
+
+
+
+
+
+/*============================================================================*/
+/* PROCEDURE DE REMONTEE DES MESSAGES D'ERREUR VERS L'APPELANT */
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(100)
+             DCL        VAR(&MSGF) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&KEYVAR) TYPE(*CHAR) LEN(4)
+             MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(ERREUR))
+             GOTO       CMDLBL(DEBUTPGM)
+ ERREUR:     RCVMSG     MSGTYPE(*LAST) KEYVAR(&KEYVAR) +
+                          MSGDTA(&MSGDTA) MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+DEBUTPGM:    /* FIN DE PROCEDURE DE GESTION DES ERREURS */
+/*============================================================================*/
+             RTVJOBA    CURLIB(&CURLIB)
+             IF         COND(&CURLIB *EQ '*NONE') THEN(DO)
+             CHGVAR     VAR(&CURLIB) VALUE('QTEMP')
+             ENDDO
+
+/* BIBLIOTHEQUE EXACTE ?                           */
+             IF         COND(%SST(&LIBRARY 1 1) *NE '*') THEN(DO)
+             CHGVAR     VAR(&RTNLIB) VALUE(&LIBRARY)
+             CHKOBJ     OBJ(&RTNLIB/&FILE) OBJTYPE(*FILE) +
+                          MBR(&MEMBER) AUT(*USE)
+             GOTO       CMDLBL(FIN)
+             ENDDO
+
+/* *CURLIB ? */
+             IF         COND(&LIBRARY *EQ '*CURLIB') THEN(DO)
+             CHGVAR     VAR(&RTNLIB) VALUE(&CURLIB)
+             CHKOBJ     OBJ(&RTNLIB/&FILE) OBJTYPE(*FILE) +
+                          MBR(&MEMBER) AUT(*USE)
+             GOTO       CMDLBL(FIN)
+             ENDDO
+
+/* *LIBL ? SCAN SUR 1 A 15 LIBS */
+/*IF SYSLIBL*/
+             IF         COND(&LIBRARY *EQ '*LIBL') THEN(DO)
+             RTVJOBA    SYSLIBL(&SYSLIBL)
+             CHGVAR     VAR(&STARTAT) VALUE(1)
+/* SCAN SYSLIBL */
+SYSLIBL:
+             DO
+             CHGVAR &RTNLIB %SST(&SYSLIBL &STARTAT 10)
+/* UNE LIB */
+             IF (&RTNLIB *NE ' ') THEN(DO)
+             CHKOBJ     OBJ(&RTNLIB/&FILE) OBJTYPE(*FILE) +
+                          MBR(&MEMBER) AUT(*USE)
+             MONMSG     MSGID(CPF9800) EXEC(DO)
+             CHGVAR &STARTAT (&STARTAT + 11)
+             GOTO CMDLBL(SYSLIBL)
+             ENDDO  /* CPF9800 */
+             GOTO FOUND
+             ENDDO  /* UNE LIB */
+             ENDDO  /* SCAN SYSLIBL */
+             ENDDO  /* IF SYSLIBL */
+
+
+/* *USRLIBL ? SCAN SUR 1 A 250 LIBS */
+/*IF USRLIBL*/
+             IF         COND(&LIBRARY *EQ '*LIBL' *OR &LIBRARY *EQ +
+                          '*USRLIBL') THEN(DO)
+
+
+             RTVJOBA    USRLIBL(&USRLIBL)
+             CHGVAR     VAR(&STARTAT) VALUE(1)
+/* SCAN USRLIBL */
+USRLIBL:
+             DO
+             CHGVAR &RTNLIB %SST(&USRLIBL &STARTAT 10)
+/* UNE LIB */
+             IF (&RTNLIB *NE ' ') THEN(DO)
+             CHKOBJ     OBJ(&RTNLIB/&FILE) OBJTYPE(*FILE) +
+                          MBR(&MEMBER) AUT(*USE)
+             MONMSG     MSGID(CPF9800) EXEC(DO)
+             CHGVAR &STARTAT (&STARTAT + 11)
+             GOTO CMDLBL(USRLIBL)
+             ENDDO  /* CPF9800 */
+             GOTO FOUND
+             ENDDO  /* UNE LIB */
+             ENDDO  /* SCAN SYSLIBL */
+             ENDDO  /* IF SYSLIBL */
+
+NOTFOUND:
+
+             SNDPGMMSG  MSGID(CPF9815) MSGF(QCPFMSG) MSGDTA(&FILE +
+                          *CAT &LIBRARY *CAT &MEMBER) MSGTYPE(*ESCAPE)
+
+
+FOUND:
+
+
+
+
+FIN:
+ENDPGM
+
+
+
+
+
+
+
+
+
+

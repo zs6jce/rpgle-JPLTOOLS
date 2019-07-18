@@ -1,0 +1,159 @@
+/*                                                                 -
+                                                                   -
+  work on rpg source ? separators are (-)=+.;<>:                   -
+                                                                   -
+  work on recompil ? add a colum dependency strength  , sum of      -
+    0 nothing                                                      -
+    1 should be recompiled after parent recompilation              -
+      for triggers, permissions, mask, constraints                  -
+      and LF, VW, MQT and IX                                       -
+    2 should be deleted before parent recompilation                -
+      for LF, VW, MQT and IX                                       -
+                                                                   -
+*/
+             PGM        PARM(&LIBLIST &curlib)
+             DCL        VAR(&LIBLIST) TYPE(*CHAR) LEN(3333)
+             DCL        VAR(&NBLIB) TYPE(*INT) STG(*DEFINED) LEN(2) +
+                          DEFVAR(&LIBLIST)
+             DCL        VAR(&PLIB) TYPE(*PTR)
+             DCL        VAR(&LIB) TYPE(*CHAR) STG(*BASED) LEN(10) +
+                          BASPTR(&PLIB)
+             DCL        VAR(&COUNT) TYPE(*INT) LEN(2)
+             DCL        VAR(&curlib) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&OBJLIB) TYPE(*CHAR) LEN(10)
+
+/*===========GESTION-DES-MESSAGES-D'ERREUR--------------------------*/
+             COPYRIGHT  TEXT('Author is Jean-Paul Lamontre')
+             MONMSG     MSGID(CPF0000 QWM0000) EXEC(GOTO +
+                          CMDLBL(STDMONMSG))
+             GOTO       CMDLBL(DEBUTPGM)
+STDMONMSG:
+/*-RENVOI-DES-MESSAGES-VERS-L'APPELANT------------------*/
+             call QMHRSNEM ('    ' x'00000000')
+DEBUTPGM:
+/*===========CORPS-DU-PROGRAMME-------------------------------------*/
+
+/* les sources des scripts pour EXECSQL3  s'appellent X*SQL,  -
+   et sont livrés dans JPLTOOLS *FILE PF-SRC -
+   donc les RUNSQLSTM s'executent toujours sur SRCFILE(*CURLIB/JPLTOOLS) -
+   et DFTRDBCOL(*CURLIB) */
+
+/* nettoyer la place - tout est basé sur le curlib */
+
+             CHKOBJ     OBJ(&CURLIB) OBJTYPE(*LIB)
+             CHGCURLIB  CURLIB(&CURLIB)
+/* la bibliotheque de l'executable est JPLTOOLS */
+
+/* doit aussi contrnir les scripts sql */
+             CHKOBJ     OBJ(jpltools/jpltools) OBJTYPE(*FILE)
+
+clrlib qtemp
+             CALL       PGM(xref01)
+
+             DLTF       FILE(&CURLIB/XRBNDPRCB)
+             MONMSG     MSGID(CPF2105)
+DSPBNDDIR QSYS/QCBLLE     *OUTFILE &CURLIB/XRBNDPRCB outmbr(*FIRST *ADD)
+DSPBNDDIR QSYS/QCLLE      *OUTFILE &CURLIB/XRBNDPRCB outmbr(*FIRST *ADD)
+DSPBNDDIR QSYS/QC2LE      *OUTFILE &CURLIB/XRBNDPRCB outmbr(*FIRST *ADD)
+DSPBNDDIR QSYS/QILE       *OUTFILE &CURLIB/XRBNDPRCB outmbr(*FIRST *ADD)
+DSPBNDDIR QSYS/QLECWI     *OUTFILE &CURLIB/XRBNDPRCB outmbr(*FIRST *ADD)
+DSPBNDDIR QSYS/QRNXLE     *OUTFILE &CURLIB/XRBNDPRCB outmbr(*FIRST *ADD)
+DSPBNDDIR QSYS/QSNAPI     *OUTFILE &CURLIB/XRBNDPRCB outmbr(*FIRST *ADD)
+DSPBNDDIR QSYS/QUSAPIBD   *OUTFILE &CURLIB/XRBNDPRCB outmbr(*FIRST *ADD)
+
+             RTVOBJD    OBJ(XRBNDPRCP) OBJTYPE(*FILE) RTNLIB(&OBJLIB)
+             /* pas de monmsg, il doit exister */
+             IF         COND(&OBJLIB *NE &CURLIB) THEN(DO)
+             CRTDUPOBJ  OBJ(XRBNDPRCP) FROMLIB(&OBJLIB) +
+                          OBJTYPE(*FILE) TOLIB(&CURLIB)
+             enddo
+             CLRPFM     FILE(&CURLIB/XRBNDPRCP)
+             CALL       PGM(XRBNDPRCR)
+
+/* supprimer les fichiers pour xref02 */
+             DLTF       FILE(&CURLIB/OBJS)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/MBRLIST)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/FD_ATR)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/FFD_ATR)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/PGMREF)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/CMDI0100)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/MODI0100)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/MODL0100)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/MODL0200)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/MODL0300)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/MODL0400)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/MODL0500)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/PGMI0100)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/VEWL0100)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/SPGI0100)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/PGML0100)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/PGML0200)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/PGML0300)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/PGML0400)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/PGML0500)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/SPGL0600)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/SPGL0700)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/SPGL0800)
+             MONMSG     MSGID(CPF2105)
+             DLTF       FILE(&CURLIB/FLDDSC)
+             MONMSG     MSGID(CPF2105)
+
+             EXECSQL3   LIBRARY(JPLTOOLS) FILE(JPLTOOLS) +
+                          MEMBER(XREF01SQL) JOBLOG(*YES) +
+                          SETVAR((CURLIB &CURLIB))
+/* extraire les metadata de chaque lib */
+             /* decortiquer &LIBLIST, en tirer chaque lib */
+             CHGVAR     VAR(&COUNT) VALUE(0)
+             CHGVAR     VAR(&PLIB) VALUE(%ADDRESS(&LIBLIST))
+             CHGVAR     VAR(%OFFSET(&PLIB)) VALUE(%OFFSET(&PLIB) + 2 )
+
+loop:
+             CALL       PGM(xref02) PARM(&LIB)
+             EXECSQL3   LIBRARY(JPLTOOLS) FILE(JPLTOOLS) +
+                          MEMBER(XREF02SQL) JOBLOG(*YES) +
+                          SETVAR((LIB &LIB) (CURLIB &CURLIB))
+             CHGVAR     VAR(&COUNT) VALUE(&COUNT + 1)
+             CHGVAR     VAR(%OFFSET(&PLIB)) VALUE(%OFFSET(&PLIB) + 10)
+             IF         COND(&COUNT *LT &NBLIB) THEN(GOTO CMDLBL(LOOP))
+
+
+
+
+
+
+/* alimenter les xref avec les metadata des objets */
+             EXECSQL3   LIBRARY(JPLTOOLS) FILE(JPLTOOLS) +
+                          MEMBER(XREF04SQL) JOBLOG(*YES) +
+                          SETVAR((LIB &LIB) (CURLIB &CURLIB))
+/* finalize */
+             EXECSQL3   LIBRARY(JPLTOOLS) FILE(JPLTOOLS) +
+                          MEMBER(XREF05SQL) JOBLOG(*YES) +
+                          SETVAR((LIB &LIB) (CURLIB &CURLIB))
+
+
+
+
+
+ FIN:        ENDPGM

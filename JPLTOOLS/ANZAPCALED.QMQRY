@@ -1,0 +1,60 @@
+with cascade(called, called_type, called_title
+            ,caller, caller_type, caller_title
+            , level, called_key, caller_key) as (
+ select
+  called
+, called_type
+, called
+,  called
+, called_type
+, cast(called as varchar(1000))
+, 0
+, called_key
+, called_key
+from jpltools.root
+
+ union all
+
+select
+ cascade.called
+
+, cascade.called_type
+,cascade.called_title concat ' < ' concat cascade.caller_title
+, child.caller
+, child.caller_type
+, trim(child.caller)  as title_caller
+, level + 1
+, cascade.called_key
+, child.caller_key
+ from cascade join jpltools.root child on
+      cascade.caller_key = child.called_key
+where
+/* here is the loop stoper on recursive call */
+   cascade.called_title not like
+      '% ' concat trim(child.caller) concat ' %'
+/* here is the loop stopper on too deep analysis */
+   and cascade.level <= 20
+/* here choose the caller type to follow */
+
+ ) --select * from cascade order by called_title;
+, ordered as (
+select distinct
+   cascade.called_title concat ' < '
+      concat cascade.caller_title order_by
+   , cascade.*
+from cascade
+ ) -- select * from ordered order by order_by;
+
+select
+  case when level = 0 then called_type else '' end "Called Type"
+, case when level = 0 then called  else '' end "Called"
+, level "Level"
+, case when level > 0 then caller_type else '' end as "Type"
+, case when level > 0 then  OBJS.ODOBAT else '' end as "Attribute"
+, case when level > 0 then
+    SUBSTR('. . . . . . . . . . . . . . . . . . . . ',1,ordered.LEVEL*2)
+    CONCAT    ordered.CALLER else '' end AS "Caller"
+,Objs.Odobtx "Description"
+ from ordered
+left join jpltools.objs objs on caller = odobnm and odobtp=caller_type
+order by order_by

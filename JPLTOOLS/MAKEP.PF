@@ -1,0 +1,20 @@
+
+
+                                            UNIQUE
+                R MAKEF
+                  MATYPE        10          TEXT('ATTRIBUT')
+
+                  MAORDR         3  0       TEXT('SEQUENCE')
+                  MAMBRE        10          TEXT('MEMBRE')
+                  MALIB         10          TEXT('BIBLIOTHEQUE')
+                  MAACTN        10          TEXT('ACTION')
+                  MACMDE       480          TEXT('COMMANDE')
+
+                  MAMONM        10          TEXT('MONMSG')
+
+                K MAORDR
+                K MATYPE
+
+                K MAMBRE
+                K MALIB
+

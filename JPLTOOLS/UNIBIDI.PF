@@ -1,0 +1,13 @@
+      *  CHGPF FILE(UNIBIDI) SIZE(30000 1000 3)
+      *
+      *  CPYFRMIMPF FROMSTMF('/HOME/LAMONTRE/BIDICLASS.TXT')
+      *             TOFILE(UNIBIDI)
+      *             MBROPT(*REPLACE)
+      *             RCDDLM(*CRLF)
+      *             FLDDLM(*TAB)
+                R BIDIF
+                  CP             4          COLHDG('CODE ' 'PAGE')
+                  NAME         100          COLHDG('NAME')
+                  BC             3          COLHDG('BIDI' 'CLASS')
+                  BMG            4          COLHDG('BIDI' 'MIRRORING' 'GLYPH')
+                K CP

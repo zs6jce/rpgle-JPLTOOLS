@@ -1,0 +1,153 @@
+
+                     /* dans le meme ordre que la commande */
+             PGM        PARM(&S &N &O     &L &F       &i &COMPILER &P &G &H &J &E +
+                          &R &X &C &scddate &scdtime)
+             DCL &scdDATE *CHAR 7
+             DCL &scdTIME *CHAR 6
+             DCL        VAR(&JOBDATE) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&JOBTIME) TYPE(*CHAR) LEN(10)
+/* GESTIONNAIRE DE L'OPTION 14 : CHOISIT LE BON COMPILATEUR ET+
+   LES BONNES OPTIONS EN FONCTION DE L'OBJET */
+/* Compilateur                                                      */
+             DCL        VAR(&COMPILER) TYPE(*CHAR) LEN(10)
+/* CONFIRMER LA PILE DE COMMANDE                                    */
+             DCL        VAR(&C) TYPE(*CHAR) LEN(4)
+/* EXECUTION PAR LOT (*YES *NO)                                     */
+             DCL        VAR(&E) TYPE(*CHAR) LEN(4)
+/* NOM DE FICHIER                                                   */
+             DCL        VAR(&F) TYPE(*CHAR) LEN(10)
+/* BIB JOBD (ECRAN F18)                                             */
+             DCL        VAR(&G) TYPE(*CHAR) LEN(10)
+/* NOM JOBD (ECRAN F18)                                             */
+             DCL        VAR(&H) TYPE(*CHAR) LEN(10)
+/* JOBD (BIB/NOM) (ECRAN F18)                                       */
+             DCL        VAR(&J) TYPE(*CHAR) LEN(21)
+/* BIB ELEMENT                                                      */
+             DCL        VAR(&L) TYPE(*CHAR) LEN(10)
+/* NOM ELEMENT                                                      */
+             DCL        VAR(&N) TYPE(*CHAR) LEN(10)
+/* BIB OBJET (ECRAN F18)                                            */
+             DCL        VAR(&O) TYPE(*CHAR) LEN(10)
+/* ifs link */
+             DCL        VAR(&I) TYPE(*CHAR) LEN(500)
+/* COMPILATION PAR LOT (*YES *NO) (ECRAN F18)                       */
+             DCL        VAR(&P) TYPE(*CHAR) LEN(4)
+/* REMPLACEMENT OBJET (*YES *NO) (ECRAN F18)                        */
+             DCL        VAR(&R) TYPE(*CHAR) LEN(4)
+/* TYPE D'ELEMENT (SANS *)                                          */
+             DCL        VAR(&S) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&S1) TYPE(*CHAR) LEN(10)
+/* TEXTE ELEMENT                                                    */
+             DCL        VAR(&X) TYPE(*CHAR) LEN(50)
+
+/* LA COMMANDE A EXECUTER (SBMJOB OU DIRECT)                        */
+/*/ PILE DE 33 COMMANDES DE 300 CARACTERES /*/
+/* 0001-0025 : ENTETE = NB DE COMMANDES, ...                   -
+   0026-9925 : 33 * 300 = 33 COMMANDES                                         -
+     : 001-025 : CONTEXTE (MONMSG, LONGUEUR COMMANDE, ...)                    -
+       026-300 : LA COMMANDE                                                  -
+   9999-9999 : '*' MARQUEUR DE FIN -
+*/
+             DCL        VAR(&CMDS ) TYPE(*CHAR) LEN(9999)
+             /*/ UNE COMMANDE /*/
+             DCL        VAR(&CMD) TYPE(*CHAR) LEN(0240)
+             DCL        VAR(&CMDLEN) TYPE(*DEC) LEN(15 5) VALUE(240)
+
+             CHGVAR     VAR(%SST(&CMDS 9990 9)) VALUE('*********')
+        /*   CHGVAR     VAR(&S) VALUE(&S *TCAT &COMPILER)   */
+        /*   CHGVAR     VAR(&S) VALUE(&COMPILER *tcat &s)   */
+
+/*           SNDPGMMSG  MSG(&E *CAT &F *CAT &G *CAT &H *CAT &J *CAT +
+                          &L *CAT &N *CAT &O *CAT &P *CAT &R *CAT +
+                          &S *CAT &X)                                */
+
+/* RECUPERER LES OPTIONS DE COMPIL                                  */
+
+             CHGVAR     VAR(&S1) VALUE(&S)
+         /*  CALL MAKE1R (&S1)     */
+
+             IF (&S1 *NE 'UNKNOWN   ') THEN(GOTO MAKE2    )
+
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA('Compilation du' *BCAT &S *BCAT &L +
+                          *TCAT '/' *TCAT &F *TCAT '(' *TCAT &N +
+                          *TCAT '). Type d''objet non gere') +
+                          MSGTYPE(*ESCAPE)
+             GOTO       CMDLBL(FIN)
+
+
+MAKE2:
+
+
+    CALL MAKE2R         PARM(&E &F &G &H &J &L &N &O &i &P &R &S &compiler &X &C &CMDS )
+
+IF (&C = 'F3F3') THEN(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA(&S *BCAT +
+                          &L *TCAT '/' *TCAT &F *TCAT '(' *TCAT &N +
+                          *TCAT '). Compilation abandonnee') +
+                          MSGTYPE(*ESCAPE)
+             GOTO       CMDLBL(FIN)
+             ENDDO
+IF (%sst(&cmds 1 3) = '000') THEN(DO)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA(&S *BCAT +
+                          &L *TCAT '/' *TCAT &F *TCAT '(' *TCAT &N +
+                          *TCAT '). Compilation impossible, pas de +
+                          commande') MSGTYPE(*ESCAPE)
+             GOTO       CMDLBL(FIN)
+             ENDDO
+             IF (&S  *eq 'UNKNOWN   ') THEN(do)
+
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) +
+                          MSGDTA('Compilation du' *BCAT &S *BCAT &L +
+                          *TCAT '/' *TCAT &F *TCAT '(' *TCAT &N +
+                          *TCAT '). Type d''objet non gere') +
+                          MSGTYPE(*ESCAPE)
+             GOTO       CMDLBL(FIN)
+             enddo
+/*/ DMPCLPGM /*/
+/*/ GOTO FIN /*/
+             IF         COND(&P *NE '*NO ') THEN(GOTO CMDLBL(SBM))
+             SNDPGMMSG  MSGID(PDM0099) MSGF(QPDA/QUOMSGF) MSGDTA(&N) +
+                          MSGTYPE(*STATUS)
+             CALL       PGM(MAKE4C ) PARM(&CMDS       )
+             MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(CLP2))
+             /* PAS D'ERREUR */
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Objet ' +
+                          *TCAT &O *TCAT '/' *TCAT &N *BCAT ' cree')
+             GOTO CLP3
+CLP2:
+             /* AU MOINS UNE ERREUR */
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Objet ' +
+                          *TCAT &O *TCAT '/' *TCAT &N *BCAT ' non +
+                          cree') MSGTYPE(*ESCAPE)
+
+CLP3:
+             GOTO       CMDLBL(FIN)
+SBM:
+
+             IF         COND(&SCDDATE = '0000000') THEN(DO)
+             CHGVAR     VAR(&JOBDATE) VALUE('*CURRENT')
+             ENDDO
+             ELSE       CMD(DO)
+             CVTDAT     DATE(&SCDDATE) TOVAR(&JOBDATE) +
+                          FROMFMT(*CYMD) TOSEP(*JOB)
+             ENDDO
+             IF         COND(&SCDTIME = '000000') THEN(DO)
+             CHGVAR     VAR(&JOBTIME) VALUE('*CURRENT')
+             ENDDO
+             ELSE       CMD(DO)
+             CHGVAR     VAR(&JOBTIME) VALUE(&SCDTIME)
+             ENDDO
+
+             SBMJOB     CMD(CALL PGM(MAKE4C) PARM(&CMDS)) JOB(&N) +
+                          SCDDATE(&JOBDATE) SCDTIME(&JOBTIME)
+             SNDPGMMSG  MSGID(PDM0018) MSGF(QPDA/QUOMSGF) MSGDTA(&N)
+             RETURN
+
+/*    ERREUR */
+BUG:
+             DLTOVR     FILE(*ALL)
+             SNDPGMMSG  MSGID(CPF9898) MSGF(QCPFMSG) MSGDTA('Fin +
+                          anormal du programme MAKE ') +
+                          MSGTYPE(*ESCAPE)
+FIN:         ENDPGM

@@ -1,0 +1,61 @@
+/* CHANGER D'ENVIRONNEMENT : SELON UNE DESCRIPTION DE TRAVAIL*/
+             PGM        PARM(&JOBD)
+             DCL        VAR(&JOBD) TYPE(*CHAR) LEN(20) +
+                          VALUE('JPLXREF   DEVSOPRA  ')
+             DCL        VAR(&JOBD0100) TYPE(*CHAR) LEN(1024)
+             DCL        VAR(&ERRCOD) TYPE(*CHAR) LEN(256)
+             DCL        VAR(&CODRET) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&BIN4) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&DEC8) TYPE(*DEC) LEN(8 0)
+             DCL        VAR(&POS) TYPE(*DEC) LEN(8 0)
+             DCL        VAR(&LEN) TYPE(*DEC) LEN(8 0)
+             DCL        VAR(&LIBL) TYPE(*CHAR) LEN(275)
+
+
+             DCL &CMD *CHAR 1000
+/*============================================================================*/
+/* PROCEDURE DE REMONTEE DES MESSAGES D'ERREUR VERS L'APPELANT */
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(100)
+             DCL        VAR(&MSGF) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&KEYVAR) TYPE(*CHAR) LEN(4)
+             MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(ERREUR))
+             GOTO       CMDLBL(DEBUTPGM)
+ ERREUR:     RCVMSG     MSGTYPE(*LAST) KEYVAR(&KEYVAR) +
+                          MSGDTA(&MSGDTA) MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+DEBUTPGM:    /* FIN DE PROCEDURE DE GESTION DES ERREURS */
+/*============================================================================*/
+   /* LIST JOBS                            */
+             CHGVAR     VAR(&ERRCOD) VALUE(' ')
+             CHGVAR     VAR(%BIN(&ERRCOD 1 4)) VALUE(255)
+             CALL       PGM(QWDRJOBD) PARM(+
+                    &JOBD0100   /*/1 ¦ RECEIVER VARIABLE             /*/+
+                    X'00000400' /*/2 ¦ LENGTH OF RECEIVER VARIABLE   /*/+
+                    'JOBD0100'  /*/3 ¦ FORMAT NAME                   /*/+
+                    &JOBD       /*/4 ¦ QUALIFIED JOB DESCRIPTION NAME/*/+
+                    &ERRCOD     /*/5 ¦ ERROR CODE                    /*/)
+             CHGVAR     VAR(&CODRET) VALUE(%SST(&ERRCOD 9 7))
+             IF         COND(&CODRET *NE '       ') THEN(DO)
+             SNDPGMMSG  MSGID(&CODRET) MSGF(*LIBL/QCPFMSG) +
+                          MSGTYPE(*ESCAPE)
+             ENDDO
+/* OFFSET LIBL  */
+             CHGVAR     VAR(&BIN4) VALUE(%SST(&JOBD0100 361 4))
+             CHGVAR     VAR(&DEC8) VALUE(%BINARY(&BIN4))
+             CHGVAR     VAR(&POS) VALUE(&DEC8 + 1)
+/* LONGUEUR LIBL */
+             CHGVAR     VAR(&BIN4) VALUE(%SST(&JOBD0100 365 4))
+             CHGVAR     VAR(&DEC8) VALUE(%BINARY(&BIN4))
+             CHGVAR     VAR(&LEN) VALUE(&DEC8 * 11)
+             CHGVAR     VAR(&LIBL) VALUE(%SST(&JOBD0100 &POS &LEN))
+
+
+             CHGVAR     VAR(&CMD) VALUE('CHGLIBL    LIBL(' *CAT +
+                          &LIBL *CAT ')')
+             CALL       PGM(QCMDEXC) PARM(&CMD 1000)
+FINPGM:
+             ENDPGM

@@ -1,0 +1,29 @@
+--DROP Function  lamontre1/udtffunc3 ()  ;
+
+Create Function  lamontre1/udtffunc3 ()
+RETURNS TABLE (
+  CUSNUM decimal(6, 0)
+, LSTNAM CHAR(8)
+, INIT   CHAR(3)
+, STREET CHAR(13)
+, CITY   CHAR(6)
+, STATE  CHAR(2)
+, ZIPCOD decimal(5, 0)
+, CDTLMT decimal(4, 0)
+, CHGCOD decimal(1, 0)
+, BALDUE decimal(6, 2)
+, CDTDUE decimal(6, 2)
+)
+LANGUAGE RPGLE
+PARAMETER STYLE DB2SQL
+Not DETERMINISTIC
+NO SQL
+CALLED ON NULL INPUT
+NO DBINFO
+NO EXTERNAL ACTION
+   FENCED
+NO FINAL CALL
+DISALLOW PARALLEL
+SCRATCHPAD
+EXTERNAL NAME lamontre1/udtfr3
+CARDINALITY 10

@@ -1,0 +1,115 @@
+
+
+
+
+
+
+
+             PGM        PARM(&SQL &NULLVALUE &IFSROOT &IFSDIR +
+                          &IFSFILE &DTAAUT &OBJAUT)
+             DCL        VAR(&SQL) TYPE(*CHAR) LEN(5000)
+             DCL        VAR(&IFSROOT) TYPE(*CHAR) LEN(132)
+             DCL        VAR(&IFSDIR) TYPE(*CHAR) LEN(132)
+             DCL        VAR(&IFSFILE) TYPE(*CHAR) LEN(132)
+             DCL        VAR(&IFS) TYPE(*CHAR) LEN(250)
+             DCL        VAR(&DTAAUT) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&OBJAUT) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&NULLVALUE) TYPE(*CHAR) LEN(30)
+
+             DCL        VAR(&JOBDATFMT) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&JOBDATSEP) TYPE(*CHAR) LEN(1)
+             DCL        VAR(&DEBUG) TYPE(*CHAR) LEN(1) VALUE('1')
+             DCL        VAR(&DIAG) TYPE(*CHAR) LEN(1) VALUE('0')
+             DCL        VAR(&NBRCURRCD) TYPE(*DEC) LEN(10 0)
+/*===========GESTION-DES-MESSAGES-D'ERREUR--------------------------*/
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(512)
+             DCL        VAR(&MSGF) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+             /*-RENVOI-DES-MESSAGES-VERS-L'APPELANT------------------*/
+             MONMSG     MSGID(CPF0000 QWM0000) EXEC(GOTO +
+                          CMDLBL(STDMONMSG))
+             GOTO       CMDLBL(DEBUTPGM)
+STDMONMSG:
+             /*-----------CAPTURE-DU-MESSAGE----------------------*/
+             RCVMSG     MSGTYPE(*LAST) RMV(*NO) MSGDTA(&MSGDTA) +
+                          MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+             /*-----------PROMOTION-DU-MESSAGE--------------------*/
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+             RETURN
+DEBUTPGM:
+/*===========CORPS-DU-PROGRAMME-------------------------------------*/
+/* VERIFIER L'EXISTENCE DE IFSROOT */
+             IF         COND(&IFSROOT = ' ') THEN(DO)
+             RTVDTAARA  DTAARA(LIFSHSSF) RTNVAR(&IFSROOT)
+             MONMSG     MSGID(CPF0000)
+             ENDDO
+
+             IF         COND(&IFSROOT = ' ') THEN(DO)
+             CHGVAR     VAR(&IFSROOT) VALUE('ExtractionExcel')
+             MONMSG     MSGID(CPF0000)
+             ENDDO
+
+             CHGVAR     VAR(&IFS) VALUE('/' *CAT &IFSROOT)
+
+             CHKLNK     OBJ(&IFS)
+
+
+/* VERIFIER L'EXISTENCE DE IFSDIR  */
+             IF         COND(&IFSDIR *NE ' ') THEN(DO)
+
+             CHGVAR     VAR(&IFS) VALUE(&IFS *TCAT '/' *CAT &IFSDIR)
+
+             CHKLNK     OBJ(&IFS)
+
+             ENDDO
+/* NOM DU FICHIER A PRODUIRE  */
+             CHGVAR     VAR(&IFS) VALUE(&IFS *TCAT '/' *TCAT &IFSFILE)
+
+/* VERIFIER LE MODE DEBUG */
+             CHGDBG
+             /* PAS DE DEBUGGING EN COURS */
+             MONMSG     MSGID(CPF0001) EXEC(CHGVAR VAR(&DEBUG) +
+                          VALUE('0'))
+             /* STRDBG EN COURS MAIS PAS POUR CE PROGRAMME */
+             MONMSG     MSGID(CPF9541) EXEC(CHGVAR VAR(&DEBUG) +
+                          VALUE('2'))
+
+/* REGIONALISATION DE LA DATE */
+             RTVJOBA    DATFMT(&JOBDATFMT) DATSEP(&JOBDATSEP)
+
+/* SUPPRIMER LE FICHIER EN SORTIE ... DONC IL N'ETAIT PAS VERROUILLE */
+             RMVLNK     OBJLNK(&IFS)
+             MONMSG     MSGID(CPF0000)
+
+             DLTF       FILE(QTEMP/sql2sylkP)
+             MONMSG     MSGID(CPF0000)
+             CRTDUPOBJ  OBJ(sql2sylkP) FROMLIB(*LIBL) OBJTYPE(*FILE) +
+                          TOLIB(QTEMP) DATA(*NO)
+             OVRDBF     FILE(sql2sylkP) TOFILE(QTEMP/sql2sylkP)
+             CALL       PGM(SQL2SYLKR) PARM(&SQL &JOBDATFMT &JOBDATSEP &DEBUG &NULLVALUE)
+             MONMSG     MSGID(CPF9897) EXEC(CHGVAR VAR(&DIAG) +
+                          VALUE('1'))
+             RTVMBRD    FILE(QTEMP/sql2sylkP) NBRCURRCD(&NBRCURRCD)
+             DLTOVR     FILE(sql2sylkP)
+             IF (&NBRCURRCD > 0) THEN(DO)
+       /* ca c'est pour le versions avec sylk10p, sans dds, ccsid 65535 */
+       /*    CPYTOSTMF  +
+       /*    FROMMBR('/qsys.lib/qtemp.lib/sql2sylkp.file/sql2sylkP.MBR') +
+       /*    TOSTMF(&IFS) STMFOPT(*REPLACE) STMFCODPAG(*PCASCII)      */
+
+             CPYTOIMPF  FROMFILE(QTEMP/SQL2SYLKP) TOSTMF(&IFS) +
+                          STMFCODPAG(*PCASCII) RCDDLM(*CRLF) +
+                          DTAFMT(*FIXED)
+
+             CHGAUT     OBJ(&IFS) USER(*PUBLIC) DTAAUT(&DTAAUT) +
+                          OBJAUT(&OBJAUT)
+             ENDDO
+             IF         COND(&DIAG = '1') THEN(DO)
+             SNDPGMMSG  MSGID(CPF9897) MSGF(*LIBL/QCPFMSG) +
+                          MSGDTA('Fin anormale. Des messages de +
+                          dignostic ont été émis') MSGTYPE(*ESCAPE)
+ENDDO
+ FIN:        ENDPGM

@@ -1,0 +1,16 @@
+             PGM        PARM(&TEXTC &TEXTH)
+             DCL        VAR(&TEXTC) TYPE(*CHAR) LEN(25)
+             DCL        VAR(&TEXTH) TYPE(*CHAR) LEN(25)
+             DCL        VAR(&LANGID) TYPE(*CHAR) LEN(3)
+             DCL        VAR(&CNTRYID) TYPE(*CHAR) LEN(2)
+             DCL        VAR(&CCSID) TYPE(*DEC) LEN(5 0)
+             DCL        VAR(&DFTCCSID) TYPE(*DEC) LEN(5 0)
+             DCL        VAR(&CHRIDCTL) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&CONSTANT) TYPE(*CHAR) LEN(25) +
+                          VALUE('$´^~#@[\]{|}!')
+             RTVJOBA    LANGID(&LANGID) CNTRYID(&CNTRYID) +
+                          CCSID(&CCSID) DFTCCSID(&DFTCCSID) +
+                          CHRIDCTL(&CHRIDCTL)
+             CHGVAR     VAR(&CONSTANT) VALUE(&CONSTANT)
+             DMPCLPGM
+ END:        ENDPGM

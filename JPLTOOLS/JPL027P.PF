@@ -1,0 +1,41 @@
+.....A*.........T.NAME++++++RLEN++TDPB......FUNCTIONS+++++++++++++++++++++++++++ ...+... 9 ...+... 0
+
+                R JPL027F
+                  TEXT          20A
+                                            COLHDG('FIX CHAR ' -
+                                            'CCSID *JOB          '        -
+                                            'NAME=TEXT         ')
+                                            TEXT('FIX CHAR FIX CHAR FIX CHAR  ')
+                                            ALWNULL
+                  TEXTV         20A         VARLEN
+                                            COLHDG('VAR CHAR            ' -
+                                            'CCSID *JOB          ' -
+                                            'NAME=TEXTV        ')
+                                            TEXT('VAR CHAR VAR CHAR VAR CHAR  ')
+                                            ALWNULL
+                  TODAY           L         DATFMT(*ISO)
+                                            COLHDG('CURRENT DATE'    )
+                                            ALWNULL
+                  NOW             T         TIMFMT(*ISO)
+                                            COLHDG('CURRENT TIME'    )
+                                            ALWNULL
+.....A*.........T.NAME++++++RLEN++TDPB......FUNCTIONS+++++++++++++++++++++++++++ ...+... 9 ...+... 0
+                  TIMSTM          Z         COLHDG('A TIME STAMP'    )
+                                            ALWNULL
+                  DEC7           7P 2       COLHDG('A DECIMAL DATA'  )
+                                            ALWNULL
+                  ZONED7         7S 2       COLHDG('A ZONED DATA'    )
+                                            ALWNULL
+                  FLOAT4         9F         COLHDG('A 4-FLOAT DATA'  )
+                                            FLTPCN(*SINGLE)
+                                            ALWNULL
+                  FLOAT8        17F         COLHDG('A 8-FLOAT DATA'  )
+                                            FLTPCN(*DOUBLE)
+                                            ALWNULL
+                  INT2           4B 0       COLHDG('A 2-INT DATA'    )
+                                            ALWNULL
+                  INT4           9B 0       COLHDG('A 4-INT DATA'    )
+                                            ALWNULL
+                  INT8          18B 0       COLHDG('A 8-INT DATA'    )
+                                            ALWNULL
+

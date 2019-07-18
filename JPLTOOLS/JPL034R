@@ -1,0 +1,41 @@
+     h debug datedit(*ymd) datfmt(*iso-) decedit('0.') alwnull(*usrctl)
+     fJPL034P   o    e           k disk            prefix(db2_)
+
+     d ds1             ds
+     d  c69                          69c   ccsid(1200)
+     d  x138                        138a   overlay(ds1)
+
+     d u               ds                  based(pU)
+     d u11                     1      1u 0
+     d u12                     1      2u 0
+     d u22                     2      2u 0
+
+     d dsi             ds
+     d i                              5u 0
+     d j               s              5u 0
+     d x4              s              4
+
+      * returns char representation of any hexadecimal string
+     D Chr2Hex         Pr                  ExtProc('cvthc')
+     D  Tgt                       65534A   Options(*VarSize)
+     D  Src                       32767A   Options(*VarSize)
+     D  TgtLen                       10i 0 Value
+
+
+      /free
+       *inlr = *on;
+       for i = 0 to 65400 by 64;
+         Chr2hex (x4       : dsi       : 8  ) ;
+         c69  =        x4 + '-'  ;
+         pu = %addr(ds1)+10;
+         for j = 0 to 63 ;
+            u12 = i + j;
+            if u12 < 32;
+            u12=32;
+            endif;
+            pu+=2;
+         endfor;
+         db2_utf16 = c69 ;
+         write jpl034f;
+       endfor;
+       return;

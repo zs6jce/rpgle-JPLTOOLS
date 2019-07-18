@@ -1,0 +1,175 @@
+
+             PGM        PARM(&STACK &LIBRARY &FILE &MEMBER &STARTAT +
+                          &STOPAT &STREAM &STARTTAG &STOPTAG &HOLD +
+                          &SPLFNAME &DLTSPLF &joblog &VAR &COMMIT &NAMING +
+                          &DATFMT &DATSEP &TIMFMT &TIMSEP +
+                          &DFTRDBCOL &DECMPT &DATABASE &USERID +
+                          &PASSWORD &chgobjatr &init &last)
+
+             DCL        VAR(&STACK) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&STREAM) TYPE(*CHAR) LEN(500)
+             DCL        VAR(&STARTTAG) TYPE(*CHAR) LEN(50)
+             DCL        VAR(&STOPTAG) TYPE(*CHAR) LEN(50)
+             DCL        VAR(&COMMIT   ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&NAMING   ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&DATFMT   ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&DATSEP   ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&TIMFMT   ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&TIMSEP   ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&DFTRDBCOL) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&DECMPT   ) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&DATABASE) TYPE(*CHAR) LEN(30)
+             DCL        VAR(&USERID) TYPE(*CHAR) LEN(30)
+             DCL        VAR(&PASSWORD) TYPE(*CHAR) LEN(30)
+             DCL        VAR(&LIBRARY) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MEMBER) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&FILE) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&HOLD) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&SPLFNAME) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&DLTSPLF) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&CHGOBJATR) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&JOBLOG) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&VAR) TYPE(*CHAR) LEN(622) /* +
+                          ((2+10+50)*10)+2 */
+             DCL        VAR(&STARTAT) TYPE(*DEC) LEN(6 0)
+             DCL        VAR(&STOPAT) TYPE(*DEC) LEN(6 0)
+             DCL        VAR(&INIT) TYPE(*CHAR) LEN(50)
+             DCL        VAR(&last) TYPE(*CHAR) LEN(50)
+
+             DCL        VAR(&SRCATR) TYPE(*CHAR) LEN(100)
+             DCL        VAR(&SRCTYPE) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&SRCDATE) TYPE(*CHAR) LEN(13)
+
+/*============================================================================*/
+/* PROCEDURE DE REMONTEE DES MESSAGES D'ERREUR VERS L'APPELANT */
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(100)
+             DCL        VAR(&MSGF) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&KEYVAR) TYPE(*CHAR) LEN(4)
+             MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(ERREUR))
+             GOTO       CMDLBL(DEBUTPGM)
+ ERREUR:     RCVMSG     MSGTYPE(*LAST) KEYVAR(&KEYVAR) +
+                          MSGDTA(&MSGDTA) MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+             RCLACTGRP  ACTGRP(JPLTOOLS)
+             MONMSG     MSGID(CPF0000)
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+DEBUTPGM:    /* FIN DE PROCEDURE DE GESTION DES ERREURS */
+/*============================================================================*/
+
+
+
+
+
+             IF         COND(&STACK *EQ '*QSYS') THEN(DO)
+/* EXISTENCE DU MEMBRE SRC : PILE DE COMMANDES SQL */
+
+
+             FINDMBR    LIBRARY(&LIBRARY) FILE(&FILE) +
+                          MEMBER(&MEMBER) RTNLIB(&LIBRARY)
+             /* recuperer les attributs du fichier */
+             RTVMBRD    FILE(&LIBRARY/&FILE) MBR(&MEMBER) +
+                          SRCTYPE(&SRCTYPE) SRCCHGDATE(&SRCDATE)
+             CHGVAR     VAR(&SRCATR) VALUE(&SRCTYPE *CAT &SRCDATE +
+                          *CAT &LIBRARY *CAT &FILE *CAT &MEMBER)
+/* FICHIER SOURCE */
+             OVRDBF     FILE(QTXTSRC) TOFILE(&LIBRARY/&FILE) +
+                          MBR(&MEMBER) OVRSCOPE(*JOB) SHARE(*YES)
+                          enddo
+/* ifs stream */
+                          else do
+                          chklnk &stream
+             CHGVAR     VAR(&SRCATR) VALUE('*STREAM                +
+                          IFS       ' *CAT &STREAM)
+                          enddo
+/* FICHIER DE TRAVAIL */
+             CHKOBJ     OBJ(QTEMP/QTMPSRC) OBJTYPE(*FILE)
+             MONMSG CPF0000 EXEC(DO)
+             CRTSRCPF   FILE(QTEMP/QTMPSRC) RCDLEN(132) MBR(QTMPSRC)
+             ENDDO
+
+             CLRPFM     FILE(QTEMP/QTMPSRC) MBR(*FIRST)
+             OVRDBF     FILE(QTMPSRC) TOFILE(QTEMP/QTMPSRC) +
+                          MBR(QTMPSRC) OVRSCOPE(*JOB) SHARE(*YES)
+/* FICHIER SPOULE */
+         IF         COND(&STACK = '*QSYS') THEN(DO)
+           IF         COND(&SPLFNAME = '*MEMBER') THEN(DO)
+             CHGVAR     VAR(&SPLFNAME) VALUE(&MEMBER)
+           ENDDO
+         ENDDO
+         ELSE       CMD(DO)
+           IF         COND(&SPLFNAME = '*MEMBER') THEN(DO)
+             CHGVAR     VAR(&SPLFNAME) VALUE('EXECSQL3')
+           ENDDO
+         ENDDO
+             OVRPRTF    FILE(QSYSPRT) FORMTYPE(&SPLFNAME) +
+                          HOLD(&HOLD) SPLFNAME(&SPLFNAME) +
+                          OVRSCOPE(*JOB)
+/* TRAITER */
+             CALL       PGM(EXECSQL3R) PARM(&VAR &STARTAT +
+                          &STOPAT &HOLD &SPLFNAME &SRCATr +
+               &joblog      &COMMIT                      +
+                            &NAMING                       +
+                            &DATFMT                        +
+                            &DATSEP                         +
+                            &TIMFMT                          +
+                            &TIMSEP                           +
+                            &DFTRDBCOL                         +
+                            &DECMPT      +
+                            &DATABASE  +
+                            &USERID   +
+                            &PASSWORD   +
+                             &STACK      +
+                             &STREAM      +
+                             &STARTTAG     +
+                             &STOPTAG &chgobjatr &init &last)
+   /* si erreur = erreur SQL, juste pousser l'erreur à l'appelant */
+             MONMSG     MSGID(CPF0000 CEE0000) EXEC(DO)
+             RCVMSG     MSGTYPE(*LAST) KEYVAR(&KEYVAR) +
+                          MSGDTA(&MSGDTA) MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+             ENDDO
+
+             IF         COND(&STACK *EQ '*QSYS') THEN(DO)
+             DLTOVR     FILE(QTXTSRC) LVL(*JOB)
+             ENDDO
+
+             DLTOVR     FILE(QTMPSRC) LVL(*JOB)
+             DLTOVR     FILE(QSYSPRT) LVL(*JOB)
+             MONMSG     MSGID(CPF0000)
+/* NETTOYER LES SPOULES */
+             IF         COND(&DLTSPLF = '*YES') THEN(DO)
+             DLTSPLF    FILE(*SELECT) SELECT(*CURRENT *ALL &SPLFNAME)
+             ENDDO
+/*                                                                   +
+   MODELE POUR DECORTIQUER UNE LISTE IMBRIQUEE DE VARIABLES          +
+             DCL        VAR(&NBR) TYPE(*DEC) LEN(5 0)                +
+             DCL        VAR(&I) TYPE(*DEC) LEN(5 0)                  +
+             DCL        VAR(&N) TYPE(*DEC) LEN(5 0)                  +
+             DCL        VAR(&OFFSET) TYPE(*DEC) LEN(5 0)             +
+             DCL        VAR(&PARAM) TYPE(*CHAR) LEN(62)              +
+             DCL        VAR(&PARNOM) TYPE(*CHAR) LEN(10)             +
+             DCL        VAR(&PARVAL) TYPE(*CHAR) LEN(50)             +
+             CHGVAR     VAR(&NBR) VALUE(%BIN(&VAR 1 2))              +
+             IF         COND(&NBR *EQ 0) THEN(GOTO CMDLBL(FIN))      +
+             CHGVAR     VAR(&N) VALUE(1)                             +
+VAR:                                                                 +
+             CHGVAR     VAR(&I) VALUE((&N * 2) + 1)                  +
+             CHGVAR     VAR(&OFFSET) VALUE(%BIN(&VAR &I 2) + 1)      +
+             CHGVAR     VAR(&PARAM) VALUE(%SST(&VAR &OFFSET 62))     +
+             CHGVAR     VAR(&PARNOM) VALUE(%SST(&PARAM 3 10))        +
+             CHGVAR     VAR(&PARVAL) VALUE(%SST(&PARAM 13 50))       +
+             SNDPGMMSG  MSG(&PARNOM *CAT '=' *CAT &PARVAL)           +
+                                                                     +
+             CHGVAR     VAR(&N) VALUE(&N + 1)                        +
+             IF (&N *LE &NBR) THEN(GOTO VAR)                         +
+*/
+/* DMPCLPGM */
+
+
+FIN:
+ENDPGM

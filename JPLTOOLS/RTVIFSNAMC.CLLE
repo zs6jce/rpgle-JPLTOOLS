@@ -1,0 +1,54 @@
+/*-
+RETRIEVE A COMPLETE IFS FILE NAME THAT WILL BE MADE BY A SQL2* TOOL -
+*/
+             PGM        PARM(&IFSFILE &IFSDIR &IFSROOT &IFSNAME)
+             DCL        VAR(&IFSROOT) TYPE(*CHAR) LEN(132)
+             DCL        VAR(&IFSDIR) TYPE(*CHAR) LEN(132)
+             DCL        VAR(&IFSFILE) TYPE(*CHAR) LEN(132)
+             DCL        VAR(&IFSNAME) TYPE(*CHAR) LEN(500)
+/*===========GESTION-DES-MESSAGES-D'ERREUR--------------------------*/
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(512)
+             DCL        VAR(&MSGF) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+             /*-RENVOI-DES-MESSAGES-VERS-L'APPELANT------------------*/
+             MONMSG     MSGID(CPF0000 QWM0000) EXEC(GOTO +
+                          CMDLBL(STDMONMSG))
+             GOTO       CMDLBL(DEBUTPGM)
+STDMONMSG:
+             /*-----------CAPTURE-DU-MESSAGE----------------------*/
+             RCVMSG     MSGTYPE(*LAST) RMV(*NO) MSGDTA(&MSGDTA) +
+                          MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+             /*-----------PROMOTION-DU-MESSAGE--------------------*/
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+             RETURN
+DEBUTPGM:
+/*===========CORPS-DU-PROGRAMME-------------------------------------*/
+/* VERIFIER L'EXISTENCE DE IFSROOT */
+
+             IF         COND(&IFSROOT *NE ' ' *AND &IFSROOT *NE +
+                          '*NONE') THEN(DO)
+             IF         COND(&IFSROOT = '*COMMON') THEN(DO)
+             /* it's a good practice to have the root of all your extractions -
+                recorded at only one place. It's here */
+             CHGVAR     VAR(&IFSROOT) VALUE('ExtractionExcel')
+             MONMSG     MSGID(CPF0000)
+             ENDDO
+             CHGVAR     VAR(&IFSNAME) VALUE('/' *CAT &IFSROOT)
+             CHKLNK     OBJ(&IFSNAME)
+             ENDDO
+/* VERIFIER L'EXISTENCE DE IFSDIR  */
+             IF         COND(&IFSDIR *NE ' ' *AND &IFSDIR *NE +
+                          '*NONE') THEN(DO)
+             CHGVAR     VAR(&IFSNAME) VALUE(&IFSNAME *TCAT '/' *CAT +
+                          &IFSDIR)
+             CHKLNK     OBJ(&IFSNAME)
+             ENDDO
+/* NOM DU FICHIER A PRODUIRE  */
+             CHGVAR     VAR(&IFSNAME) VALUE(&IFSNAME *TCAT '/' *TCAT +
+                          &IFSFILE)
+
+
+ FIN:        ENDPGM

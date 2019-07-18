@@ -1,0 +1,6 @@
+  DROP
+       FUNCTION &JPLTOOLS.N2DATE(
+       BIGINT
+  )
+monmsg ST01660
+EXECUTESQL

@@ -1,0 +1,4 @@
+
+
+
+    DROP   FUNCTION JPLSQL.CLOB1_UDF

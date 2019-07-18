@@ -1,0 +1,111 @@
+:PNLGRP SUBMSGF='*LIBL/pnlmsg' TXTMODE = SBCS BIDI = NONE.
+.*--panels standard-------------------------------------------------------------
+:IMPORT PNLGRP=main01hp name='*'.
+.*==============================================================================
+:HELP NAME= INTRO .
+Work with IFS - help
+:XH1.Work with IFS
+:P.
+introduction text
+
+
+
+
+:EHELP.
+.*==============================================================================
+:HELP NAME= CTLB .
+dump of a stream file
+:XH4.Dump stream file
+:P.
+dump of a stream file
+
+
+:EHELP.
+.*==============================================================================
+:HELP NAME= fmtkb .
+Touches de fonction - Aide
+:XH1.Touches de fonction
+:P.
+:imhelp name='F01'.
+:imhelp name='F03'.
+
+:imhelp name='F05'.
+
+:imhelp name='F12'.
+
+
+:EHELP.
+.*==============================================================================
+.*==============================================================================
+:HELP NAME= CTLC .
+List of a stream file
+:XH4.List stream file
+:P.
+List of a stream file
+
+
+:EHELP.
+.*==============================================================================
+:HELP NAME= fmtkc .
+Touches de fonction - Aide
+:XH1.Touches de fonction
+:P.
+:imhelp name='F01'.
+:imhelp name='F03'.
+:imhelp name='F05'.
+:imhelp name='F07'.
+:imhelp name='F10'.
+:imhelp name='F12'.
+:imhelp name='F16B'.
+
+
+
+
+:EHELP.
+.*==============================================================================
+:HELP NAME= SELE .
+:XH4.
+Select options :
+:EHELP.
+.*==============================================================================
+.*==============================================================================
+:HELP NAME= zone .
+:XH4.
+Une zone
+:EHELP.
+:HELP NAME='F07'.
+F07=Details - help.
+:XH3.F10=details.
+:P.
+display full info for each line:
+line 2 display the stream file text (update : use CPY from a QSYS file with text)
+:EHELP.
+:HELP NAME='F10'.
+F10=Command screen - help.
+:XH3.F10=Command screen.
+:P.
+calls QCMD
+:EHELP.
+:HELP NAME='F21'.
+F21=Command line - help.
+:XH3.F21=Command line.
+:P.
+calls QUSCMDLN
+:EHELP.
+:HELP NAME='F16'.
+F21=Sort column - help.
+:XH3.F16=Sort
+:P.
+let the cursor on the colum you want to be sorted, then press F16.
+Job list is refreshed before sorted.
+:EHELP.
+.*==============================================================================
+:HELP NAME='F16B'.
+F16=work with commands.
+:XH3.F16=Work With Command
+:P.
+open the list of shortcuts and commands associated.
+
+:EHELP.
+.*==============================================================================
+:EPNLGRP.

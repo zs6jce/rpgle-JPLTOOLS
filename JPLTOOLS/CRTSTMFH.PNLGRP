@@ -1,0 +1,128 @@
+.*==============================================================================
+:PNLGRP .
+:HELP NAME='CRTSTMF'. Create stream file (help)
+:P.This command is used to create a new stream file
+:EHELP.
+
+:HELP NAME='CRTSTMF/STMF'. Stream file Name (STMF) - help
+:XH3. Stream File Name (STMF)
+:P.STMF - the name of the stream file to create
+:EHELP.
+
+:HELP NAME='CRTSTMF/UNLINK'. Force Creation (UNLINK) - help
+:XH3.                        Force Creation (UNLINK)
+:P.UNLINK decide what to do when the file already exists.
+:DL compact.
+
+:DT.*NO
+:DD.
+when UNLINK(*NO), file is not recreated. This is to permit to preserve
+previous values of Authority and CCSID.
+
+:DT.*YES
+:DD.
+when UNLINK(*YES), file is deleted then recreated.
+This is to assure the new file is setted with the new Authority and CCSID.
+:EDL.
+:EHELP.
+
+:HELP NAME='CRTSTMF/AUT'. Authority (AUT) - help
+:XH3.                     Authority (AUT)
+:P.AUT Specifies the data authorities to be given to the users.
+AUT is the sum of any of these elementary values.
+AUT use the UNIX api CHMOD to apply authority
+:DL compact.
+
+:DT.*USR_READ
+:DD.
+=256. Allow read by owner (the user who created the stream file)
+
+:DT.*USR_WRITE
+:DD.=128. Allow write by owner
+
+
+:DT.*USR_EXEC
+:DD.=64. Allow execute/search by owner
+
+
+:DT.*GRP_READ
+:DD.=32. Allow read by group
+
+
+:DT.*GRP_WRITE
+:DD.=16. Allow write by group
+
+
+:DT.*GRP_EXEC
+:DD.=8. Allow execute/search by group
+
+
+:DT.*PUBLIC_READ
+:DD.=4. Allow read by other
+
+
+:DT.*PUBLIC_WRITE
+:DD.=2. Allow write by other
+
+
+:DT.*PUBLIC_EXECUTE
+:DD.=1. Allow write by other
+
+
+:EDL.
+:EHELP.
+:HELP NAME='CRTSTMF/CCSID'.  Coded Character Set ID (CCSID) - help
+:XH3.                        Coded Character Set ID (CCSID)
+:P.CCSID specifies the Coded Character Set Identifier of the characters
+in the stream file. When opened in text mode, the I5/OS automatically
+convert characters between the stream file and the job depending on
+respective CCSID's
+:DL compact.
+
+:DT.*UTF8
+:DD.
+=1208. Stream file is encoded with Unicode UTF8 characters
+
+:DT.*UTF16
+:DD.=1200. Stream file is encoded with Unicode UTF16 characters
+
+:DT.*UCS2
+:DD.=13488. Stream file is encoded with Unicode UCS2 characters
+
+:DT.*PCASCII
+:DD.=1252. Stream file is encoded with Windows 1252 characters.
+CCSID 1252 is the one of american and west-europe windows users.
+More at http://www-03.ibm.com/systems/i/software/globalization/
+
+
+
+:DT.*JOB
+:DD.Stream file is encoded with the same CCSID as the job's one
+
+:DT.any value between 0 and 65535
+:DD.Stream file is encoded with thid CCSID.
+:PC.Note : CCSID(65535) is the CCSID(*HEXA), to be used to mark the file
+as a binary file IE automatic character translation by the I5/OS is forbidden.
+It's to your program to decide what to do about translation after each read.
+:EDL.
+:EHELP.
+
+:HELP NAME='CRTSTMF/EDIT'. Start Edit (EDIT) - help
+:XH3.                      Start Edit (EDIT)
+:P.EDIT specifies if you want to edit the file with EDTF
+after a successfull creation
+:DL compact.
+
+:DT.*NO
+:DD.
+After creation EDIT is not started
+
+
+:DT.*YES
+:DD.
+After creation EDIT is started
+:EDL.
+:EHELP.
+
+
+:EPNLGRP.

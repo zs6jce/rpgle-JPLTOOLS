@@ -1,0 +1,217 @@
+     A*%%TS  SD  20060316  172843  EB10168     REL-V5R2M0  5722-WDS
+     A*=========================================================================
+     A* SI LE SFLMSG NE S'AFFICHE PAS, VÉRIFIER
+     A*  AUCUN FORMAT N'ÉCRIT SUR LA LIGNE SFLMSGRCD(!INLPGM SNDBRKMSG POLLUE LA
+     A*  PMQPGM INITIALISÉ A *
+     A*  APPEL : IF ERREUR;CALLP PMQMSG...;W2FLSP='60';ITER;ENDIF;
+     A*=========================================================================
+     A* TOUCHES DE FONCTIONS ET INDICATEURS *INK
+     A* KA=F1, KB=F2, KC=F3, KD=F4, KE=F5, KF=F6, KG=F7, KH=F8, KI=F9, KJ=F10,
+     A* KK=F11, KL=F12, KM=F13, KN=F14, KP=F15, KQ=F16, KR=F17, KS=F18, KT=F19,
+     A* KV=F21, KW=F22, KX=F23, KY=F24
+     A*=========================================================================
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      CHGINPDFT(UL)
+     A                                      PRINT
+     A                                      INDARA
+     A                                      WDWBORDER((*COLOR BLU))
+     A                                      CF05
+     A                                      CA03
+     A                                      CA12
+     A*=========================================================================
+     A          R FMTA
+     A*%%TS  SD  20060202  164531  EB10168     REL-V5R2M0  5722-WDS
+     A                                      CF04
+     A                                      OVERLAY
+     A            SPNAME        10A  O  1  2COLOR(BLU)
+     A                                  1 13'A'
+     A                                  1 15DATE
+     A                                      COLOR(BLU)
+     A                                      EDTWRD('  /  /  ')
+     A                                  1 24TIME
+     A                                      COLOR(BLU)
+     A                                  1 33SYSNAME
+     A                                      COLOR(BLU)
+     A                                  1 42USER
+     A                                      COLOR(BLU)
+     A            WENV           2A  O  1 53COLOR(BLU)
+     A            WLIBEN        10A  O  1 56COLOR(BLU)
+     A                                  2 13'Afficher un fichier IFS'
+     A                                      DSPATR(HI)
+     A                                      COLOR(WHT)
+     A                                  9  1'Fichier.....'
+     A            FAIFS        240A  B 10  1
+     A  61                                  DSPATR(RI)
+     A  61                                  DSPATR(PC)
+     A N61                                  COLOR(WHT)
+     A                                      CHECK(LC)
+     A*=========================================================================
+     A          R FMTKA
+     A                                      TEXT('Command keys')
+
+
+     A                                 22  2'                                  -
+     A                                                                         -
+     A                                               '
+     A                                      DSPATR(UL)
+     A                                 23  2'F3=Quitter'
+     A                                      COLOR(BLU)
+     A                                 23 13'F12=Abandonner'
+     A                                      COLOR(BLU)
+     A                                 23 28'F5=Rafraichir'
+     A                                      COLOR(BLU)
+     A*=========================================================================
+     A          R SFLB                      SFL
+     A*%%TS  SD  20060307  104627  EB10168     REL-V5R2M0  5722-WDS
+     A  60                                  SFLNXTCHG
+     A            SBOFST         9  0O  7  2EDTCDE(4)
+     A            SBHEX1        10A  O  7 13
+     A            SBHEX2        10A  O  7 24
+     A            SBHEX3        10A  O  7 35
+     A            SBHEX4        10A  O  7 46
+     A                                  7 57'|'
+     A            SBEBCD        20A  O  7 59
+     A*=========================================================================
+     A          R CTLB                      SFLCTL(SFLB)
+     A*%%TS  SD  20060316  172843  EB10168     REL-V5R2M0  5722-WDS
+     A                                      SFLSIZ(0016)
+     A                                      SFLPAG(0015)
+     A                                      CF02
+     A                                      CF14
+     A                                      ROLLUP(11)
+     A                                      KEEP
+     A                                      OVERLAY
+     A  52                                  SFLDSP
+     A N51                                  SFLDSPCTL
+     A  51                                  SFLCLR
+     A  53                                  SFLEND
+     A  98                                  SFLMSG('Limite de défilement attein-
+     A                                      te')
+     A            RAN01B         4S 0H      SFLRCDNBR(CURSOR)
+     A            SPNAME        10A  O  1  2COLOR(BLU)
+     A                                  1 13'B'
+     A                                  1 15DATE
+     A                                      COLOR(BLU)
+     A                                      EDTWRD('  /  /  ')
+     A                                  1 24TIME
+     A                                      COLOR(BLU)
+     A                                  1 33SYSNAME
+     A                                      COLOR(BLU)
+     A                                  1 42USER
+     A                                      COLOR(BLU)
+     A            WENV           2A  O  1 53COLOR(BLU)
+     A            WLIBEN        10A  O  1 56COLOR(BLU)
+     A            CBIFS         80A  O  2  1DSPATR(HI)
+     A                                      COLOR(WHT)
+     A                                  4  2'  Déplacement         Hexa        -
+     A                                                           | Clair       -
+     A                                               '
+     A                                      DSPATR(HI)
+     A                                      DSPATR(UL)
+     A                                  5  1'(File starts at 0 )'
+     A                                  5 33'   1 1 1 1 1  1 1 1 1 1 |         -
+     A                                        1111111111'
+     A            CBFROM         9Y 0B  6  2EDTCDE(3)
+     A                                      DSPATR(PC)
+     A                                  6 12'+ 0 1 2 3 4  5 6 7 8 9  0 1 2 3 4 -
+     A                                       5 6 7 8 9 | 01234567890123456789 '
+     A                                      DSPATR(UL)
+     A            CBSIZE         9Y 0O  3  2EDTCDE(3)
+     A**                                    DSPATR(PC)
+     A                                  3 12'Bytes'
+     A*=========================================================================
+     A          R FMTKB
+     A*%%TS  SD  20051028  165031  EB10168     REL-V5R2M0  5722-WDS
+     A                                      TEXT('Command keys')
+
+
+     A                                 22  2'                                  -
+     A                                                                         -
+     A                                               '
+     A                                      DSPATR(UL)
+     A                                 23  2'F3=Quitter'
+     A                                      COLOR(BLU)
+     A                                 23 13'F12=Abandonner'
+     A                                      COLOR(BLU)
+     A                                 23 28'F5=Rafraichir'
+     A                                      COLOR(BLU)
+     A*===========================================================²=============
+     A*=========================================================================
+     A          R SFLC                      SFL
+     A*%%TS  SD  20060203  161022  EB10168     REL-V5R2M0  5722-WDS
+     A  60                                  SFLNXTCHG
+     A            SCSELE         1A  B  7  2
+     A            SCNAME        50A  O  7  4
+     A            SCTYPE        10A  O  7 55
+     A            SCIFS        500A  H
+     A*=========================================================================
+     A          R CTLC                      SFLCTL(SFLC)
+     A*%%TS  SD  20060203  161022  EB10168     REL-V5R2M0  5722-WDS
+     A                                      CF02
+     A                                      CF14
+     A                                      ROLLUP(11)
+     A                                      KEEP
+     A                                      OVERLAY
+     A  52                                  SFLDSP
+     A N51                                  SFLDSPCTL
+     A  51                                  SFLCLR
+     A  53                                  SFLEND
+     A N10                                  SFLDROP(CF10)
+     A  10                                  SFLFOLD(CF10)
+     A                                      SFLSIZ(0016)
+     A                                      SFLPAG(0015)
+     A  98                                  SFLMSG('Limite de défilement attein-
+     A                                      te')
+     A            RAN01C         4S 0H      SFLRCDNBR(CURSOR)
+     A            SPNAME        10A  O  1  2COLOR(BLU)
+     A                                  1 13'C'
+     A                                  1 15DATE
+     A                                      COLOR(BLU)
+     A                                      EDTWRD('  /  /  ')
+     A                                  1 24TIME
+     A                                      COLOR(BLU)
+     A                                  1 33SYSNAME
+     A                                      COLOR(BLU)
+     A                                  1 42USER
+     A                                      COLOR(BLU)
+     A            WENV           2A  O  1 53COLOR(BLU)
+     A            WLIBEN        10A  O  1 56COLOR(BLU)
+     A            CCIFS         80A  O  2  1DSPATR(HI)
+     A                                      COLOR(WHT)
+     A                                  5  2'5=Afficher'
+     A                                  6  2'S Lien                  type ...  -
+     A                                                                         -
+     A                                               '
+     A                                      DSPATR(UL)
+     A*=========================================================================
+     A          R FMTKC
+     A*%%TS  SD  20051028  165031  EB10168     REL-V5R2M0  5722-WDS
+     A                                      TEXT('Command keys')
+
+
+     A                                 22  2'                                  -
+     A                                                                         -
+     A                                               '
+     A                                      DSPATR(UL)
+     A                                 23  2'F3=Quitter'
+     A                                      COLOR(BLU)
+     A                                 23 13'F12=Abandonner'
+     A                                      COLOR(BLU)
+     A                                 23 28'F5=Rafraichir'
+     A                                      COLOR(BLU)
+     A*===========================================================²=============
+      *=========================================================================
+                R PMQSFL                    TEXT('Program messages')
+                                            SFL SFLMSGRCD(24)
+                  MSGKEY                    SFLMSGKEY
+                  PMQPGM                    SFLPGMQ
+      *=========================================================================
+                R PMQCTL                    TEXT('Program messages')
+                                            SFLCTL(PMQSFL)
+                                            SFLPAG(01) SFLSIZ(03)
+                                            OVERLAY PUTOVR
+                                            SFLINZ SFLDSP SFLDSPCTL
+        01
+      ON01                                  SFLEND
+                  PMQPGM                    SFLPGMQ

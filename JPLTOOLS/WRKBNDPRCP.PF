@@ -1,0 +1,28 @@
+?     ****************************************************************
+?     * File Text:
+?     * File Name: WRKBNDPRCP      XCRTVDDS can not retrieve comments
+?     * Library..: *LIBL           They may exist in an existing DDS member
+?     * Rebuild..:  7/08/12 with XCRTVDDS
+?     ****************************************************************
+                R WRKBNDPRCF
+                  BND_LIB       10A
+                                            COLHDG('BND_LIB')
+                  BND_NAME      10A
+                                            COLHDG('BND_NAME')
+                  OBJ_LIB       10A
+                                            COLHDG('OBJ_LIB')
+                  OBJ_NAME      10A
+                                            COLHDG('OBJ_NAME')
+                  OBJ_TYPE      10A
+                                            COLHDG('OBJ_TYPE')
+                  OBJ_RTNLIB    10A
+                                            COLHDG('OBJ_RTNLIB')
+                  MOD_LIB       10A
+                                            COLHDG('MOD_LIB')
+                  MOD_RTNLIB    10A
+                                            COLHDG('MOD_RTNLIB')
+                  MOD_NAME      10A
+                                            COLHDG('MOD_NAME')
+                  PROCNAME     256A
+                                            ALIAS(PROCEDURE_NAME)
+                                            COLHDG('PROCEDURE_NAME')

@@ -1,0 +1,134 @@
+     A*%%TS  SD  20070429  164358  JPLTOOLS    REL-V5R2M0  5722-WDS
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      CHGINPDFT(UL)
+     A                                      PRINT
+     A                                      INDARA
+     A                                      WDWBORDER((*COLOR BLU))
+     A                                      CF05
+     A                                      CA03
+     A                                      CA12
+     A          R SFLB                      SFL
+     A*%%TS  SD  20050509  095533  EB10168     REL-V5R2M0  5722-WDS
+     A  60                                  SFLNXTCHG
+     A            ZBSELE         1A  B  6  2
+     A  61                                  DSPATR(RI)
+     A  61                                  DSPATR(PC)
+     A N61                                  COLOR(WHT)
+     A                                      VALUES('5' ' ')
+     A            SBMONM    R        O  6  4REFFLD(MAMONM MAKEP)
+     A            SBCMDH    R        H      REFFLD(MACMDE MAKEP)
+     A            SBCMDE        65A  O  6 15
+     A            SBCMD2    R  -65   O  7  1REFFLD(MACMDE MAKEP)
+     A          R CTLB                      SFLCTL(SFLB)
+     A*%%TS  SD  20050509  095533  EB10168     REL-V5R2M0  5722-WDS
+     A                                      SFLSIZ(0003)
+     A                                      SFLPAG(0002)
+     A                                      SFLDROP(CF10)
+     A                                      CF02
+     A                                      ROLLUP(11)
+     A                                      KEEP
+     A                                      OVERLAY
+     A N51                                  SFLDSPCTL
+     A  51                                  SFLCLR
+     A  52                                  SFLDSP
+     A  53                                  SFLEND
+     A  98                                  SFLMSG('Limite de défilement attein-
+     A                                      te')
+     A            RAN01B         4S 0H      SFLRCDNBR(CURSOR)
+     A            SPNAME        10A  O  1  2COLOR(BLU)
+     A                                  1 14'Confirmation de la pile de command-
+     A                                      es'
+     A                                      DSPATR(HI)
+     A                                      COLOR(WHT)
+     A                                  1 62DATE
+     A                                      COLOR(BLU)
+     A                                      EDTWRD('  /  /  ')
+     A                                  1 71SYSNAME
+     A                                      COLOR(BLU)
+     A                                  2  2'MAKE2RB'
+     A            WENV           2A  O  2 10COLOR(BLU)
+     A                                  2 62TIME
+     A                                      COLOR(BLU)
+     A                                  2 71USER
+     A                                      COLOR(BLU)
+     A                                  4  2'5=Visualiser'
+     A                                  5  2'S Monmsg     Commande             -
+     A                                                                         -
+     A                                            ...'
+     A                                      DSPATR(HI)
+     A                                      DSPATR(UL)
+     A*=========================================================================
+     A          R FMTKB
+     A*%%TS  SD  20050509  094136  EB10168     REL-V5R2M0  5722-WDS
+     A                                      TEXT('Command keys')
+     A                                 22  2'                                  -
+     A                                                                         -
+     A                                               '
+     A                                      DSPATR(UL)
+     A                                 23  2'F3=Quitter'
+     A                                      COLOR(BLU)
+     A                                 23 13'F12=Abandonner'
+     A                                      COLOR(BLU)
+     A                                 23 42'F10=détails'
+     A                                      COLOR(BLU)
+     A                                 23 28'F5=Rafraichir'
+     A                                      COLOR(BLU)
+     A*=========================================================================
+     A          R FMTC
+     A*%%TS  SD  20020426  155835  JPL         REL-V4R4M0  5769-PW1
+     A                                      RTNCSRLOC(&RTNCSRFMT &RTNCSRFLD)
+     A                                      CF04
+     A                                      OVERLAY
+     A                                      PROTECT
+     A            RTNCSRFMT     10A  H
+     A            RTNCSRFLD     10A  H
+     A            SPNAME        10A  O  1  2COLOR(BLU)
+     A                                  1 14'Confirmation de la pile de command-
+     A                                      es'
+     A                                      DSPATR(HI)
+     A                                      COLOR(WHT)
+     A                                  1 62DATE
+     A                                      COLOR(BLU)
+     A                                      EDTWRD('  /  /  ')
+     A                                  1 71SYSNAME
+     A                                      COLOR(BLU)
+     A                                  2  2'MAKE2RC'
+     A            WENV           2A  O  2 10COLOR(BLU)
+     A  40                              2 41'SUPPRESSION DEMANDEE'
+     A                                      DSPATR(RI)
+     A                                  2 62TIME
+     A                                      COLOR(BLU)
+     A                                  2 71USER
+     A                                      COLOR(BLU)
+     A            FCCMDE    R        O 12  1REFFLD(MACMDE MAKEP)
+     A            FCMONM    R        O 18 26REFFLD(MAMONM MAKEP)
+     A                                 11  2'Commande'
+     A                                 11 11'AS400'
+     A                                 18  2'Monmsg'
+      *=========================================================================
+                R FMTP
+                                            OVERLAY
+                                            PROTECT
+                                       22  2'                                  -
+                                                                               -
+                                                     '
+                                            DSPATR(UL)
+                                       23  2'F3=Quitter'
+                                            COLOR(BLU)
+                                       23 13'F12=Abandonner'
+                                            COLOR(BLU)
+      *=========================================================================
+                R PMQSFL                    TEXT('Program messages')
+                                            SFL SFLMSGRCD(24)
+                  MSGKEY                    SFLMSGKEY
+                  PMQPGM                    SFLPGMQ
+      *=========================================================================
+                R PMQCTL                    TEXT('Program messages')
+                                            SFLCTL(PMQSFL)
+                                            SFLPAG(01) SFLSIZ(03)
+                                            OVERLAY PUTOVR
+                                            SFLINZ SFLDSP SFLDSPCTL
+        01
+      ON01                                  SFLEND
+                  PMQPGM                    SFLPGMQ

@@ -1,0 +1,87 @@
+
+
+*  EXECSQL LIBRARY(JPLTOOLS)
+*          MEMBER(jpl028P)
+*          FILE(QPGMSRC)
+*
+
+* LA BIBLIOTHEQUE JPLTOOLS EST JOURNALISEE : CREEE PAR CREATE COLLECTION JPLTOOLS
+* ce qui crée tous ces objets :
+* Objet       Type        Attribut    Texte
+* QSQJRN0001  *JRNRCV                 Collection créée par SQL
+* QSQJRN      *JRN                    Collection créée par SQL
+* SYSCHKCST   *FILE       LF          Vue du rép des données SQL
+* SYSCOLUMNS  *FILE       LF          Vue du rép des données SQL
+* SYSCST      *FILE       LF          Vue du rép des données SQL
+* SYSCSTCOL   *FILE       LF          Vue du rép des données SQL
+* SYSCSTDEP   *FILE       LF          Vue du rép des données SQL
+* SYSINDEXES  *FILE       LF          Vue du rép des données SQL
+* SYSKEYCST   *FILE       LF          Vue du rép des données SQL
+* SYSKEYS     *FILE       LF          Vue du rép des données SQL
+* SYSPACKAGE  *FILE       LF          Vue du rép des données SQL
+* SYSREFCST   *FILE       LF          Vue du rép des données SQL
+* SYSTABLES   *FILE       LF          Vue du rép des données SQL
+* SYSTRIGCOL  *FILE       LF          Vue du rép des données SQL
+* SYSTRIGDEP  *FILE       LF          Vue du rép des données SQL
+* SYSTRIGGER  *FILE       LF          Vue du rép des données SQL
+* SYSTRIGUPD  *FILE       LF          Vue du rép des données SQL
+* SYSVIEWDEP  *FILE       LF          Vue du rép des données SQL
+* SYSVIEWS    *FILE       LF          Vue du rép des données SQL
+*
+* et démarre automatiquement la journalisation sur tous les fichiers
+*
+
+drop table   JPLTOOLS.jpl028P
+monmsg ignore
+executesql
+
+ONCREATE-USERATTR=JPLTOOLS
+CREATE TABLE JPLTOOLS.jpl028P (
+  USER_NAME           FOR COLUMN ME           VARCHAR(18) CCSID 65535 NOT NULL
+, its_a_date_field    FOR COLUMN TODAY        DATE NOT NULL
+, its_a_time_field    FOR COLUMN NOW          TIME NOT NULL
+, its_a_timestamp     FOR COLUMN TIMSTM       TIMESTAMP NOT NULL
+, its_a_decimal_field FOR COLUMN DEC7         DECIMAL(7, 0) NOT NULL
+, its_a_zoned_field   FOR COLUMN ZONED7       NUMERIC(7, 0) NOT NULL
+, its_a_float_field   FOR COLUMN FLOAT8       DOUBLE PRECISION NOT NULL
+, its_a_big_integer   FOR COLUMN INT8         BIGINT NOT NULL
+, unicode_data        for column FIXUCS2      GRAPHIC(20) CCSID 13488 not NULL
+-- UCS (Universal Multiple-Octet Coded Character Set)
+-- UCS-2: Each character is represented by 16 bits or 2 bytes. (The number 2 in UCS-2 indicates 2
+-- bytes.) For example, uppercase A is represented by 0041.
+-- , UTF8_data        for column FIXUTF8      GRAPHIC(20) CCSID 1208  not NULL
+-- , UTF16_data       for column FIXUTF16     GRAPHIC(20) CCSID 1200  not NULL
+--   UTF32 not supported (=? UCS4)
+, CONSTRAINT JPLTOOLS.JPL028PK1 PRIMARY KEY( user_name , TODAY , NOW ) )
+monmsg IgnoreWarning
+EXECUTESQL
+
+LABEL ON TABLE JPLTOOLS.jpl028P
+  IS 'Some SQL column type'
+monmsg escape
+EXECUTESQL
+
+******************** '1234567890123456789 1234567890123456789 1234567890123456789'
+LABEL ON COLUMN JPLTOOLS.jpl028p (
+  ME              IS 'My                  User                Name'
+, TODAY           IS 'Current date'
+, NOW             IS 'Current Time'
+, TIMSTM          IS 'A time stamp'
+, DEC7            IS 'A Decimal data'
+, ZONED7          IS 'A Zoned data'
+, FLOAT8          IS 'A 8-float data'
+, INT8            IS 'a 8-int data'     )
+monmsg escape
+EXECUTESQL
+
+LABEL ON COLUMN JPLTOOLS.jpl028p (
+  ME             TEXT   IS 'My User Name'
+, TODAY          TEXT   IS 'Current date'
+, NOW            TEXT   IS 'Current Time'
+, TIMSTM         TEXT   IS 'A time stamp'
+, DEC7           TEXT   IS 'A Decimal data'
+, ZONED7         TEXT   IS 'A Zoned data'
+, FLOAT8         TEXT   IS 'A 8-float data'
+, INT8           TEXT   IS 'a 8-int data' )
+EXECUTESQL
+

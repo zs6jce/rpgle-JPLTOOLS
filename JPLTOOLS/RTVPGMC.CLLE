@@ -1,0 +1,102 @@
+
+
+             PGM        PARM(&PGM &TYPE &MBROPT &MODI0100 &MODL0100 +
+                          &MODL0200 &MODL0300 &MODL0400 &MODL0500 +
+                          &PGMI0100 &VEWL0100 &SPGI0100 &PGML0100 +
+                          &PGML0200 &PGML0300 &PGML0400 &PGML0500 +
+                          &SPGL0600 &SPGL0700 &SPGL0800)
+
+dcl   &PGM            *char 20
+dcl   &TYPE           *char 20
+dcl   &MBROPT         *char 20
+dcl   &MODI0100       *char 20
+dcl   &MODL0100       *char 20
+dcl   &MODL0200       *char 20
+dcl   &MODL0300       *char 20
+dcl   &MODL0400       *char 20
+dcl   &MODL0500       *char 20
+dcl   &PGMI0100       *char 20
+dcl   &VEWL0100       *char 20
+dcl   &SPGI0100       *char 20
+dcl   &PGML0100       *char 20
+dcl   &PGML0200       *char 20
+dcl   &PGML0300       *char 20
+dcl   &PGML0400       *char 20
+dcl   &PGML0500       *char 20
+dcl   &SPGL0600       *char 20
+dcl   &SPGL0700       *char 20
+dcl   &SPGL0800       *char 20
+
+dcl &curlib *char 10
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*============================================================================*/
+/* PROCEDURE DE REMONTEE DES MESSAGES D'ERREUR VERS L'APPELANT */
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(100)
+             DCL        VAR(&MSGF) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&KEYVAR) TYPE(*CHAR) LEN(4)
+             MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(ERREUR))
+             GOTO       CMDLBL(DEBUTPGM)
+ ERREUR:     RCVMSG     MSGTYPE(*LAST) KEYVAR(&KEYVAR) +
+                          MSGDTA(&MSGDTA) MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+DEBUTPGM:    /* FIN DE PROCEDURE DE GESTION DES ERREURS */
+/*============================================================================*/
+             RTVJOBA    CURLIB(&CURLIB)
+if (%sst(&MODI0100 11 10) *eq '*CURLIB') then(chgvar %sst(&MODI0100 11 10 ) &curlib)
+if (%sst(&MODL0100 11 10) *eq '*CURLIB') then(chgvar %sst(&MODL0100 11 10 ) &curlib)
+if (%sst(&MODL0200 11 10) *eq '*CURLIB') then(chgvar %sst(&MODL0200 11 10 ) &curlib)
+if (%sst(&MODL0300 11 10) *eq '*CURLIB') then(chgvar %sst(&MODL0300 11 10 ) &curlib)
+if (%sst(&MODL0400 11 10) *eq '*CURLIB') then(chgvar %sst(&MODL0400 11 10 ) &curlib)
+if (%sst(&MODL0500 11 10) *eq '*CURLIB') then(chgvar %sst(&MODL0500 11 10 ) &curlib)
+if (%sst(&PGMI0100 11 10) *eq '*CURLIB') then(chgvar %sst(&PGMI0100 11 10 ) &curlib)
+if (%sst(&VEWL0100 11 10) *eq '*CURLIB') then(chgvar %sst(&VEWL0100 11 10 ) &curlib)
+if (%sst(&SPGI0100 11 10) *eq '*CURLIB') then(chgvar %sst(&SPGI0100 11 10 ) &curlib)
+if (%sst(&PGML0100 11 10) *eq '*CURLIB') then(chgvar %sst(&PGML0100 11 10 ) &curlib)
+if (%sst(&PGML0200 11 10) *eq '*CURLIB') then(chgvar %sst(&PGML0200 11 10 ) &curlib)
+if (%sst(&PGML0300 11 10) *eq '*CURLIB') then(chgvar %sst(&PGML0300 11 10 ) &curlib)
+if (%sst(&PGML0400 11 10) *eq '*CURLIB') then(chgvar %sst(&PGML0400 11 10 ) &curlib)
+if (%sst(&PGML0500 11 10) *eq '*CURLIB') then(chgvar %sst(&PGML0500 11 10 ) &curlib)
+if (%sst(&SPGL0600 11 10) *eq '*CURLIB') then(chgvar %sst(&SPGL0600 11 10 ) &curlib)
+if (%sst(&SPGL0700 11 10) *eq '*CURLIB') then(chgvar %sst(&SPGL0700 11 10 ) &curlib)
+if (%sst(&SPGL0800 11 10) *eq '*CURLIB') then(chgvar %sst(&SPGL0800 11 10 ) &curlib)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+             STRDBG     PGM(RTVPGMR) DSPMODSRC(*NO)
+             MONMSG     MSGID(CPF0001)
+             CALL       PGM(RTVPGMR) PARM(&PGM &TYPE &MBROPT +
+                          &MODI0100 &MODL0100 &MODL0200 &MODL0300 +
+                          &MODL0400 &MODL0500 &PGMI0100 &VEWL0100 +
+                          &SPGI0100 &PGML0100 &PGML0200 &PGML0300 +
+                          &PGML0400 &PGML0500 &SPGL0600 &SPGL0700 +
+                          &SPGL0800)
+             ENDDBG
+             ENDPGM

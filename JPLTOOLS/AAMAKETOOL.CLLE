@@ -1,0 +1,1921 @@
+/*? compile this program                                                     -
+   ?         CRTCLMOD   MODULE(JPLTOOLS/AAMAKETOOL)                          -
+   ?                      SRCFILE(JPLTOOLS/JPLTOOLS) REPLACE(*YES)           -
+   ?                      TGTRLS(V5R4M0) DBGVIEW(*ALL) ENBPFRCOL(*FULL)      -
+   ?         CRTPGM     PGM(JPLTOOLS/AAMAKETOOL)                             -
+   ?                      MODULE(JPLTOOLS/AAMAKETOOL)                        -
+   ?                      BNDDIR(JPLTOOLS) ACTGRP(JPLTOOLS)                  -
+   ?                      OPTION(*DUPPROC) DETAIL(*BASIC)                    -
+*/
+
+
+
+
+             PGM
+             RMVLIBLE   LIB(JPLTOOLDEV)
+             MONMSG     MSGID(CPF0000)
+             GOTO       CMDLBL(CONTINUE)
+continue:
+/* recompilation de JPLTOOLS */
+
+             CHGJOB     CCSID(37) /* to match source file CCSID */
+             CHGCURLIB  CURLIB(JPLTOOLS)
+             CRTSRCPF   FILE(JPLTOOLS/QTMPSRC) RCDLEN(132) MBR(QTMPSRC)
+monmsg cpf0000
+
+/* compile make */
+
+             CRTDUPOBJ  OBJ(MAKEP) FROMLIB(JPLTOOLS) OBJTYPE(*FILE) +
+                          TOLIB(JPLTOOLS) NEWOBJ(MAKEPDTA)
+             MONMSG     MSGID(CPF0000)
+             CPYF       FROMFILE(JPLTOOLS/MAKEP) +
+                          TOFILE(JPLTOOLS/MAKEPDTA) MBROPT(*REPLACE)
+
+             DLTF       FILE(JPLTOOLS/MAKEL2)
+             MONMSG     MSGID(CPF0000)
+             DLTF       FILE(JPLTOOLS/MAKEL1)
+             MONMSG     MSGID(CPF0000)
+             DLTF       FILE(JPLTOOLS/MAKEP)
+             MONMSG     MSGID(CPF0000)
+             CRTPF      FILE(JPLTOOLS/MAKEP) SRCFILE(JPLTOOLS/JPLTOOLS)
+             CPYF       FROMFILE(JPLTOOLS/MAKEPDTA) +
+                          TOFILE(JPLTOOLS/MAKEP) MBROPT(*REPLACE)
+             DLTF       FILE(JPLTOOLS/MAKEPDTA)
+
+             CRTLF      FILE(JPLTOOLS/MAKEL1) +
+                          SRCFILE(JPLTOOLS/JPLTOOLS) SHARE(*YES)
+             CRTLF      FILE(JPLTOOLS/MAKEL2) +
+                          SRCFILE(JPLTOOLS/JPLTOOLS) SHARE(*YES)
+             CRTCMD     CMD(JPLTOOLS/MAKE) PGM(MAKEC) +
+                          SRCFILE(JPLTOOLS/JPLTOOLS)
+             CRTCMD     CMD(JPLTOOLS/MAKEPAR) PGM(MAKEPARC) +
+                          SRCFILE(JPLTOOLS/JPLTOOLS)
+             CRTCLMOD   MODULE(JPLTOOLS/MAKEC) +
+                          SRCFILE(JPLTOOLS/JPLTOOLS) REPLACE(*YES) +
+                          TGTRLS(V5R4M0) DBGVIEW(*ALL) ENBPFRCOL(*FULL)
+             CRTPGM     PGM(JPLTOOLS/MAKEC) MODULE(JPLTOOLS/MAKEC) +
+                          BNDDIR(JPLTOOLS) ACTGRP(JPLTOOLS) +
+                          OPTION(*DUPPROC) DETAIL(*BASIC) +
+                          TGTRLS(V5R4M0)
+             CRTCLMOD   MODULE(JPLTOOLS/MAKEPARC) +
+                          SRCFILE(JPLTOOLS/JPLTOOLS) REPLACE(*YES) +
+                          TGTRLS(V5R4M0) DBGVIEW(*ALL) ENBPFRCOL(*FULL)
+             CRTPGM     PGM(JPLTOOLS/MAKEPARC) +
+                          MODULE(JPLTOOLS/MAKEPARC) BNDDIR(QC2LE +
+                          JPLTOOLS) ACTGRP(JPLTOOLS) +
+                          OPTION(*DUPPROC) DETAIL(*BASIC) +
+                          TGTRLS(V5R4M0)
+
+             CRTRPGMOD  MODULE(JPLTOOLS/MAKE2R) +
+                          SRCFILE(JPLTOOLS/JPLTOOLS) +
+                          OPTION(*NODEBUGIO *SRCSTMT *SHOWCPY +
+                          *SECLVL *EXPDDS) DBGVIEW(*ALL) +
+                          REPLACE(*YES) TGTRLS(V5R4M0) ENBPFRCOL(*FULL)
+             CRTPGM     PGM(JPLTOOLS/MAKE2R) MODULE(JPLTOOLS/MAKE2R) +
+                          BNDDIR(QC2LE JPLTOOLS) ACTGRP(JPLTOOLS) +
+                          OPTION(*DUPPROC) DETAIL(*BASIC) +
+                          TGTRLS(V5R4M0)
+
+             CRTDSPF    FILE(JPLTOOLS/MAKE3RFM) +
+                          SRCFILE(JPLTOOLS/JPLTOOLS) RSTDSP(*YES)
+
+             CRTPNLGRP  PNLGRP(JPLTOOLS/MAKE3RHP) +
+                          SRCFILE(JPLTOOLS/JPLTOOLS)
+
+             CRTRPGMOD  MODULE(JPLTOOLS/MAKE3R) +
+                          SRCFILE(JPLTOOLS/JPLTOOLS) +
+                          OPTION(*NODEBUGIO *SRCSTMT *SHOWCPY +
+                          *SECLVL *EXPDDS) DBGVIEW(*ALL) +
+                          REPLACE(*YES) TGTRLS(V5R4M0) ENBPFRCOL(*FULL)
+             CRTPGM     PGM(JPLTOOLS/MAKE3R) MODULE(JPLTOOLS/MAKE3R) +
+                          BNDDIR(JPLTOOLS) ACTGRP(JPLTOOLS) +
+                          OPTION(*DUPPROC) DETAIL(*BASIC) +
+                          TGTRLS(V5R4M0)
+
+             CRTCLMOD   MODULE(JPLTOOLS/MAKE4C) +
+                          SRCFILE(JPLTOOLS/JPLTOOLS) REPLACE(*YES) +
+                          TGTRLS(V5R4M0) DBGVIEW(*ALL) ENBPFRCOL(*FULL)
+             CRTPGM     PGM(JPLTOOLS/MAKE4C) MODULE(JPLTOOLS/MAKE4C) +
+                          BNDDIR(JPLTOOLS) ACTGRP(JPLTOOLS) +
+                          OPTION(*DUPPROC) DETAIL(*BASIC) +
+                          TGTRLS(V5R4M0)
+
+             CRTDSPF    FILE(JPLTOOLS/MAKE5RFM) +
+                          SRCFILE(JPLTOOLS/JPLTOOLS) RSTDSP(*YES)
+
+             CRTRPGMOD  MODULE(JPLTOOLS/MAKE5R) +
+                          SRCFILE(JPLTOOLS/JPLTOOLS) +
+                          OPTION(*NODEBUGIO *SRCSTMT *SHOWCPY +
+                          *SECLVL *EXPDDS) DBGVIEW(*ALL) +
+                          REPLACE(*YES) TGTRLS(V5R4M0) ENBPFRCOL(*FULL)
+             CRTPGM     PGM(JPLTOOLS/MAKE5R) MODULE(JPLTOOLS/MAKE5R) +
+                          BNDDIR(JPLTOOLS) ACTGRP(JPLTOOLS) +
+                          OPTION(*DUPPROC) DETAIL(*BASIC) +
+                          TGTRLS(V5R4M0)
+
+/* jp4gps */
+
+             MAKE       S(RPGLE) N(JP4GPS_R) O(JPLTOOLS) L(JPLTOOLS) +
+                          F(JPLTOOLS) COMPILER(RPGLE) P(*NO) R(*NO) +
+                          X('General Purpose service program, RPG +
+                          blender      ')
+
+             MAKE       S(SRVPGM) N(JP4GPS) O(JPLTOOLS) L(JPLTOOLS) +
+                          F(JPLTOOLS) COMPILER(SRVPGM) P(*NO) +
+                          R(*NO) X('General Purpose service +
+                          program                   ')
+
+/* base64 */
+
+             MAKE       S(CMD) N(BASE64) O(JPLTOOLS) L(JPLTOOLS) +
+                          F(JPLTOOLS) COMPILER(CMD) P(*NO) R(*NO) +
+                          X('Convert a binary file from / to Base64 +
+                          text file  ')
+
+MAKE S(RPGLE)     -
+     N(BASE64R)    -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(RPGLE)   -
+     P(*NO)             -
+     R(*NO)              -
+     X('Convert a binary file from / to Base64 text file  ')
+
+/* findmbr */
+MAKE S(CMD)      -
+     N(FINDMBR)   -
+     O(JPLTOOLS)   -
+     L(JPLTOOLS)    -
+     F(JPLTOOLS)     -
+     COMPILER(CMD)    -
+     P(*NO)            -
+     R(*NO)             -
+     X('Trouver un membre                                 ')
+
+MAKE S(CLLE)       -
+     N(FINDMBRC)    -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(CLLE)     -
+     P(*NO)              -
+     R(*NO)               -
+     X('trouver un membre                                 ')
+
+/* chklnk */
+MAKE S(CMD)     -
+     N(CHKLNK)   -
+     O(JPLTOOLS)  -
+     L(JPLTOOLS)   -
+     F(JPLTOOLS)    -
+     COMPILER(CMD)   -
+     P(*NO)           -
+     R(*NO)            -
+     X('check existence of an IFS link                    ')
+
+MAKE S(RPGLE)     -
+     N(CHKLNKR)    -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(RPGLE)   -
+     P(*NO)             -
+     R(*NO)              -
+     X('check existence of an IFS link                    ')
+
+/* execsql3 */
+MAKE S(CMD)    -
+     N(EXECSQL3)    -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(CMD)      -
+     P(*NO)              -
+     R(*NO)               -
+     X('exec sql   Commande AS400 + mode d''emploi         ')
+
+MAKE S(CLLE)          -
+     N(EXECSQL3C)      -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(CLLE)        -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('exec sql                                          ')
+
+MAKE S(SQLRPGLE)  -
+     N(EXECSQL3R)  -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(SQLRPGLE)-
+     P(*NO)             -
+     R(*NO)              -
+     X('Run an SQL stack with parameters                  ')
+
+/* bitand bitnot bitor bitxor */
+MAKE S(EXECSQL)  -
+     N(BITAND_D)  -
+     O(JPLTOOLS)   -
+     L(JPLTOOLS)    -
+     F(JPLTOOLS)     -
+     COMPILER(EXECSQL) -
+     P(*NO)             -
+     R(*NO)              -
+     X('drop   bitand                                     ')
+             MONMSG     MSGID(CPF0000)
+MAKE S(EXECSQL)              -
+     N(BITAND)                -
+     O(JPLTOOLS)                -
+     L(JPLTOOLS)                 -
+     F(JPLTOOLS)                  -
+     COMPILER(EXECSQL)             -
+     P(*NO)                         -
+     R(*NO)                          -
+     X('create bitand(bigint, bigint)                     ')
+
+MAKE S(EXECSQL)        -
+     N(BITNOT_D)        -
+     O(JPLTOOLS)         -
+     L(JPLTOOLS)          -
+     F(JPLTOOLS)           -
+     COMPILER(EXECSQL)      -
+     P(*NO)                  -
+     R(*NO)                   -
+     X('drop   bitnot(bigint)                             ')
+
+             MONMSG     MSGID(CPF0000)
+MAKE S(EXECSQL)       -
+     N(BITNOT)         -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(EXECSQL)     -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('create bitnot(bigint)                             ')
+
+MAKE S(EXECSQL)       -
+     N(BITOR__D)       -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(EXECSQL)     -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('drop   bitor (bigint, bigint)                     ')
+             MONMSG     MSGID(CPF0000)
+MAKE S(EXECSQL)       -
+     N(BITOR)          -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(EXECSQL)     -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('create bitor (bigint, bigint)                     ')
+
+MAKE S(EXECSQL)      -
+     N(BITXOR_D)      -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(EXECSQL)    -
+     P(*NO)                -
+     R(*NO)                 -
+     X('drop   bitxor(bigint, bigint)                     ')
+             MONMSG     MSGID(CPF0000)
+MAKE S(EXECSQL)   -
+     N(BITXOR)     -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(EXECSQL) -
+     P(*NO)             -
+     R(*NO)              -
+     X('create bitxor(bigint, bigint)                     ')
+
+/* bmp */
+MAKE S(RPGLE)         -
+     N(BMP)            -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(RPGLE)       -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('make a BMP file                                   ')
+
+/* ccsid */
+
+MAKE S(CMD)       -
+     N(CCSID)      -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(CMD)     -
+     P(*NO)             -
+     R(*NO)              -
+     X('Test CCSID on string                              ')
+
+
+MAKE S(CLLE)      -
+     N(CCSIDC)     -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(CLLE)    -
+     P(*NO)             -
+     R(*NO)              -
+     X('CPP for CCSID cmd                                 ')
+
+MAKE S(PNLGRP)   -
+     N(CCSIDH)    -
+     O(JPLTOOLS)   -
+     L(JPLTOOLS)    -
+     F(JPLTOOLS)     -
+     COMPILER(PNLGRP) -
+     P(*NO)            -
+     R(*NO)             -
+     X('help for CCSID                                    ')
+
+MAKE S(RPGLE)        -
+     N(CCSIDR)        -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(RPGLE)      -
+     P(*NO)                -
+     R(*NO)                 -
+     X('CPP  for CCSID                                    ')
+
+/* chgenv */
+MAKE S(CMD)        -
+     N(CHGENV)      -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(CMD)      -
+     P(*NO)              -
+     R(*NO)               -
+     X('Changer d''environnement')
+
+MAKE S(CLLE)      -
+     N(CHGENVC)    -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(CLLE)    -
+     P(*NO)             -
+     R(*NO)              -
+     X('Change JOB Environment                            ')
+
+/* chgliblist */
+
+MAKE S(CMD)         -
+     N(CHGLIBLIST)   -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(CMD)       -
+     P(*NO)               -
+     R(*NO)                -
+     X('Changer de liste de biblioth}que                  ')
+
+MAKE S(CLLE)          -
+     N(CHGLIBLISC)     -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(CLLE)        -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('Change JOB library list                           ')
+
+/* chgobjatr  */
+
+MAKE S(CMD)       -
+     N(CHGOBJATR)  -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(CMD)     -
+     P(*NO)             -
+     R(*NO)              -
+     X('Changer des attributs d''un objet                  ')
+MAKE S(RPGLE)     -
+     N(CHGOBJATRR) -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(RPGLE)   -
+     P(*NO)             -
+     R(*NO)              -
+     X('Changer des attributs d''un objet                  ' )
+
+/* clnspl */
+  MAKE S(CMD)     -
+       N(CLNSPL)    -
+       O(JPLTOOLS)   -
+       L(JPLTOOLS)    -
+       F(JPLTOOLS)     -
+       COMPILER(CMD)    -
+       P(*NO)            -
+       R(*NO)             -
+       X('Clean old spools                                  ')
+MAKE S(RPGLE)   -
+     N(CLNSPLR)  -
+     O(JPLTOOLS)  -
+     L(JPLTOOLS)   -
+     F(JPLTOOLS)    -
+     COMPILER(RPGLE) -
+     P(*NO)           -
+     R(*NO)            -
+     X('Clean old spools                                  ')
+
+/* clob */
+MAKE S(DDL)        -
+     N(CLOBTABLE)   -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(DDL)      -
+     P(*NO)              -
+     R(*NO)               -
+     X('create table JPLSQL.CLOBTABLE                     ')
+
+
+
+
+MAKE S(SQLRPGLE)          -
+     N(CLOBGET)            -
+     O(JPLTOOLS)            -
+     L(JPLTOOLS)             -
+     F(JPLTOOLS)              -
+     COMPILER(SQLRPGLE)        -
+     P(*NO)                     -
+     R(*NO)                      -
+     X('Read the CLOB field in the table  ')
+
+MAKE S(SQLRPGLE)   -
+     N(CLOBSET)     -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(SQLRPGLE) -
+     P(*NO)              -
+     R(*NO)               -
+     X('Insert a CLOB field in the table  ')
+
+MAKE S(SQLRPGLE) -
+     N(CLOB1_M)   -
+     O(JPLTOOLS)   -
+     L(JPLTOOLS)    -
+     F(JPLTOOLS)     -
+     COMPILER(SQLRPGLE)  -
+     P(*NO)               -
+     R(*NO)                -
+     X('Create a USRSPC, returns it as a CLOB             ')
+
+MAKE S(SRVPGM)  -
+     N(CLOB1)    -
+     O(JPLTOOLS)  -
+     L(JPLTOOLS)   -
+     F(JPLTOOLS)    -
+     COMPILER(SRVPGM)-
+     P(*NO)           -
+     R(*NO)            -
+     X('Create a USRSPC, returns it as a CLOB             ')
+
+MAKE S(DDL)       -
+     N(CLOB1_UDF)  -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(DDL)     -
+     P(*NO)             -
+     R(*NO)              -
+     X('create function clob1_udf                         ')
+
+MAKE S(SQLRPGLE)   -
+     N(CLOB2)       -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(SQLRPGLE) -
+     P(*NO)              -
+     R(*NO)               -
+     X('Read the CLOB field via UDF       ')
+
+
+/* crtstmf */
+
+MAKE S(CMD)      -
+     N(CRTSTMF)   -
+     O(JPLTOOLS)   -
+     L(JPLTOOLS)    -
+     F(JPLTOOLS)     -
+     COMPILER(CMD)    -
+     P(*NO)            -
+     R(*NO)             -
+     X('Create an empty stream file                       ')
+
+MAKE S(PNLGRP)   -
+     N(CRTSTMFH)  -
+     O(JPLTOOLS)   -
+     L(JPLTOOLS)    -
+     F(JPLTOOLS)     -
+     COMPILER(PNLGRP) -
+     P(*NO)             -
+     R(*NO)            -
+     X('help for CRTSTMF                                  ')
+
+MAKE S(RPGLE)      -
+     N(CRTSTMFR)    -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(RPGLE)    -
+     P(*NO)              -
+     R(*NO)               -
+     X('Create an empty stream file                       ')
+
+/* Date sql functions */
+
+MAKE S(EXECSQL)   -
+     N(DATE1)      -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(EXECSQL) -
+     P(*NO)             -
+     R(*NO)              -
+     X('create  n2date(bigint,varchar)                    ')
+MAKE S(EXECSQL)     -
+     N(DATE2)        -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(EXECSQL)   -
+     P(*NO)               -
+     R(*NO)                -
+     X('create  n2date(bigint)                            ')
+MAKE S(EXECSQLSYS)      -
+     N(DATE3)            -
+     O(JPLTOOLS)          -
+     L(JPLTOOLS)           -
+     F(JPLTOOLS)            -
+     COMPILER(EXECSQLSYS)    -
+     P(*NO)                   -
+     R(*NO)                    -
+     X('create  x2date(varchar,varchar)                   ')
+MAKE S(EXECSQL)       -
+     N(DATE4)          -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(EXECSQL)     -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('create  x2date(varchar)                           ')
+
+/* dmpifs */
+
+MAKE S(CMD)     -
+     N(DMPIFS)   -
+     O(JPLTOOLS)  -
+     L(JPLTOOLS)   -
+     F(JPLTOOLS)    -
+     COMPILER(CMD)   -
+     P(*NO)           -
+     R(*NO)            -
+     X('Dump an IFS file                                  ')
+
+MAKE S(CLLE)     -
+     N(DMPIFSC)   -
+     O(JPLTOOLS)   -
+     L(JPLTOOLS)    -
+     F(JPLTOOLS)     -
+     COMPILER(CLLE)   -
+     P(*NO)            -
+     R(*NO)             -
+     X('Vidage d''un fichier IFS                           ')
+
+MAKE S(RPGLE)      -
+     N(DMPIFSR)     -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(RPGLE)    -
+     P(*NO)              -
+     R(*NO)               -
+     X('Vidage d''un fichier IFS                           ')
+MAKE S(CMD)      -
+     N(DSPIFS)    -
+     O(JPLTOOLS)   -
+     L(JPLTOOLS)    -
+     F(JPLTOOLS)     -
+     COMPILER(CMD)    -
+     P(*NO)            -
+     R(*NO)             -
+     X('Dump an IFS file                                  ')
+MAKE S(DSPF)          -
+     N(DSPIFSFM)       -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(DSPF)        -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('Afficher un fichier IFS                           ')
+MAKE S(RPGLE)     -
+     N(DSPIFSR)    -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(RPGLE)   -
+     P(*NO)             -
+     R(*NO)              -
+     X('Afficher un fichier IFS                           ')
+
+MAKE S(PF)        -
+     N(EBCDICP)    -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(PF)      -
+     P(*NO)             -
+     R(*NO)              -
+     X('globalization sample                              ')
+MAKE S(DDL)          -
+     N(EBCDICDATA)    -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(DDL)        -
+     P(*NO)                -
+     R(*NO)                 -
+     X('Load file EBCDICP                                 ')
+
+MAKE S(CMD)           -
+     N(EXECUTESQL)     -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(CMD)         -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('Executer une commande SQL                         ')
+MAKE S(SQLRPGLE)   -
+     N(EXECUTESQR)  -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(SQLRPGLE) -
+     P(*NO)              -
+     R(*NO)               -
+     X('Executer une commande SQL                         ')
+
+MAKE S(CMD)     -
+     N(INDDIC)   -
+     O(JPLTOOLS)  -
+     L(JPLTOOLS)   -
+     F(JPLTOOLS)    -
+     COMPILER(CMD)   -
+     P(*NO)           -
+     R(*NO)            -
+     X('Indentation Dictionnary')
+MAKE S(CLLE)    -
+     N(INDDICC)  -
+     O(JPLTOOLS)  -
+     L(JPLTOOLS)   -
+     F(JPLTOOLS)    -
+     COMPILER(CLLE)  -
+     P(*NO)           -
+     R(*NO)            -
+     X('recupere les variables d''une compil QSYS2924      ')
+MAKE S(PF)       -
+     N(INDDICP)   -
+     O(JPLTOOLS)   -
+     L(JPLTOOLS)    -
+     F(JPLTOOLS)     -
+     COMPILER(PF)     -
+     P(*NO)            -
+     R(*NO)             -
+     X('Dictionnaire des variables                        ')
+MAKE S(SQLRPGLE)     -
+     N(INDDICR)       -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(SQLRPGLE)   -
+     P(*NO)                -
+     R(*NO)                 -
+     X('recupere les variables d''une compil QSYS2924      ')
+MAKE S(CMD)      -
+     N(INDENT)    -
+     O(JPLTOOLS)   -
+     L(JPLTOOLS)    -
+     F(JPLTOOLS)     -
+     COMPILER(CMD)    -
+     P(*NO)            -
+     R(*NO)             -
+     X('reindent a RPGLE source code                      ')
+MAKE S(CLLE)      -
+     N(INDENTC)    -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(CLLE)    -
+     P(*NO)             -
+     R(*NO)              -
+     X('Having RPG Free progs correctly indented          ')
+MAKE S(SQLRPGLE)    -
+     N(INDENTLE)     -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(SQLRPGLE)  -
+     P(*NO)               -
+     R(*NO)                -
+     X('Having RPG Free progs correctly indented          ')
+
+MAKE S(CLLE)     -
+     N(INLPGM)    -
+     O(JPLTOOLS)   -
+     L(JPLTOOLS)    -
+     F(JPLTOOLS)     -
+     COMPILER(CLLE)   -
+     P(*NO)            -
+     R(*NO)             -
+     X('programme initial                                 ')
+
+MAKE S(PF)         -
+     N(JPL027P)     -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(PF)       -
+     P(*NO)              -
+     R(*NO)               -
+     X('fields samples                                    ')
+
+MAKE S(EXECSQL)      -
+     N(JPL028P)       -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(EXECSQL)    -
+     P(*NO)                -
+     R(*NO)                 -
+     X('create file JPL028P                               ')
+
+MAKE S(DSPF)      -
+     N(JPL028FM)   -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(DSPF)    -
+     P(*NO)             -
+     R(*NO)              -
+     X('sous-fichier SQL et mise à jour                   ')
+
+MAKE S(SQLRPGLE)      -
+     N(JPL028R)        -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(SQLRPGLE)    -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('Subfile. Read is SQL, Write is SQL, qualified     ')
+
+MAKE S(CLE)           -
+     N(JP4PDFS_B)      -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(CLE)         -
+     P(*NO)                  -
+     R(*NO)                 -
+     X('Bidi                                              ')
+
+MAKE S(RPGLE)       -
+     N(JP4PDFS_M)    -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(RPGLE)     -
+     P(*NO)               -
+     R(*NO)                -
+     X('PDF service program, blender module               ')
+
+MAKE S(SRVPGM)    -
+     N(JP4PDFS)    -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(SRVPGM)  -
+     P(*NO)             -
+     R(*NO)              -
+     X('PDF service program                               ')
+
+MAKE S(RPGLE)      -
+     N(JP4UDF_1)    -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(RPGLE)    -
+     P(*NO)              -
+     R(*NO)               -
+     X('DATE routines for SQL functions                   ')
+MAKE S(RPGLE)       -
+     N(JP4UDF_2)     -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(RPGLE)     -
+     P(*NO)               -
+     R(*NO)                -
+     X('BITx routines for SQL functions                   ')
+MAKE S(SRVPGM)    -
+     N(JP4UDF)     -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(SRVPGM)  -
+     P(*NO)             -
+     R(*NO)              -
+     X('External code for SQL functions & procedures      ')
+
+
+/* mail */
+
+MAKE S(CMD)      -
+     N(MAIL)      -
+     O(JPLTOOLS)   -
+     L(JPLTOOLS)    -
+     F(JPLTOOLS)     -
+     COMPILER(CMD)    -
+     P(*NO)            -
+     R(*NO)             -
+     X('send a mime mail                                  ')
+MAKE S(SQLRPGLE)     -
+     N(MAILR)         -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(SQLRPGLE)   -
+     P(*NO)                -
+     R(*NO)                 -
+     X('send a mail                                       ')
+
+MAKE S(CMD)        -
+     N(OBJUNLCK)    -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(CMD)      -
+     P(*NO)              -
+     R(*NO)               -
+     X('tuer les travaux qui verrouillent un objet        ')
+
+MAKE S(CLLE)         -
+     N(OBJUNLCKC)     -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(CLLE)       -
+     P(*NO)                -
+     R(*NO)                 -
+     X('tue les travaux qui verrouillent un objet         ')
+
+MAKE S(RPGLE)         -
+     N(PDF)            -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(RPGLE)       -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('make a PDF file                                   ')
+
+MAKE S(RPGLE)        -
+     N(PDFCHARSET)    -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(RPGLE)      -
+     P(*NO)                -
+     R(*NO)                 -
+     X('Check char size, show character sets              ')
+
+MAKE S(RPGLE)         -
+     N(PDFPALETTE)     -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(RPGLE)       -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('Color palette, RGB device                         ')
+
+MAKE S(RPGLE)      -
+     N(PDFPALETTK)  -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(RPGLE)    -
+     P(*NO)              -
+     R(*NO)               -
+     X('Color palette, CMYK device                        ')
+
+MAKE S(EXECSQL)     -
+     N(T_ATLO0100)   -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(EXECSQL)   -
+     P(*NO)               -
+     R(*NO)                -
+     X('TABLE     JPLTOOLS/T_ATLO0100   ')
+
+MAKE S(EXECSQL)    -
+     N(T_ATLO0110)  -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(EXECSQL)  -
+     P(*NO)              -
+     R(*NO)               -
+     X('TABLE     JPLTOOLS/T_ATLO0110  ')
+
+MAKE S(EXECSQL)     -
+     N(T_CMDI0100)   -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(EXECSQL)   -
+     P(*NO)               -
+     R(*NO)                -
+     X('TABLE     JPLTOOLS/T_CMDI0100                     ')
+
+MAKE S(EXECSQL)   -
+     N(T_EXTI0100) -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(EXECSQL) -
+     P(*NO)             -
+     R(*NO)              -
+
+MAKE S(EXECSQL)    -
+     N(T_EXTI0200)  -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(EXECSQL)  -
+     P(*NO)              -
+     R(*NO)
+
+MAKE S(EXECSQL)        -
+     N(T_EXTI0300)      -
+     O(JPLTOOLS)         -
+     L(JPLTOOLS)          -
+     F(JPLTOOLS)           -
+     COMPILER(EXECSQL)      -
+     P(*NO)                  -
+     R(*NO)
+
+MAKE S(EXECSQL)   -
+     N(T_MODI0100) -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(EXECSQL) -
+     P(*NO)             -
+     R(*NO)              -
+     X('TABLE     JPLTOOLS/T_MODI0100                     ')
+
+MAKE S(EXECSQL)      -
+     N(T_MODL0100)    -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(EXECSQL)    -
+     P(*NO)                -
+     R(*NO)                 -
+     X('TABLE     JPLTOOLS/T_MODL0100                     ')
+
+MAKE S(EXECSQL)      -
+     N(T_MODL0200)    -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(EXECSQL)    -
+     P(*NO)                -
+     R(*NO)                 -
+     X('TABLE     JPLTOOLS/T_MODL0200                     ')
+
+MAKE S(EXECSQL)      -
+     N(T_MODL0300)    -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(EXECSQL)    -
+     P(*NO)                -
+     R(*NO)                 -
+     X('TABLE     JPLTOOLS/T_MODL0300                     ')
+
+MAKE S(EXECSQL)     -
+     N(T_MODL0400)   -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(EXECSQL)   -
+     P(*NO)               -
+     R(*NO)                -
+     X('TABLE     JPLTOOLS/T_MODL0400                     ')
+
+MAKE S(EXECSQL)       -
+     N(T_MODL0500)     -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(EXECSQL)     -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('TABLE     JPLTOOLS/T_MODL0500                     ')
+
+MAKE S(EXECSQL)     -
+     N(T_PGMI0100)   -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(EXECSQL)   -
+     P(*NO)               -
+     R(*NO)                -
+     X('TABLE     JPLTOOLS/T_PGMI0100                     ')
+
+MAKE S(EXECSQL)     -
+     N(T_PGML0100)   -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(EXECSQL)   -
+     P(*NO)               -
+     R(*NO)                -
+     X('TABLE     JPLTOOLS/T_PGML0100                     ')
+
+MAKE S(EXECSQL)     -
+     N(T_PGML0200)   -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(EXECSQL)   -
+     P(*NO)               -
+     R(*NO)                -
+     X('TABLE     JPLTOOLS/T_PGML0200                     ')
+
+MAKE S(EXECSQL)     -
+     N(T_PGML0300)   -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(EXECSQL)   -
+     P(*NO)               -
+     R(*NO)                -
+     X('TABLE     JPLTOOLS/T_PGML0300                     ')
+
+MAKE S(EXECSQL)     -
+     N(T_PGML0400)   -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(EXECSQL)   -
+     P(*NO)               -
+     R(*NO)                -
+     X('TABLE     JPLTOOLS/T_PGML0400                     ')
+
+MAKE S(EXECSQL)     -
+     N(T_PGML0500)   -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(EXECSQL)   -
+     P(*NO)               -
+     R(*NO)                -
+     X('TABLE     JPLTOOLS/T_PGML0500                     ')
+
+MAKE S(EXECSQL)      -
+     N(T_RJRN0100)    -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(EXECSQL)    -
+     P(*NO)                -
+     R(*NO)                 -
+     X('TABLE     JPLTOOLS/T_RJRN0100                     ')
+
+MAKE S(EXECSQL)    -
+     N(T_RJRN0101)  -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(EXECSQL)  -
+     P(*NO)              -
+     R(*NO)               -
+     X('TABLE     JPLTOOLS/T_RJRN0101                     ')
+
+MAKE S(EXECSQL)    -
+     N(T_RJRN0102)  -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(EXECSQL)  -
+     P(*NO)              -
+     R(*NO)               -
+     X('TABLE     JPLTOOLS/T_RJRN0102                     ')
+
+MAKE S(EXECSQL)      -
+     N(T_RJRN0103)    -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(EXECSQL)    -
+     P(*NO)                -
+     R(*NO)                 -
+     X('TABLE     JPLTOOLS/T_RJRN0103                     ')
+
+MAKE S(EXECSQL)        -
+     N(T_RRCV0100)      -
+     O(JPLTOOLS)         -
+     L(JPLTOOLS)          -
+     F(JPLTOOLS)           -
+     COMPILER(EXECSQL)      -
+     P(*NO)                  -
+     R(*NO)                   -
+     X('TABLE     JPLTOOLS/T_RRCV0100                     ')
+
+MAKE S(EXECSQL)       -
+     N(T_SAVF0100)     -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(EXECSQL)     -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('TABLE     JPLTOOLS/T_SAVF0100                     ')
+
+MAKE S(EXECSQL)    -
+     N(T_SPGI0100)  -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(EXECSQL)  -
+     P(*NO)              -
+     R(*NO)               -
+     X('TABLE     JPLTOOLS/T_SPGI0100                     ')
+
+MAKE S(EXECSQL)       -
+     N(T_SPGL0600)     -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(EXECSQL)     -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('TABLE     JPLTOOLS/T_SPGL0600                     ')
+
+MAKE S(EXECSQL)      -
+     N(T_SPGL0700)    -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(EXECSQL)    -
+     P(*NO)                -
+     R(*NO)                 -
+     X('TABLE     JPLTOOLS/T_SPGL0700                     ')
+
+MAKE S(EXECSQL)      -
+     N(T_SPGL0800)    -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(EXECSQL)    -
+     P(*NO)                -
+     R(*NO)                 -
+     X('TABLE     JPLTOOLS/T_SPGL0800                     ')
+
+MAKE S(EXECSQL)      -
+     N(T_VEWL0100)    -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(EXECSQL)    -
+     P(*NO)                -
+     R(*NO)                 -
+     X('Table vewl0100                                    ')
+
+MAKE S(CMD)                -
+     N(RTVAUTL)             -
+     O(JPLTOOLS)             -
+     L(JPLTOOLS)              -
+     F(JPLTOOLS)               -
+     COMPILER(CMD)              -
+     P(*NO)                      -
+     R(*NO)                       -
+     X('Retrieve AUTL info         ')
+
+MAKE S(SQLRPGLE)              -
+     N(RTVAUTLR)               -
+     O(JPLTOOLS)                -
+     L(JPLTOOLS)                 -
+     F(JPLTOOLS)                  -
+     COMPILER(SQLRPGLE)            -
+     P(*NO)                         -
+     R(*NO)                          -
+     X('Retrieve AUTL info            ')
+
+
+
+MAKE S(CMD)        -
+     N(RTVCMD)      -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(CMD)      -
+     P(*NO)              -
+     R(*NO)               -
+     X('Retrieve *CMD info                                ')
+
+MAKE S(SQLRPGLE)        -
+     N(RTVCMDR)          -
+     O(JPLTOOLS)          -
+     L(JPLTOOLS)           -
+     F(JPLTOOLS)            -
+     COMPILER(SQLRPGLE)      -
+     P(*NO)                   -
+     R(*NO)                    -
+     X('Retrieve *CMD info                                ')
+
+MAKE S(CMD)       -
+     N(RTVEXIT)    -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(CMD)     -
+     P(*NO)             -
+     R(*NO)              -
+     X('Retrieve WRKREGINF info                           ')
+
+MAKE S(SQLRPGLE)   -
+     N(RTVEXITR)    -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(SQLRPGLE) -
+     P(*NO)              -
+     R(*NO)               -
+     X('Retrieve WRKREGINF info                           ')
+
+MAKE S(CMD)        -
+     N(RTVFD)       -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(CMD)      -
+     P(*NO)              -
+     R(*NO)               -
+     X('print file description                            ')
+
+MAKE S(PRTF)    -
+     N(RTVFDPR)  -
+     O(JPLTOOLS)  -
+     L(JPLTOOLS)   -
+     F(JPLTOOLS)    -
+     COMPILER(PRTF)  -
+     P(*NO)           -
+     R(*NO)            -
+     X('retrieve file description                         ')
+
+MAKE S(RPGLE)    -
+     N(RTVFDR)    -
+     O(JPLTOOLS)   -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(RPGLE)   -
+     P(*NO)             -
+     R(*NO)              -
+     X('File Definition                                   ')
+
+MAKE S(CMD)          -
+     N(RTVIFSNAM)     -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(CMD)        -
+     P(*NO)                -
+     R(*NO)                 -
+     X('Retrieve an IFS file name                         ')
+
+MAKE S(CLLE)         -
+     N(RTVIFSNAMC)    -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(CLLE)       -
+     P(*NO)                -
+     R(*NO)                 -
+     X('retrouver le nom complet d un fichier ifs         ')
+
+MAKE S(CMD)       -
+     N(RTVJRN)     -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(CMD)     -
+     P(*NO)             -
+     R(*NO)              -
+     X('Retrieve *JRN info                                ')
+
+MAKE S(SQLRPGLE)   -
+     N(RTVJRNR)     -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(SQLRPGLE) -
+     P(*NO)              -
+     R(*NO)               -
+     X('Retrieve *JRN info                                ')
+
+MAKE S(PF)            -
+     N(RTVMSGSRCP)     -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(PF)          -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('retrieve CHGMSGD of messages                      ')
+
+MAKE S(RPGLE)      -
+     N(RTVMSGSRC)   -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(RPGLE)    -
+     P(*NO)              -
+     R(*NO)               -
+     X('retrieve CHGMSGD of messages                      ')
+
+MAKE S(CMD)      -
+     N(RTVPGM)    -
+     O(JPLTOOLS)   -
+     L(JPLTOOLS)    -
+     F(JPLTOOLS)     -
+     COMPILER(CMD)    -
+     P(*NO)            -
+     R(*NO)             -
+     X('Retrieve *PGM, *MOD, *SRVPGM info                 ')
+
+MAKE S(CLLE)       -
+     N(RTVPGMC)     -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(CLLE)     -
+     P(*NO)              -
+     R(*NO)               -
+     X('Retrieve *PGM, *MOD, *SRVPGM info / + debug mode  ')
+
+MAKE S(SQLRPGLE)   -
+     N(RTVPGMR)     -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(SQLRPGLE) -
+     P(*NO)              -
+     R(*NO)               -
+     X('Retrieve *PGM, *MOD, *SRVPGM info                 ')
+
+MAKE S(CLLE)        -
+     N(RTVPRCGRP)    -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(CLLE)      -
+     P(*NO)               -
+     R(*NO)                -
+     X('retrieve processor info                           ')
+
+MAKE S(CMD)       -
+     N(RTVSAVF)    -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(CMD)     -
+     P(*NO)             -
+     R(*NO)              -
+     X('Retrieve description of SAVF *FILE                ')
+
+MAKE S(SQLRPGLE)    -
+     N(RTVSAVFR)     -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(SQLRPGLE)  -
+     P(*NO)               -
+     R(*NO)                -
+     X('Retrieve description of SAVF *FILE                ')
+
+MAKE S(CMD)     -
+     N(RTVSQL)   -
+     O(JPLTOOLS)  -
+     L(JPLTOOLS)   -
+     F(JPLTOOLS)    -
+     COMPILER(CMD)   -
+     P(*NO)           -
+     R(*NO)            -
+     X('Retrieve DDL source for SQL objects               ')
+
+MAKE S(DSPF)      -
+     N(RTVSQLFM)   -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(DSPF)    -
+     P(*NO)             -
+     R(*NO)              -
+     X('Retrieve SQL source in DDL for SQL objects        ')
+
+MAKE S(PNLGRP)    -
+     N(RTVSQLHP)   -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(PNLGRP)  -
+     P(*NO)             -
+     R(*NO)              -
+     X('Help for RTVSQL                                   ')
+
+MAKE S(RPGLE)     -
+     N(RTVSQLR)    -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(RPGLE)   -
+     P(*NO)             -
+     R(*NO)              -
+     X('Retrieve SQL source in DDL for SQL objects        ')
+
+MAKE S(CMD)      -
+     N(SLPPGM)    -
+     O(JPLTOOLS)   -
+     L(JPLTOOLS)    -
+     F(JPLTOOLS)     -
+     COMPILER(CMD)    -
+     P(*NO)            -
+     R(*NO)             -
+     X('List of sleeping programs                         ')
+
+MAKE S(DSPF)      -
+     N(SLPPGMFM)   -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(DSPF)    -
+     P(*NO)             -
+     R(*NO)              -
+     X('List of sleeping programs                         ')
+
+MAKE S(RPGLE)   -
+     N(SLPPGMR)  -
+     O(JPLTOOLS)  -
+     L(JPLTOOLS)   -
+     F(JPLTOOLS)    -
+     COMPILER(RPGLE) -
+     P(*NO)           -
+     R(*NO)            -
+     X('List of sleeping programs                         ')
+
+MAKE S(CMD)      -
+     N(SPLF2PDF)  -
+     O(JPLTOOLS)   -
+     L(JPLTOOLS)    -
+     F(JPLTOOLS)     -
+     COMPILER(CMD)    -
+     P(*NO)            -
+     R(*NO)             -
+     X('TRANSFORM A SPOOL FILE TO A PDF FILE              ')
+
+MAKE S(CLLE)      -
+     N(SPLF2PDFC)  -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(CLLE)    -
+     P(*NO)             -
+     R(*NO)              -
+     X('Transform a spool into a PDF                      ')
+
+MAKE S(RPGLE)     -
+     N(SPLF2PDFR)  -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(RPGLE)   -
+     P(*NO)             -
+     R(*NO)              -
+     X('Transform a spool into a PDF                      ')
+
+MAKE S(CMD)       -
+     N(SQL2SYLK)   -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(CMD)     -
+     P(*NO)             -
+     R(*NO)              -
+     X('exporter des données SQL en SYLK pour Exce        ')
+
+MAKE S(CLLE)      -
+     N(SQL2SYLKC)  -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(CLLE)    -
+     P(*NO)             -
+     R(*NO)              -
+     X('exporter des données SQL en SYLK pour Excel       ')
+
+MAKE S(PF)         -
+     N(SQL2SYLKP)   -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(PF)       -
+     P(*NO)              -
+     R(*NO)               -
+     X('Fichier de travail du convertisseur SYLK          ')
+
+MAKE S(SQLRPGLE)    -
+     N(SQL2SYLKR)    -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(SQLRPGLE)  -
+     P(*NO)               -
+     R(*NO)                -
+     X('exporter des données SQL en SYLK pour Excel       ')
+
+MAKE S(CMD)       -
+     N(SQL2XLS)    -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(CMD)     -
+     P(*NO)             -
+     R(*NO)              -
+     X('exporter des données SQL en Excel SSML            ')
+
+MAKE S(CLLE)      -
+     N(SQL2XLSC)   -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(CLLE)    -
+     P(*NO)             -
+     R(*NO)              -
+     X('exporter des données SQL en Excel SSML            ')
+
+MAKE S(PF)        -
+     N(XMLDB2P)    -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(PF)      -
+     P(*NO)             -
+     R(*NO)              -
+     X('Structure hierarchique DB2 pour générer du XML    ')
+MAKE S(SQLRPGLE)      -
+     N(SQL2XLSR)       -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(SQLRPGLE)    -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('exporter des données SQL en Excel SSML            ')
+
+MAKE S(CMD)        -
+     N(SQL2XLS3)    -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(CMD)      -
+     P(*NO)              -
+     R(*NO)               -
+     X('exporter des données SQL en Excel SSML            ')
+
+MAKE S(CLLE)        -
+     N(SQL2XLS3C)    -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(CLLE)      -
+     P(*NO)               -
+     R(*NO)                -
+     X('exporter des données SQL en Excel SSML            ')
+
+MAKE S(EXECSQL)     -
+     N(SQL2XLS3Q)    -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(EXECSQL)   -
+     P(*NO)               -
+     R(*NO)                -
+     X('create qtemp/xmldbup                              ')
+
+MAKE S(SQLRPGLE)   -
+     N(SQL2XLS3R)   -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(SQLRPGLE) -
+     P(*NO)              -
+     R(*NO)               -
+     X('exporter des données SQL en Excel SSML            ')
+
+MAKE S(PF)        -
+     N(UNIBIDI)    -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(PF)      -
+     P(*NO)             -
+     R(*NO)              -
+     X('Unicode, bidirectional class                      ')
+
+MAKE S(DDL)          -
+     N(WRKBNDOBJ)     -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(DDL)        -
+     P(*NO)                -
+     R(*NO)                 -
+     X('Work with BNDDIR procedures, list *MOD & *SRVPGM  ')
+
+MAKE S(CMD)        -
+     N(WRKBNDPRC)   -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(CMD)      -
+     P(*NO)              -
+     R(*NO)               -
+     X('Work with BNDDIR procedures                       ')
+
+MAKE S(DSPF)        -
+     N(WRKBNDPRCF)   -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(DSPF)      -
+     P(*NO)               -
+     R(*NO)                -
+     X('Work with BNDDIR procedures, show PRC             ')
+
+MAKE S(PF)         -
+     N(WRKBNDPRCP)  -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(PF)       -
+     P(*NO)              -
+     R(*NO)               -
+     X('Work with BNDDIR procedures, list PRC             ')
+
+MAKE S(CLLE)          -
+     N(WRKBNDPRC1)     -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(CLLE)        -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('Work with BNDDIR procedures, list *MOD & *SRVPGM  ')
+
+MAKE S(SQLRPGLE)   -
+     N(WRKBNDPRC2)  -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(SQLRPGLE) -
+     P(*NO)              -
+     R(*NO)               -
+     X('Work with BNDDIR procedures, list PRC             ')
+
+MAKE S(SQLRPGLE)   -
+     N(WRKBNDPRC3)  -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(SQLRPGLE) -
+     P(*NO)              -
+     R(*NO)                -
+     X('Work with BNDDIR procedures, show PRC             ')
+
+MAKE S(CMD)        -
+     N(WRKUSRI)     -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(CMD)      -
+     P(*NO)              -
+     R(*NO)               -
+     X('Work with User''s default values                   ')
+
+MAKE S(SQL)       -
+     N(WRKUSRIP)   -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(SQL)     -
+     P(*NO)             -
+     R(*NO)              -
+     X('work with user default values                     ')
+
+MAKE S(RPGLE)       -
+     N(WRKUSRI_M)    -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(RPGLE)     -
+     P(*NO)               -
+     R(*NO)                -
+     X('Get or Set default values                         ')
+
+MAKE S(DSPF)          -
+     N(WRKUSRIFM)      -
+     O(JPLTOOLS)        -
+     L(JPLTOOLS)         -
+     F(JPLTOOLS)          -
+     COMPILER(DSPF)        -
+     P(*NO)                 -
+     R(*NO)                  -
+     X('work with user default values                     ')
+
+MAKE S(SQLRPGLE)   -
+     N(WRKUSRIR)    -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(SQLRPGLE) -
+     P(*NO)              -
+     R(*NO)               -
+     X('work with user default values                     ')
+
+MAKE S(CMD)     -
+     N(WRKIFS)   -
+     O(JPLTOOLS)  -
+     L(JPLTOOLS)   -
+     F(JPLTOOLS)    -
+     COMPILER(CMD)   -
+     P(*NO)           -
+     R(*NO)            -
+     X('Work with IFS stream files                        ')
+
+MAKE S(DSPF)        -
+     N(WRKIFSFM)     -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(DSPF)      -
+     P(*NO)               -
+     R(*NO)                -
+     X('Afficher un fichier IFS                           ')
+
+MAKE S(SQL)          -
+     N(WRKIFSP)       -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(SQL)        -
+     P(*NO)                -
+     R(*NO)                 -
+     X('work with command for WRKIFS                      ')
+
+MAKE S(SQLRPGLE)    -
+     N(WRKIFSR)      -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(SQLRPGLE)  -
+     P(*NO)               -
+     R(*NO)                -
+     X('Afficher un fichier IFS                           ')
+
+MAKE S(DSPF)        -
+     N(WRKIFSOPTF)   -
+     O(JPLTOOLS)      -
+     L(JPLTOOLS)       -
+     F(JPLTOOLS)        -
+     COMPILER(DSPF)      -
+     P(*NO)               -
+     R(*NO)                -
+     X('WRKIFS - work with commands                       ')
+
+MAKE S(SQLRPGLE)  -
+     N(WRKIFSOPTR) -
+     O(JPLTOOLS)    -
+     L(JPLTOOLS)     -
+     F(JPLTOOLS)      -
+     COMPILER(SQLRPGLE)-
+     P(*NO)             -
+     R(*NO)              -
+     X('work with commands                                ')
+
+MAKE S(DSPF)    -
+     N(WRKJOBFM) -
+     O(JPLTOOLS)  -
+     L(JPLTOOLS)   -
+     F(JPLTOOLS)    -
+     COMPILER(DSPF)  -
+     P(*NO)           -
+     R(*NO)            -
+     X('work with jobs, improved                          ')
+
+MAKE S(PNLGRP)  -
+     N(WRKJOBHP) -
+     O(JPLTOOLS)  -
+     L(JPLTOOLS)   -
+     F(JPLTOOLS)    -
+     COMPILER(PNLGRP)-
+     P(*NO)           -
+     R(*NO)            -
+     X('work with jobs, improved                          ')
+
+MAKE S(SQLRPGLE)     -
+     N(WRKJOBR)       -
+     O(JPLTOOLS)       -
+     L(JPLTOOLS)        -
+     F(JPLTOOLS)         -
+     COMPILER(SQLRPGLE)   -
+     P(*NO)                -
+     R(*NO)                 -
+     X('work with jobs, improved                          ')
+
+MAKE S(CMD)    -
+     N(WRKJOBS) -
+     O(JPLTOOLS) -
+     L(JPLTOOLS)  -
+     F(JPLTOOLS)   -
+     COMPILER(CMD)  -
+     P(*NO)          -
+     R(*NO)           -
+     X('work with jobs, improved                          ')
+
+MAKE S(CLLE)     -
+     N(XLXML3)    -
+     O(JPLTOOLS)   -
+     L(JPLTOOLS)    -
+     F(JPLTOOLS)     -
+     COMPILER(CLLE)    -
+     P(*NO)           -
+     R(*NO)             -
+     X('Test creation feuille excel                       ')
+
+MAKE S(SQLRPGLE)   -
+     N(XLXML3R)     -
+     O(JPLTOOLS)     -
+     L(JPLTOOLS)      -
+     F(JPLTOOLS)       -
+     COMPILER(SQLRPGLE) -
+     P(*NO)              -
+     R(*NO)               -
+     X('Démo : créer un fichier Excel 2003                ')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+endpgm

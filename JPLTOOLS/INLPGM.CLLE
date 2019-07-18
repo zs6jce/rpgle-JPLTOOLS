@@ -1,0 +1,508 @@
+             PGM
+
+             DCL        VAR(&USRPRF) TYPE(*CHAR) LEN(10)
+
+             DCL        VAR(&STR) TYPE(*CHAR) LEN(200)
+             DCL        VAR(&DATFMT) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&DATSEP) TYPE(*CHAR) LEN(1)
+
+             DCL        VAR(&TIMSEP) TYPE(*CHAR) LEN(1)
+             DCL        VAR(&LANGID) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&CNTRYID) TYPE(*CHAR) LEN(2)
+             DCL        VAR(&TYPE) TYPE(*CHAR) LEN(1)
+/* 16 byte structure*/
+             DCL        VAR(&BYTESPROV) TYPE(*CHAR) LEN(4) +
+                          VALUE(X'00000010')
+
+
+
+/* Error field      */
+             DCL        VAR(&ERROR) TYPE(*CHAR) LEN(16)
+/* Displayed msg    */
+             DCL        VAR(&MSG) TYPE(*CHAR) LEN(150)
+/* Port number      */
+             DCL        VAR(&PORT) TYPE(*DEC) LEN(5 0)
+
+             DCL        VAR(&CCSIDBIN) TYPE(*CHAR) LEN(4)
+             DCL        VAR(&CCSIDN) TYPE(*DEC) LEN(5 0)
+             DCL        VAR(&CCSID) TYPE(*CHAR) LEN(5)
+/* Network protocol */
+/* TCP/IP protocol  */
+             DCL        VAR(&PROTOCOL) TYPE(*CHAR) LEN(1) VALUE(X'02')
+/* Receiver var     */
+             DCL        VAR(&RCVVAR) TYPE(*CHAR) LEN(1024)
+/* Dev to retrieve  */
+             DCL        VAR(&RTVDEV) TYPE(*CHAR) LEN(10)
+/* Device number    */
+             DCL        VAR(&RTVDEVNO) TYPE(*DEC) LEN(4 0)
+/* Device number    */
+             DCL        VAR(&RTVDEVNOC) TYPE(*CHAR) LEN(4)
+/* TCP/IP address   */
+             DCL        VAR(&TCPADDR) TYPE(*CHAR) LEN(15)
+
+
+
+
+
+
+/*===========GESTION-DES-MESSAGES-D'ERREUR--------------------------*/
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(512)
+             DCL        VAR(&MSGF) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+/*-RENVOI-DES-MESSAGES-VERS-L'APPELANT------------------*/
+             MONMSG     MSGID(CPF0000 QWM0000) EXEC(GOTO +
+                          CMDLBL(STDMONMSG))
+             GOTO       CMDLBL(DEBUTPGM)
+STDMONMSG:
+/*-----------CAPTURE-DU-MESSAGE----------------------*/
+             RCVMSG     MSGTYPE(*LAST) RMV(*NO) MSGDTA(&MSGDTA) +
+                          MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+/*-----------PROMOTION-DU-MESSAGE--------------------*/
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+             RETURN
+DEBUTPGM:
+/*===========CORPS-DU-PROGRAMME-------------------------------------*/
+
+
+
+
+
+
+
+             RTVJOBA    USER(&USRPRF) TYPE(&TYPE)
+             IF         COND(&TYPE = '1') THEN(DO)
+         /*  CHGPRF     DLVRY(*BREAK) */
+             CHGMSGQ    MSGQ(*USRPRF) PGM(JPLBRKMSG)
+             MONMSG     MSGID(CPF2451)
+             CHGMSGQ    MSGQ(*WRKSTN) PGM(JPLBRKMSG)
+             MONMSG     MSGID(CPF2451)
+             ENDDO
+/* recuperer le CCSID de l'ecran */
+             CHGVAR     VAR(%SST(&ERROR 1 4)) VALUE(&BYTESPROV)
+
+             RTVJOBA    JOB(&RTVDEV)
+
+             call      qdcrdevd parm(                                +
+                         &rcvvar      /* Receiver variable       */  +
+                         x'00000400'  /* Length of &rcvvar (1024)*/  +
+                         'DEVD0600'   /* Format to receive       */  +
+                         &rtvdev      /* Device ID to retrieve   */  +
+                         &error)      /* Error field             */
+
+             IF         COND(%SST(&ERROR 9 7) *NE ' ') THEN(DO)
+             SNDPGMMSG  MSGID(%SST(&ERROR 9 7)) MSGF(QCPFMSG)
+             ENDDO
+             ELSE       CMD(DO)
+             /* 104  68  BINARY(4)  Character identifier: graphic character set    */
+             /* 108  6C  BINARY(4)  Character identifier: code page                */
+             CHGVAR     VAR(&CCSIDBIN) VALUE(%SST(&RCVVAR 109 4))
+             CHGVAR     VAR(&CCSIDN) VALUE(%BIN(&CCSIDBIN 1 4))
+             CHGVAR     VAR(&CCSID) VALUE(%BIN(&CCSIDBIN 1 4))
+             /* Value of -14 implies *SYSVAL  */
+             /* Value of -27 implies *KBDTYPE */
+             IF         COND(&CCSIDN   *GT 0) THEN(DO)
+             CHGJOB     CCSID(&CCSID)
+             ENDDO
+             ELSE       CMD(DO)
+             /* 214  D6  CHAR(10)  Keyboard language type   */
+/* now, "just" need to match the KBD name to a CCSID ! -                                          -
+   KBDTYPE  Keyboard language type *SYSVAL, AGB, AGE, AGI, AGM, ALI, ALM, BGB, BGE, BLI, BLM, BRB,-
+   BRE, CAB, CAE, CAI, CAM, CLB, CLE, CSB, CSE, CYB, DMB, DME, DMI, DMM, ESB, FAB, FAE, FAI, FAM, -
+   FNB, FNE, FNI, FNM, FQB, FQI, GKB, GNB, GNE, HIB, HNB, HNE, ICB, ICE, ICI, ICM, INB, INI, IRB, -
+   ITB, ITE, ITI, ITM, JEB, JEI, JKB, JPB, JPE, JUB, KAB, KOB, LAB, LAE, LTB, LVB, MKB, MKE, NCB, -
+   NCE, NEB, NEE, NEI, NEM, NWB, NWE, NWI, NWM, PLB, PLE, PKB, PKE, PRB, PRE, PRI, PRM, RCB, RMB, -
+   RME, ROB, ROE, RUB, RUE, SFI, SFM, SGI, SGM, SKB, SKE, SPB, SPE, SPI, SPM, SQB, SQE, SSB, SSE, -
+   SSM, SSI, SWB, SWE, SWI, SWM, TAB, THB, THE, TKB, TKE, TRB, TRE, UAB, UAE, UKB, UKE, UKI, UKM, -
+   USB, USE, USI, USM, VNB, VNE, YGI, YGM                                                         -
+*/
+
+
+
+             ENDDO
+             ENDDO
+
+             RTVUSRPRF  LANGID(&LANGID)
+
+             IF         COND(&LANGID *EQ 'AFR') THEN(GOTO CMDLBL(AFR))
+             IF         COND(&LANGID *EQ 'ARA') THEN(GOTO CMDLBL(ARA))
+             IF         COND(&LANGID *EQ 'BEL') THEN(GOTO CMDLBL(BEL))
+             IF         COND(&LANGID *EQ 'BGR') THEN(GOTO CMDLBL(BGR))
+             IF         COND(&LANGID *EQ 'CAT') THEN(GOTO CMDLBL(CAT))
+             IF         COND(&LANGID *EQ 'CHS') THEN(GOTO CMDLBL(CHS))
+             IF         COND(&LANGID *EQ 'CHT') THEN(GOTO CMDLBL(CHT))
+             IF         COND(&LANGID *EQ 'CSY') THEN(GOTO CMDLBL(CSY))
+             IF         COND(&LANGID *EQ 'DAN') THEN(GOTO CMDLBL(DAN))
+             IF         COND(&LANGID *EQ 'DES') THEN(GOTO CMDLBL(DES))
+             IF         COND(&LANGID *EQ 'DEU') THEN(GOTO CMDLBL(DEU))
+             IF         COND(&LANGID *EQ 'ELL') THEN(GOTO CMDLBL(ELL))
+             IF         COND(&LANGID *EQ 'ENA') THEN(GOTO CMDLBL(ENA))
+             IF         COND(&LANGID *EQ 'ENB') THEN(GOTO CMDLBL(ENB))
+             IF         COND(&LANGID *EQ 'ENG') THEN(GOTO CMDLBL(ENG))
+             IF         COND(&LANGID *EQ 'ENP') THEN(GOTO CMDLBL(ENP))
+             IF         COND(&LANGID *EQ 'ENU') THEN(GOTO CMDLBL(ENU))
+             IF         COND(&LANGID *EQ 'ESP') THEN(GOTO CMDLBL(ESP))
+             IF         COND(&LANGID *EQ 'EST') THEN(GOTO CMDLBL(EST))
+             IF         COND(&LANGID *EQ 'FAR') THEN(GOTO CMDLBL(FAR))
+             IF         COND(&LANGID *EQ 'FIN') THEN(GOTO CMDLBL(FIN))
+             IF         COND(&LANGID *EQ 'FRA') THEN(GOTO CMDLBL(FRA))
+             IF         COND(&LANGID *EQ 'FRB') THEN(GOTO CMDLBL(FRB))
+             IF         COND(&LANGID *EQ 'FRC') THEN(GOTO CMDLBL(FRC))
+             IF         COND(&LANGID *EQ 'FRS') THEN(GOTO CMDLBL(FRS))
+             IF         COND(&LANGID *EQ 'GAE') THEN(GOTO CMDLBL(GAE))
+             IF         COND(&LANGID *EQ 'HEB') THEN(GOTO CMDLBL(HEB))
+             IF         COND(&LANGID *EQ 'HRV') THEN(GOTO CMDLBL(HRV))
+             IF         COND(&LANGID *EQ 'HUN') THEN(GOTO CMDLBL(HUN))
+             IF         COND(&LANGID *EQ 'ISL') THEN(GOTO CMDLBL(ISL))
+             IF         COND(&LANGID *EQ 'ITA') THEN(GOTO CMDLBL(ITA))
+             IF         COND(&LANGID *EQ 'ITS') THEN(GOTO CMDLBL(ITS))
+             IF         COND(&LANGID *EQ 'JPN') THEN(GOTO CMDLBL(JPN))
+             IF         COND(&LANGID *EQ 'KOR') THEN(GOTO CMDLBL(KOR))
+             IF         COND(&LANGID *EQ 'LAO') THEN(GOTO CMDLBL(LAO))
+             IF         COND(&LANGID *EQ 'LTU') THEN(GOTO CMDLBL(LTU))
+             IF         COND(&LANGID *EQ 'LVA') THEN(GOTO CMDLBL(LVA))
+             IF         COND(&LANGID *EQ 'MKD') THEN(GOTO CMDLBL(MKD))
+             IF         COND(&LANGID *EQ 'NLB') THEN(GOTO CMDLBL(NLB))
+             IF         COND(&LANGID *EQ 'NLD') THEN(GOTO CMDLBL(NLD))
+             IF         COND(&LANGID *EQ 'NON') THEN(GOTO CMDLBL(NON))
+             IF         COND(&LANGID *EQ 'NOR') THEN(GOTO CMDLBL(NOR))
+             IF         COND(&LANGID *EQ 'PLK') THEN(GOTO CMDLBL(PLK))
+             IF         COND(&LANGID *EQ 'PTB') THEN(GOTO CMDLBL(PTB))
+             IF         COND(&LANGID *EQ 'PTG') THEN(GOTO CMDLBL(PTG))
+             IF         COND(&LANGID *EQ 'RMS') THEN(GOTO CMDLBL(RMS))
+             IF         COND(&LANGID *EQ 'ROM') THEN(GOTO CMDLBL(ROM))
+             IF         COND(&LANGID *EQ 'RUS') THEN(GOTO CMDLBL(RUS))
+             IF         COND(&LANGID *EQ 'SKY') THEN(GOTO CMDLBL(SKY))
+             IF         COND(&LANGID *EQ 'SLO') THEN(GOTO CMDLBL(SLO))
+             IF         COND(&LANGID *EQ 'SQI') THEN(GOTO CMDLBL(SQI))
+             IF         COND(&LANGID *EQ 'SRB') THEN(GOTO CMDLBL(SRB))
+             IF         COND(&LANGID *EQ 'SRL') THEN(GOTO CMDLBL(SRL))
+             IF         COND(&LANGID *EQ 'SVE') THEN(GOTO CMDLBL(SVE))
+             IF         COND(&LANGID *EQ 'THA') THEN(GOTO CMDLBL(THA))
+             IF         COND(&LANGID *EQ 'TRK') THEN(GOTO CMDLBL(TRK))
+             IF         COND(&LANGID *EQ 'UKR') THEN(GOTO CMDLBL(UKR))
+             IF         COND(&LANGID *EQ 'URD') THEN(GOTO CMDLBL(URD))
+             IF         COND(&LANGID *EQ 'VIE') THEN(GOTO CMDLBL(VIE))
+
+             GOTO       CMDLBL(CPX8416)
+AFR: /*  Afrikaans            */
+
+
+          goto cpx8416
+ARA: /*  Arabe                */
+          chgsyslibl QSYS2954
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+BEL: /*  Biélorusse           */
+
+
+          goto cpx8416
+BGR: /*  Bulgare            */
+          chgsyslibl QSYS2974
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+CAT: /*  Catalan            */
+
+
+          goto cpx8416
+CHS: /*  Chinois simplifié  */
+          chgsyslibl QSYS2989
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+CHT: /*  Chinois classique  */
+          chgsyslibl QSYS2987
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+CSY: /*  Tchèque            */
+          chgsyslibl QSYS2975
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+DAN: /*  Danois             */
+          chgsyslibl QSYS2926
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+DES: /*  Allemand (Suisse)    */
+          chgsyslibl QSYS2939
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+DEU: /*  Allemand             */
+          chgsyslibl QSYS2929
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+ELL: /*  Grec               */
+          chgsyslibl QSYS2957
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+ENA: /*  Anglais (Australie)  */
+
+
+
+          goto nochgjob
+ENB: /*  Anglais (Belgique)   */
+          chgsyslibl QSYS2909
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+ENG: /*  Anglais (Royaume Uni)*/
+
+
+          goto nochgjob
+ENP: /*  Anglais (majuscules) */
+          chgsyslibl QSYS2950
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+ENU: /*  Anglais (Etats-Unis) */
+          chgsyslibl QSYS2924
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+ESP: /*  Espagnol           */
+          chgsyslibl QSYS2931
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+EST: /*  Estonien           */
+          chgsyslibl QSYS2902
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+FAR: /*  Persan                */
+          chgsyslibl QSYS2998
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+FIN: /*  Finlandais         */
+          chgsyslibl QSYS2925
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+FRA: /*  Français           */
+          chgsyslibl QSYS2928
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+FRB: /*  Français (Belgique)*/
+          chgsyslibl QSYS2966
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+FRC: /*  Français (Canada)  */
+          chgsyslibl QSYS2981
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+FRS: /*  Français (Suisse)  */
+          chgsyslibl QSYS2940
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+GAE: /*  Gaélique (Irlande) */
+
+
+          goto nochgjob
+HEB: /*  Hébreu             */
+          chgsyslibl QSYS2961
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+HRV: /*  Croate             */
+          chgsyslibl QSYS2912
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+HUN: /*  Hongrois           */
+          chgsyslibl QSYS2976
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+ISL: /*  Islandais          */
+          chgsyslibl QSYS2958
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+ITA: /*  Italien            */
+          chgsyslibl QSYS2932
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+ITS: /*  Italien (Suisse)   */
+          chgsyslibl QSYS2942
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+JPN: /*  Japonais (Katakana)*/
+          chgsyslibl QSYS2962
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+KOR: /*  Coréen             */
+          chgsyslibl QSYS2986
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+LAO: /*  Lao                */
+          chgsyslibl QSYS2906
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+LTU: /*  Lituanien          */
+          chgsyslibl QSYS2903
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+LVA: /*  Letton             */
+          chgsyslibl QSYS2904
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+MKD: /*  Macédonien         */
+          chgsyslibl QSYS2913
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+NLB: /*  Néerlandais (Belgique)*/
+          chgsyslibl QSYS2963
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+NLD: /*  Néerlandais           */
+          chgsyslibl QSYS2923
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+NON: /*  Norvégien - nynorsk   */
+          chgsyslibl QSYS2934
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+NOR: /*  Norvégien - bokmal    */
+          chgsyslibl QSYS2933
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+PLK: /*  Polonais              */
+          chgsyslibl QSYS2978
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+PTB: /*  Portugais (Brésil)    */
+          chgsyslibl QSYS2980
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+PTG: /*  Portugais             */
+          chgsyslibl QSYS2922
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+RMS: /*  Rhéto-roman           */
+
+
+          goto nochgjob
+ROM: /*  Roumain               */
+          chgsyslibl QSYS2992
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+RUS: /*  Russe                 */
+          chgsyslibl QSYS2979
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+SKY: /*  Slovaque           */
+          chgsyslibl QSYS2994
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+SLO: /*  Slovène            */
+          chgsyslibl QSYS2911
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+SQI: /*  Albanais             */
+          chgsyslibl QSYS2995
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+SRB: /*  Serbo-croate (cyr) */
+          chgsyslibl QSYS2914
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+SRL: /*  Serbe (latin)      */
+
+
+          goto nochgjob
+SVE: /*  Suédois            */
+          chgsyslibl QSYS2937
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+THA: /*  Thaï               */
+          chgsyslibl QSYS2972
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+TRK: /*  Turc               */
+          chgsyslibl QSYS2956
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+UKR: /*  Ukrainien          */
+
+
+          goto nochgjob
+URD: /*  Ourdou                */
+
+
+          goto nochgjob
+VIE: /*  Vietnamien         */
+          chgsyslibl QSYS2905
+             MONMSG     MSGID(CPF2110) EXEC(GOTO CMDLBL(NOCHGJOB))
+             MONMSG     MSGID(CPF2103)
+          goto cpx8416
+
+
+
+
+
+
+CPX8416:
+/* MAPICS CONTIENT DES CVTDAT *SYSVAL ! NE PAS CHANGER LES PARAMETRES JOB */
+/*           GOTO       CMDLBL(END)  */
+
+             RTVMSG     MSGID(CPX8416) MSGF(QCPFMSG) SECLVL(&STR)
+             CHGVAR     VAR(&DATFMT) VALUE('*' *CAT %SST(&STR 58 3))
+             CHGVAR     VAR(&DATSEP) VALUE(%SST(&STR 73 1))
+
+             CHGVAR     VAR(&TIMSEP) VALUE(%SST(&STR 129 1))
+             CHGVAR     VAR(&LANGID) VALUE(%SST(&STR 142 3))
+             CHGVAR     VAR(&CNTRYID) VALUE(%SST(&STR 157 2))
+             CHGJOB     DATFMT(&DATFMT) DATSEP(&DATSEP) +
+                          TIMSEP(&TIMSEP) LANGID(&LANGID) +
+                          CNTRYID(&CNTRYID)
+             IF         COND(&CCSIDN *LT 0) THEN(DO)
+             CHGVAR     VAR(&CCSID) VALUE(%SST(&STR 110 5))
+             CHGVAR     VAR(&CCSIDN) VALUE(&CCSID) /* Ltrim spaces */
+             CHGVAR     VAR(&CCSID) VALUE(&CCSIDN)
+             CHGJOB     CCSID(&CCSID)
+             ENDDO
+             CHGJOB     CHRIDCTL(*JOBCCSID)
+nochgjob:
+loop:
+             CALL       PGM(QCMD)
+             GOTO       CMDLBL(LOOP)
+END:
+             ENDPGM

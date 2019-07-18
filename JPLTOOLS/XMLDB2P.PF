@@ -1,0 +1,24 @@
+      *  DLTF FILE(XMLDB2P)
+      *  CRTPF SRCFILE(JPLTOOLS) SRCMBR(XMLDB2P) FILE(XMLDB2P)
+      *        SIZE(*NOMAX)
+      ************************************  UNIQUE
+     A          R XMLDB2F
+     A            LEVEL1         5B 0       COLHDG('Level 1')
+     A            LEVEL2         5B 0       COLHDG('Level 2')
+     A            LEVEL3         5B 0       COLHDG('Level 3')
+     A            LEVEL4         5B 0       COLHDG('Level 4')
+     A            LEVEL5         5B 0       COLHDG('Level 5')
+     A            LEVEL6         5B 0       COLHDG('Level 6')
+     A            LEVEL7         5B 0       COLHDG('Level 7')
+     A            LEVEL8         5B 0       COLHDG('Level 8')
+     A            LEVEL9         5B 0       COLHDG('Level 9')
+     A            DATA        1000          VARLEN
+                K LEVEL1
+                K LEVEL2
+                K LEVEL3
+                K LEVEL4
+                K LEVEL5
+                K LEVEL6
+                K LEVEL7
+                K LEVEL8
+                K LEVEL9

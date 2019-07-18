@@ -1,0 +1,116 @@
+     A*%%TS  SD  20101120  154340  LAMONTRE    REL-V7R1M0  5770-WDS
+     A*=========================================================================
+     A* SI LE SFLMSG NE S'AFFICHE PAS, VÉRIFIER
+     A*  AUCUN FORMAT N'ÉCRIT SUR LA LIGNE SFLMSGRCD(!INLPGM SNDBRKMSG POLLUE LA
+     A*  PMQPGM INITIALISÉ A *
+     A*  APPEL : IF ERREUR;CALLP PMQMSG...;W2FLSP='60';ITER;ENDIF;
+     A*=========================================================================
+     A* TOUCHES DE FONCTIONS ET INDICATEURS *INK
+     A* KA=F1, KB=F2, KC=F3, KD=F4, KE=F5, KF=F6, KG=F7, KH=F8, KI=F9, KJ=F10,
+     A* KK=F11, KL=F12, KM=F13, KN=F14, KP=F15, KQ=F16, KR=F17, KS=F18, KT=F19,
+     A* KV=F21, KW=F22, KX=F23, KY=F24
+     A*=========================================================================
+     A*%%EC
+     A                                      DSPSIZ(24 80 *DS3)
+     A                                      CHGINPDFT(UL)
+     A                                      HLPTITLE('JPL020R')
+     A                                      HLPPNLGRP(INTRO JPL020HP)
+     A                                      HLPFULL
+     A                                      HELP
+     A                                      ALTHELP(CA01)
+     A                                      PRINT
+     A                                      INDARA
+     A                                      WDWBORDER((*COLOR BLU))
+     A                                      CF05
+     A                                      CA03
+     A                                      CA12
+     A*=========================================================================
+     A          R SFLB                      SFL
+     A*%%TS  SD  20101028  102502  JPL         REL-V5R4M0  5722-WDS
+     A  60                                  SFLNXTCHG
+     A            ZBSELE         1A  B  7  2VALUES('0' '2' '5' '6' ' ' 'R')
+     A            ORDR           4Y 0O  7  4EDTCDE(4)
+     A            ACTGRP        10A  O  7  9
+     A            PGMLIB        10A  O  7 20
+     A  71                                  COLOR(PNK)
+     A            PGMNAM        10A  O  7 31
+     A            PGMTYP         7A  O  7 42
+     A            TEXT          31A  O  7 50
+     A*=========================================================================
+     A          R CTLB                      SFLCTL(SFLB)
+     A*%%TS  SD  20101120  154340  LAMONTRE    REL-V7R1M0  5770-WDS
+     A                                      SFLSIZ(0016)
+     A                                      SFLPAG(0015)
+     A                                      CF02
+     A                                      CF14
+     A                                      ROLLUP(11)
+     A                                      KEEP
+     A                                      OVERLAY
+     A  52                                  SFLDSP
+     A N51                                  SFLDSPCTL
+     A  51                                  SFLCLR
+     A  53                                  SFLEND
+     A  98                                  SFLMSG('Limite de défilement attein-
+     A                                      te')
+     A          H                           HLPPNLGRP(CTLB JPL020HP)
+     A                                      HLPARA(*NONE)
+     A            RAN01B         4S 0H      SFLRCDNBR(CURSOR)
+     A            SPNAME        10A  O  1  2COLOR(BLU)
+     A                                  2  7'List of dormant programs for'
+     A                                      DSPATR(HI)
+     A                                      COLOR(WHT)
+     A                                  1 15DATE
+     A                                      COLOR(BLU)
+     A                                      EDTWRD('  /  /  ')
+     A                                  1 33SYSNAME
+     A                                      COLOR(BLU)
+     A            WENV           2A  O  1 53COLOR(BLU)
+     A                                  1 24TIME
+     A                                      COLOR(BLU)
+     A                                  1 42USER
+     A                                      COLOR(BLU)
+     A                                  6  2'S Ord  Actgrp     library    progr-
+     A                                      am    type    Attribut  text       -
+     A                                                '
+     A                                      DSPATR(HI)
+     A                                      DSPATR(UL)
+     A            WLIBEN        10A  O  1 56COLOR(BLU)
+     A                                  1 13'B'
+     A            QUALJOB       26A  O  2 36DSPATR(HI)
+     A                                  5  3'2=wrkobj 5=dspobjd 6=dsppgm'
+     A                                      COLOR(BLU)
+     A                                  4  1'Options'
+     A                                      COLOR(BLU)
+     A                                  3  1'Show MODULE...'
+     A            SHOWMOD        1A  B  3 16VALUES('Y' 'N')
+     A                                  3 18'(+F5)'
+     A*=========================================================================
+     A          R FMTKB
+     A*%%TS  SD  20051028  165031  EB10168     REL-V5R2M0  5722-WDS
+     A                                      TEXT('Command keys')
+     A          H                           HLPPNLGRP(FMTKB JPL020HP)
+     A                                      HLPARA(*NONE)
+     A                                 22  2'                                  -
+     A                                                                         -
+     A                                               '
+     A                                      DSPATR(UL)
+     A                                 23  2'F3=Quitter'
+     A                                      COLOR(BLU)
+     A                                 23 13'F12=Abandonner'
+     A                                      COLOR(BLU)
+     A                                 23 28'F5=Rafraichir'
+     A                                      COLOR(BLU)
+      *=========================================================================
+                R PMQSFL                    TEXT('Program messages')
+                                            SFL SFLMSGRCD(24)
+                  MSGKEY                    SFLMSGKEY
+                  PMQPGM                    SFLPGMQ
+      *=========================================================================
+                R PMQCTL                    TEXT('Program messages')
+                                            SFLCTL(PMQSFL)
+                                            SFLPAG(01) SFLSIZ(03)
+                                            OVERLAY PUTOVR
+                                            SFLINZ SFLDSP SFLDSPCTL
+        01
+      ON01                                  SFLEND
+                  PMQPGM                    SFLPGMQ

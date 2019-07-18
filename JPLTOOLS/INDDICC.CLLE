@@ -1,0 +1,58 @@
+             PGM        PARM(&FILE &SPLNBR &JOBNAME &JOBUSER &JOBNBR)
+             DCL        VAR(&FILE) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&SPLNBR) TYPE(*DEC) LEN(5 0)
+             DCL        VAR(&SPLNBRX) TYPE(*CHAR) LEN(5)
+             DCL        VAR(&JOBNBR) TYPE(*CHAR) LEN(6)
+             DCL        VAR(&JOBUSER) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&JOBNAME) TYPE(*CHAR) LEN(10)
+
+
+
+
+/*===========GESTION-DES-MESSAGES-D'ERREUR--------------------------*/
+             DCL        VAR(&MSGID) TYPE(*CHAR) LEN(7)
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(512)
+             DCL        VAR(&MSGF) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+             /*-RENVOI-DES-MESSAGES-VERS-L'APPELANT------------------*/
+             MONMSG     MSGID(CPF0000) EXEC(GOTO CMDLBL(ERREUR))
+             GOTO       CMDLBL(DEBUTPGM)
+erreur:
+             /*-----------CAPTURE-DU-MESSAGE----------------------*/
+             RCVMSG     MSGTYPE(*LAST) RMV(*NO) MSGDTA(&MSGDTA) +
+                          MSGID(&MSGID) MSGF(&MSGF) +
+                          SNDMSGFLIB(&MSGFLIB)
+             /*-----------PROMOTION-DU-MESSAGE--------------------*/
+             SNDPGMMSG  MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) +
+                          MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+             RETURN
+DEBUTPGM:
+/*===========CORPS-DU-PROGRAMME-------------------------------------*/
+             CRTPF      FILE(QTEMP/QSPLDTA) RCDLEN(382) SIZE(100000 +
+                          10000 50)
+             MONMSG     MSGID(CPF7300)
+
+             CHGVAR     VAR(&SPLNBRX) VALUE(&SPLNBR)
+             IF         COND(&SPLNBR *EQ 0) THEN(DO)
+             CHGVAR     VAR(&SPLNBRX) VALUE('*ONLY')
+             ENDDO
+
+             IF         COND(&SPLNBR *EQ -1) THEN(DO)
+             CHGVAR     VAR(&SPLNBRX) VALUE('*LAST')
+             ENDDO
+
+             IF         COND(&JOBNAME = '*') THEN(DO)
+             RTVJOBA    JOB(&JOBNAME) USER(&JOBUSER) NBR(&JOBNBR)
+             ENDDO
+
+             CPYSPLF    FILE(&FILE) TOFILE(QTEMP/QSPLDTA) +
+                          JOB(&JOBNBR/&JOBUSER/&JOBNAME) +
+                          SPLNBR(&SPLNBRX) CTLCHAR(*PRTCTL)
+/* PAS DE MONMSG, CA DOIT PASSER */
+             OVRDBF     FILE(QSPLDTA) TOFILE(QTEMP/QSPLDTA)
+             CALL       PGM(INDDICR) PARM(&FILE)
+             DLTOVR     FILE(QSPLDTA)
+
+
+
+end:         ENDPGM

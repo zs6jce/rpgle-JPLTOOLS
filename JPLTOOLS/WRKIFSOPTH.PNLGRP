@@ -1,0 +1,81 @@
+:PNLGRP SUBMSGF='*LIBL/pnlmsg' TXTMODE = SBCS BIDI = NONE.
+.*--panels standard-------------------------------------------------------------
+:IMPORT PNLGRP=main01hp name='*'.
+.*==============================================================================
+:HELP NAME= INTRO .
+Work with IFS - help
+:XH1.Work with Commands
+:P.
+setup every shortcut to use in the WRKIFS page.
+:pc.define your own numeric shortcut. I suggest this one:
+:pc.2 -> EDTF STMF('&L')
+
+
+:EHELP.
+.*==============================================================================
+:HELP NAME= CTLB .
+list of commands
+:XH4.list of parameters
+
+
+:Pc. &L = the IFS link
+:Pc. &D = the file's directory
+:Pc. &N = the file's name (without extention)
+:Pc. &N1= the last directory of the path
+:Pc. &N2= the directory before &N1 of the path
+:Pc. &N3= the directory before &N2 of the path
+:Pc. &E = the file's extention
+
+
+list of commands
+:XH4.list of commands
+:P.
+
+
+
+:EHELP.
+.*==============================================================================
+:HELP NAME= fmtkb .
+Touches de fonction - Aide
+:XH1.Touches de fonction
+:P.
+:imhelp name='F01'.
+:imhelp name='F03'.
+
+
+
+:imhelp name='F12'.
+
+
+:EHELP.
+.*==============================================================================
+:HELP NAME= fmtc .
+Edit a short cut
+:XH1.Edit a short cut
+:p.  substitution values
+:pc. &L = the IFS link
+:pc. &D = the file's directory
+:pc. &N = the file's name (without extention)
+:pc. &E = the file's extention
+:pc. &N1= the last directory of the path
+:pc. &N2= the last directory of the path before &N1
+
+
+
+
+
+:XH1.Touches de fonction
+:P.
+:imhelp name='F01'.
+:imhelp name='F03'.
+:imhelp name='F05'.
+
+
+:imhelp name='F12'.
+
+
+
+
+
+:EHELP.
+:EPNLGRP.

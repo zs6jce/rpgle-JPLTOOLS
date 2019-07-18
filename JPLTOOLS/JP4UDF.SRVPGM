@@ -1,0 +1,20 @@
+/* SIGNATURE IS HEXA 16     SIGNATURE(X'00112233445566778899AABBCCDDEEFF')  4*VERSION DATE        */
+STRPGMEXP PGMLVL(*CURRENT)  SIGNATURE(X'20091221200912212009122120091221')
+
+/* RTVBNDSRC : ******************************************************/
+/*   *MODULE      JP4UDF_1                                          */
+/********************************************************************/
+
+  EXPORT SYMBOL("N2DATE")
+  EXPORT SYMBOL("X2DATE")
+
+/* RTVBNDSRC : ******************************************************/
+/*   *MODULE      JP4UDF_2                                          */
+/********************************************************************/
+
+  EXPORT SYMBOL("BITAND")
+  EXPORT SYMBOL("BITNOT")
+  EXPORT SYMBOL("BITOR")
+  EXPORT SYMBOL("BITXOR")
+
+ENDPGMEXP

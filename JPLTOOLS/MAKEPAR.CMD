@@ -1,0 +1,2 @@
+
+             CMD        PROMPT('Paramétrer MAKE')

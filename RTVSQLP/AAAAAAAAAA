@@ -1,0 +1,8 @@
+--  Generate SQL
+--  Version:                   V7R3M0 160422
+--  Generated on:              06/12/17 08:40:28
+--  Relational Database:       B009145P
+--  Standards Option:          DB2 for i
+
+--  SQL0113   30   Name  not allowed.
+--  SQL7046   40   Generate SQL for  in *LIBL object type TABLE failed.

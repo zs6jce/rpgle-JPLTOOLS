@@ -1,0 +1,74 @@
+--  Generate SQL
+--  Version:                   V6R1M0 080215
+--  Generated on:              28.10.10 20:36:24
+--  Relational Database:       S652FD4C
+--  Standards Option:          DB2 for i
+
+DROP TABLE LAMONTRE1/JPL027P ;
+
+CREATE TABLE LAMONTRE1/JPL027P (
+--  SQL150B   10   REUSEDLT(*NO) in table JPL027P in LAMONTRE1 ignored.
+  TEXT CHAR(20) CCSID 37 DEFAULT NULL ,
+  TEXTV VARCHAR(20) CCSID 37 DEFAULT NULL ,
+  TODAY DATE DEFAULT NULL ,
+  NOW TIME DEFAULT NULL ,
+  TIMSTM TIMESTAMP DEFAULT NULL ,
+  DEC7 DECIMAL(7, 2) DEFAULT NULL ,
+  ZONED7 NUMERIC(7, 2) DEFAULT NULL ,
+  FLOAT4 FLOAT(29) DEFAULT NULL ,
+  FLOAT8 DOUBLE PRECISION DEFAULT NULL ,
+  INT2 SMALLINT DEFAULT NULL ,
+  INT4 INTEGER DEFAULT NULL ,
+  INT8 BIGINT DEFAULT NULL )
+  RCDFMT JPL027F    ;
+
+COMMENT ON TABLE LAMONTRE1/JPL027P
+  IS 'that is a comment at table level  ' ;
+
+COMMENT ON COLUMN LAMONTRE1/JPL027P
+( TEXT IS 'that is a comment on field TEXT       ' ,
+  TEXTV IS 'that is a comment on field TEXTV      ' ,
+  TODAY IS 'that is a comment on field TODAY      ' ,
+  NOW IS 'that is a comment on field NOW        ' ,
+  TIMSTM IS 'that is a comment on field TIMSTM     ' ,
+  DEC7 IS 'that is a comment on field DEC7       ' ,
+  ZONED7 IS 'that is a comment on field ZONED7     ' ,
+  FLOAT4 IS 'that is a comment on field FLOAT4     ' ,
+  FLOAT8 IS 'that is a comment on field FLOAT8     ' ,
+  INT2 IS 'that is a comment on field INT2       ' ,
+  INT4 IS 'that is a comment on field INT4       ' ,
+  INT8 IS 'that is a comment on field INT8       ' ) ;
+
+LABEL ON TABLE LAMONTRE1/JPL027P
+  IS 'fields samples' ;
+
+LABEL ON COLUMN LAMONTRE1/JPL027P
+( TEXT IS 'FIX CHAR            CCSID *JOB          NAME=TEXT         ' ,
+  TEXTV IS 'VAR CHAR            CCSID *JOB          NAME=TEXTV        ' ,
+  TODAY IS 'CURRENT DATE' ,
+  NOW IS 'CURRENT TIME' ,
+  TIMSTM IS 'A TIME STAMP' ,
+  DEC7 IS 'A DECIMAL DATA' ,
+  ZONED7 IS 'A ZONED DATA' ,
+  FLOAT4 IS 'A 4-FLOAT DATA' ,
+  FLOAT8 IS 'A 8-FLOAT DATA' ,
+  INT2 IS 'A 2-INT DATA' ,
+  INT4 IS 'A 4-INT DATA' ,
+  INT8 IS 'A 8-INT DATA' ) ;
+
+LABEL ON COLUMN LAMONTRE1/JPL027P
+( TEXT TEXT IS 'FIX CHAR FIX CHAR FIX CHAR' ,
+  TEXTV TEXT IS 'VAR CHAR VAR CHAR VAR CHAR' ,
+  TODAY TEXT IS 'CURRENT DATE' ,
+  NOW TEXT IS 'CURRENT TIME' ,
+  TIMSTM TEXT IS 'A TIME STAMP' ,
+  DEC7 TEXT IS 'A DECIMAL DATA' ,
+  ZONED7 TEXT IS 'A ZONED DATA' ,
+  FLOAT4 TEXT IS 'A 4-FLOAT DATA' ,
+  FLOAT8 TEXT IS 'A 8-FLOAT DATA' ,
+  INT2 TEXT IS 'A 2-INT DATA' ,
+  INT4 TEXT IS 'A 4-INT DATA' ,
+  INT8 TEXT IS 'A 8-INT DATA' ) ;
+
+--  SQL7040   40   Message severity 10 exceeds specified severity level 0.
+--  SQL7046   40   Generate SQL for JPL027P in *LIBL object type TABLE failed.
